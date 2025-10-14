@@ -1,0 +1,54 @@
+// backend/prisma/schema.prisma
+// Ajoutez le champ tagColors au modèle FileMetadata
+
+model FileMetadata {
+  id          String   @id @default(cuid())
+  userId      String
+  fileId      String
+  cloudType   String   // 'google_drive' ou 'dropbox'
+  
+  // Tags et leurs couleurs
+  tags        String?  @db.Text  // JSON array: ["tag1", "tag2"]
+  tagColors   String?  @db.Text  // ⚠️ AJOUT IMPORTANT - JSON object: {"tag1": "red", "tag2": "blue"}
+  
+  // Métadonnées personnalisées
+  customName  String?
+  description String?  @db.Text
+  starred     Boolean  @default(false)
+  color       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Index composé unique pour éviter les doublons
+  @@unique([userId, fileId, cloudType], name: "userId_fileId_cloudType")
+  @@index([userId])
+  @@index([starred])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  cloudAccounts CloudAccount[]
+}
+
+model CloudAccount {
+  id           String   @id @default(cuid())
+  userId       String
+  provider     String   // 'google_drive' ou 'dropbox'
+  accessToken  String   @db.Text
+  refreshToken String?  @db.Text
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, provider], name: "userId_provider")
+}
