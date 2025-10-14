@@ -1,7 +1,7 @@
 // Composant principal de l'application
 import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import DebugPage from '@features/auth/pages/DebugPage';
+// import DebugPage from '@features/auth/pages/DebugPage';
 import FileExplorer from '@features/files/pages/FileExplorer';
 import Connections from '@features/auth/pages/Connections';
 import Settings from '@features/auth/pages/Settings';
