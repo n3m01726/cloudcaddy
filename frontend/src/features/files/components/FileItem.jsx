@@ -1,13 +1,12 @@
-// frontend/src/components/FileExplorer/partials/FileItem.jsx
+// frontend/src/features/files/components/FileItem.jsx
 import { useState, useEffect, useRef } from "react";
-import { Folder, File, Download, Image, Music, Film, FileText, RefreshCw, MoreVertical, Star, Tag as TagIcon } from "lucide-react";
+import { Folder, File, Download, Image, Music, Film, FileText, RefreshCw, MoreVertical, Tag as TagIcon } from "lucide-react";
 import FilePreviewModal from "@features/files/partials/FilePreview";
 import FileActions from "@features/files/components/FileActions";
 import TagManager from "@features/tagManager/components/TagManager";
 import TagBadge from "@features/tagManager/components/TagBadge";
 import { metadataService } from "@core/services/api";
 import { formatFileSize } from "@features/files/utils/formatFileSize";
-
 
 const fileIcons = {
   jpg: Image,
@@ -35,27 +34,23 @@ export default function FileItem({
 }) {
   const [showPreview, setShowPreview] = useState(false);
   const [showActions, setShowActions] = useState(false);
+  const [actionPosition, setActionPosition] = useState({ top: 0, left: 0 });
   const [showTagManager, setShowTagManager] = useState(false);
   const [metadata, setMetadata] = useState(null);
   const [loadingMetadata, setLoadingMetadata] = useState(false);
   
-  // Ref pour éviter les rechargements multiples
   const isLoadingRef = useRef(false);
 
   const ext = file.name.split('.').pop().toLowerCase();
   const IconComponent = file.type === 'folder' ? Folder : (fileIcons[ext] || fileIcons.default);
 
-  // Charger les métadonnées - AVEC TOUTES LES DÉPENDANCES
+  // Charger les métadonnées
   useEffect(() => {
     loadMetadata();
   }, [file.id, file.provider, userId]);
 
   const loadMetadata = async () => {
-    // Éviter les appels multiples simultanés
-    if (isLoadingRef.current) {
-      console.log('⏭️ Chargement déjà en cours, ignoré');
-      return;
-    }
+    if (isLoadingRef.current) return;
 
     isLoadingRef.current = true;
     setLoadingMetadata(true);
@@ -68,10 +63,8 @@ export default function FileItem({
       );
       
       if (response.success && response.metadata) {
-        console.log('✅ Métadonnées chargées:', file.name, response.metadata);
         setMetadata(response.metadata);
       } else {
-        console.log('⚠️ Pas de métadonnées pour:', file.name);
         setMetadata(null);
       }
     } catch (error) {
@@ -83,13 +76,44 @@ export default function FileItem({
     }
   };
 
-  const handleShare = (file) => {
-    navigator.clipboard.writeText(file.url);
-    alert("Lien copié !");
+  // ===== GESTION DU MENU CONTEXTUEL =====
+  
+  // Right-click handler
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Calculer la position du menu
+    const x = e.clientX;
+    const y = e.clientY;
+    
+    // Ajuster si le menu dépasse l'écran
+    const menuWidth = 200;
+    const menuHeight = 200;
+    const adjustedX = x + menuWidth > window.innerWidth ? x - menuWidth : x;
+    const adjustedY = y + menuHeight > window.innerHeight ? y - menuHeight : y;
+    
+    setActionPosition({ top: adjustedY, left: adjustedX });
+    setShowActions(true);
   };
 
-  const handlePrint = (file) => {
-    window.open(file.url, "_blank")?.print();
+  // Click sur le bouton MoreVertical
+  const handleMoreClick = (e) => {
+    e.stopPropagation();
+    
+    // Position du bouton
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left;
+    const y = rect.bottom + 5; // 5px en dessous du bouton
+    
+    // Ajuster si le menu dépasse l'écran
+    const menuWidth = 200;
+    const menuHeight = 200;
+    const adjustedX = x + menuWidth > window.innerWidth ? x - menuWidth + rect.width : x;
+    const adjustedY = y + menuHeight > window.innerHeight ? rect.top - menuHeight - 5 : y;
+    
+    setActionPosition({ top: adjustedY, left: adjustedX });
+    setShowActions(true);
   };
 
   const handleActionSuccess = (action, result) => {
@@ -105,19 +129,13 @@ export default function FileItem({
   };
 
   const handleMetadataUpdate = (newMetadata) => {
-    console.log('🔄 Mise à jour métadonnées dans FileItem:', newMetadata);
     setMetadata(newMetadata);
   };
 
   const handleCloseTagManager = async () => {
-    console.log('🚪 Fermeture TagManager, rechargement des métadonnées...');
     setShowTagManager(false);
-    
-    // Attendre un peu puis recharger
     await new Promise(resolve => setTimeout(resolve, 300));
     await loadMetadata();
-    
-    // Notifier le parent pour rafraîchir toute la liste
     onFileMoved?.();
   };
 
@@ -126,58 +144,56 @@ export default function FileItem({
   const tagColors = metadata?.tagColors || {};
   const starred = metadata?.starred || false;
 
-  // Log pour déboguer les couleurs
-  useEffect(() => {
-    if (tags.length > 0 && Object.keys(tagColors).length > 0) {
-      console.log('🎨 Rendu:', file.name, '| Tags:', tags, '| Couleurs:', tagColors);
-    }
-  }, [tags, tagColors]);
-
   return (
     <>
       <div
         className={`flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all group ${
           file.type === 'folder' ? 'cursor-pointer' : ''
-        } ${starred ? 'ring-2 ring-yellow-200 bg-yellow-50 border-yellow-200 hover:bg-yellow-50 hover:ring-yellow-300 hover:border-yellow-100 ' : ''}`}
+        } ${starred ? 'ring-2 ring-yellow-200 bg-yellow-50 border-yellow-200 hover:bg-yellow-50 hover:ring-yellow-300 hover:border-yellow-100' : ''}`}
         onClick={() => {
           if (file.type === 'folder') onFolderClick(file);
           else setShowPreview(true);
         }}
+        onContextMenu={handleContextMenu}
       >
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <IconComponent className={`w-8 h-8 ${file.type === 'folder' ? 'text-blue-500' : 'text-gray-400'} flex-shrink-0`} />
+          <IconComponent 
+            className={`w-8 h-8 ${file.type === 'folder' ? 'text-blue-500' : 'text-gray-400'} flex-shrink-0`} 
+          />
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <h3 className="font-medium truncate">{displayName}</h3>
               
-              {loadingMetadata && <RefreshCw className="w-3 h-3 text-gray-400 animate-spin flex-shrink-0" />}
+              {loadingMetadata && (
+                <RefreshCw className="w-3 h-3 text-gray-400 animate-spin flex-shrink-0" />
+              )}
         
-        {/* Tags avec couleurs */}
-            {tags.length > 0 && (
-              <div className="flex flex-wrap gap-1"> 
-                {tags.slice(0, 3).map((tag) => {
-                  return (
+              {/* Tags avec couleurs */}
+              {tags.length > 0 && (
+                <div className="flex flex-wrap gap-1"> 
+                  {tags.slice(0, 3).map((tag) => (
                     <TagBadge 
                       key={tag} 
                       tag={tag} 
                       size="sm"
                       color={tagColors[tag] || 'blue'}
                     />
-                  );
-                })}
-                {tags.length > 3 && (
-                  <span className="text-xs text-gray-500 px-2 py-0.5">
-                    +{tags.length - 3} autres
-                  </span>
-                )}
-              </div>
-            )}
+                  ))}
+                  {tags.length > 3 && (
+                    <span className="text-xs text-gray-500 px-2 py-0.5">
+                      +{tags.length - 3} autres
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
             
-            
             <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
-             {file.type !== 'folder' && <span>{file.size ? formatFileSize(file.size)  : 'N/A'}</span>} Modifié le: {new Date(file.modifiedTime).toLocaleDateString()}
+              {file.type !== 'folder' && (
+                <span>{file.size ? formatFileSize(file.size) : 'N/A'}</span>
+              )}
+              <span>Modifié le: {new Date(file.modifiedTime).toLocaleDateString()}</span>
             </div>
 
             {/* Description */}
@@ -205,9 +221,13 @@ export default function FileItem({
           {/* Bouton Download */}
           {file.type !== 'folder' && (
             <button
-              onClick={(e) => { e.stopPropagation(); onDownload(file); }}
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                onDownload(file); 
+              }}
               disabled={downloading === file.id}
               className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-100 rounded-lg transition-colors disabled:opacity-100"
+              title="Télécharger"
             >
               {downloading === file.id ? (
                 <RefreshCw className="w-5 h-5 animate-spin" />
@@ -217,10 +237,11 @@ export default function FileItem({
             </button>
           )}
           
-          {/* Bouton Actions */}
+          {/* Bouton Actions (MoreVertical) */}
           <button
-            onClick={(e) => { e.stopPropagation(); setShowActions(true); }}
+            onClick={handleMoreClick}
             className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Plus d'actions"
           >
             <MoreVertical className="w-5 h-5" />
           </button>
@@ -234,17 +255,16 @@ export default function FileItem({
           userId={userId}
           onClose={() => setShowPreview(false)}
           onDownload={onDownload}
-          onShare={handleShare}
-          onPrint={handlePrint}
         />
       )}
 
-      {/* Actions Modal */}
+      {/* Actions Modal (s'ouvre via right-click OU MoreVertical) */}
       {showActions && (
         <FileActions
           file={file}
           userId={userId}
           isOpen={showActions}
+          position={actionPosition}
           onClose={() => setShowActions(false)}
           onSuccess={handleActionSuccess}
           onError={handleActionError}
