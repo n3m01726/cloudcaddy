@@ -1,9 +1,7 @@
 // backend/src/routes/metadata.js
-
 const express = require('express');
-const { prisma } = require('@config/database');
-
 const router = express.Router();
+const { prisma } = require('@config/database');
 
 /**
  * PUT /metadata/:userId/:fileId/tags
@@ -14,18 +12,19 @@ router.put('/:userId/:fileId/tags', async (req, res) => {
   const { tags, tagColors, cloudType } = req.body;
 
   if (!Array.isArray(tags)) {
-    return res.status(400).json({
-      success: false,
-      error: 'Les tags doivent être un tableau'
+    return res.status(400).json({ 
+      success: false, 
+      error: 'Les tags doivent être un tableau' 
     });
   }
 
   try {
-    const updateData = {
-      tags: JSON.stringify(tags),
-      updatedAt: new Date()
+    const updateData = { 
+      tags: JSON.stringify(tags), 
+      updatedAt: new Date() 
     };
 
+    // Ajouter tagColors si fourni
     if (tagColors) {
       updateData.tagColors = JSON.stringify(tagColors);
     }
@@ -47,6 +46,7 @@ router.put('/:userId/:fileId/tags', async (req, res) => {
       }
     });
 
+    // Décoder les tags et tagColors pour la réponse
     const responseMetadata = {
       ...metadata,
       tags: JSON.parse(metadata.tags || '[]'),
@@ -57,24 +57,27 @@ router.put('/:userId/:fileId/tags', async (req, res) => {
     res.json({ success: true, metadata: responseMetadata });
   } catch (error) {
     console.error('❌ Erreur mise à jour tags:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
     });
   }
 });
 
 /**
  * GET /metadata/:userId/:fileId
+ * Récupère les métadonnées d'un fichier
  */
 router.get('/:userId/:fileId', async (req, res) => {
   const { userId, fileId } = req.params;
   const { cloudType } = req.query;
 
+  console.log('📖 GET Metadata:', { userId, fileId, cloudType });
+
   if (!cloudType) {
-    return res.status(400).json({
-      success: false,
-      error: 'cloudType est requis'
+    return res.status(400).json({ 
+      success: false, 
+      error: 'cloudType est requis' 
     });
   }
 
@@ -89,54 +92,58 @@ router.get('/:userId/:fileId', async (req, res) => {
       }
     });
 
-    const responseMetadata = metadata
-      ? {
-          ...metadata,
-          tags: JSON.parse(metadata.tags || '[]'),
-          tagColors: metadata.tagColors ? JSON.parse(metadata.tagColors) : {}
-        }
-      : null;
+    // Décoder les tags et tagColors si metadata existe
+    const responseMetadata = metadata ? {
+      ...metadata,
+      tags: JSON.parse(metadata.tags || '[]'),
+      tagColors: metadata.tagColors ? JSON.parse(metadata.tagColors) : {}
+    } : null;
 
-    res.json({ success: true, metadata: responseMetadata });
+    console.log('✅ Métadonnées trouvées:', responseMetadata);
+
+    res.json({ 
+      success: true, 
+      metadata: responseMetadata 
+    });
   } catch (error) {
     console.error('❌ Erreur récupération métadonnées:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
     });
   }
 });
+
 /**
  * PUT /metadata/:userId/:fileId
  * Met à jour toutes les métadonnées d'un fichier
  */
 router.put('/:userId/:fileId', async (req, res) => {
   const { userId, fileId } = req.params;
-  const {
-    cloudType,
-    tags,
-    tagColors,
-    customName,
-    description,
-    starred,
-    color
+  const { 
+    cloudType, 
+    tags, 
+    tagColors,  // ⚠️ AJOUT IMPORTANT
+    customName, 
+    description, 
+    starred, 
+    color 
   } = req.body;
 
   console.log('📝 UPDATE Metadata:', { userId, fileId, cloudType });
   console.log('📦 Données reçues:', req.body);
 
   if (!cloudType) {
-    return res.status(400).json({
-      success: false,
-      error: 'cloudType est requis'
+    return res.status(400).json({ 
+      success: false, 
+      error: 'cloudType est requis' 
     });
   }
 
   try {
     const updateData = {};
     if (tags !== undefined) updateData.tags = JSON.stringify(tags);
-    if (tagColors !== undefined)
-      updateData.tagColors = JSON.stringify(tagColors);
+    if (tagColors !== undefined) updateData.tagColors = JSON.stringify(tagColors);  // ⚠️ AJOUT IMPORTANT
     if (customName !== undefined) updateData.customName = customName;
     if (description !== undefined) updateData.description = description;
     if (starred !== undefined) updateData.starred = starred;
@@ -160,6 +167,7 @@ router.put('/:userId/:fileId', async (req, res) => {
       }
     });
 
+    // Décoder les tags et tagColors pour la réponse
     const responseMetadata = {
       ...metadata,
       tags: JSON.parse(metadata.tags || '[]'),
@@ -170,9 +178,9 @@ router.put('/:userId/:fileId', async (req, res) => {
     res.json({ success: true, metadata: responseMetadata });
   } catch (error) {
     console.error('❌ Erreur mise à jour métadonnées:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
     });
   }
 });
@@ -188,17 +196,20 @@ router.get('/:userId/search', async (req, res) => {
   try {
     const where = { userId };
 
+    // Filtrer par tags (recherche dans la chaîne JSON)
     if (tags) {
       const tagArray = tags.split(',').map(t => t.trim());
       where.tags = {
-        contains: tagArray[0]
+        contains: tagArray[0] // Recherche simple pour commencer
       };
     }
 
+    // Filtrer par cloudType
     if (cloudType) {
       where.cloudType = cloudType;
     }
 
+    // Filtrer par favoris
     if (starred === 'true') {
       where.starred = true;
     }
@@ -208,6 +219,7 @@ router.get('/:userId/search', async (req, res) => {
       orderBy: { updatedAt: 'desc' }
     });
 
+    // Décoder les tags et tagColors pour chaque résultat
     const decodedResults = results.map(metadata => ({
       ...metadata,
       tags: JSON.parse(metadata.tags || '[]'),
@@ -217,15 +229,16 @@ router.get('/:userId/search', async (req, res) => {
     res.json({ success: true, results: decodedResults });
   } catch (error) {
     console.error('Erreur recherche métadonnées:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
     });
   }
 });
 
 /**
  * GET /metadata/:userId/tags/popular
+ * Récupère les tags les plus utilisés par l'utilisateur
  */
 router.get('/:userId/tags/popular', async (req, res) => {
   const { userId } = req.params;
@@ -237,6 +250,7 @@ router.get('/:userId/tags/popular', async (req, res) => {
       select: { tags: true }
     });
 
+    // Compter la fréquence de chaque tag
     const tagCounts = {};
     metadata.forEach(m => {
       const tags = JSON.parse(m.tags || '[]');
@@ -245,6 +259,7 @@ router.get('/:userId/tags/popular', async (req, res) => {
       });
     });
 
+    // Trier par fréquence décroissante
     const sortedTags = Object.entries(tagCounts)
       .sort((a, b) => b[1] - a[1])
       .slice(0, parseInt(limit))
@@ -253,15 +268,16 @@ router.get('/:userId/tags/popular', async (req, res) => {
     res.json({ success: true, tags: sortedTags });
   } catch (error) {
     console.error('Erreur récupération tags populaires:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
     });
   }
 });
 
 /**
  * GET /metadata/:userId/stats
+ * Statistiques sur les métadonnées de l'utilisateur
  */
 router.get('/:userId/stats', async (req, res) => {
   const { userId } = req.params;
@@ -276,52 +292,54 @@ router.get('/:userId/stats', async (req, res) => {
     });
 
     const filesWithTags = await prisma.fileMetadata.count({
-      where: {
+      where: { 
         userId,
-        tags: { not: null }
+        tags: {
+          not: null
+        }
       }
     });
 
     const filesWithDescription = await prisma.fileMetadata.count({
-      where: {
+      where: { 
         userId,
-        description: { not: null }
+        description: {
+          not: null
+        }
       }
     });
 
-    res.json({
-      success: true,
+    res.json({ 
+      success: true, 
       stats: {
         totalFiles,
         starredFiles,
         filesWithTags,
         filesWithDescription,
-        taggingRate:
-          totalFiles > 0
-            ? (filesWithTags / totalFiles * 100).toFixed(1)
-            : 0
+        taggingRate: totalFiles > 0 ? (filesWithTags / totalFiles * 100).toFixed(1) : 0
       }
     });
   } catch (error) {
     console.error('Erreur récupération stats:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
     });
   }
 });
 
 /**
  * DELETE /metadata/:userId/:fileId
+ * Supprime les métadonnées d'un fichier
  */
 router.delete('/:userId/:fileId', async (req, res) => {
   const { userId, fileId } = req.params;
   const { cloudType } = req.query;
 
   if (!cloudType) {
-    return res.status(400).json({
-      success: false,
-      error: 'cloudType est requis'
+    return res.status(400).json({ 
+      success: false, 
+      error: 'cloudType est requis' 
     });
   }
 
@@ -339,9 +357,9 @@ router.delete('/:userId/:fileId', async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     console.error('Erreur suppression métadonnées:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
     });
   }
 });

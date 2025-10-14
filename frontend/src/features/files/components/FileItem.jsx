@@ -1,11 +1,13 @@
 // frontend/src/components/FileExplorer/partials/FileItem.jsx
 import { useState, useEffect, useRef } from "react";
 import { Folder, File, Download, Image, Music, Film, FileText, RefreshCw, MoreVertical, Star, Tag as TagIcon } from "lucide-react";
-import FilePreviewModal from "../partials/FilePreview";
-import FileActions from "./FileActions";
-import TagManager from "../../tagManager/components/TagManager";
-import TagBadge from "../../tagManager/components/TagBadge";
-import { metadataService } from "../../../core/services/api";
+import FilePreviewModal from "@features/files/partials/FilePreview";
+import FileActions from "@features/files/components/FileActions";
+import TagManager from "@features/tagManager/components/TagManager";
+import TagBadge from "@features/tagManager/components/TagBadge";
+import { metadataService } from "@core/services/api";
+import { formatFileSize } from "@features/files/utils/formatFileSize";
+
 
 const fileIcons = {
   jpg: Image,
@@ -136,7 +138,7 @@ export default function FileItem({
       <div
         className={`flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all group ${
           file.type === 'folder' ? 'cursor-pointer' : ''
-        } ${starred ? 'ring-2 ring-yellow-400' : ''}`}
+        } ${starred ? 'ring-2 ring-yellow-200 bg-yellow-50 border-yellow-200 hover:bg-yellow-50 hover:ring-yellow-300 hover:border-yellow-100 ' : ''}`}
         onClick={() => {
           if (file.type === 'folder') onFolderClick(file);
           else setShowPreview(true);
@@ -148,21 +150,19 @@ export default function FileItem({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <h3 className="font-medium truncate">{displayName}</h3>
-              {starred && <Star className="w-4 h-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
+              
               {loadingMetadata && <RefreshCw className="w-3 h-3 text-gray-400 animate-spin flex-shrink-0" />}
-            </div>
-            
-            {/* Tags avec couleurs */}
+        
+        {/* Tags avec couleurs */}
             {tags.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-2">
+              <div className="flex flex-wrap gap-1"> 
                 {tags.slice(0, 3).map((tag) => {
-                  const color = tagColors[tag] || 'blue';
                   return (
                     <TagBadge 
                       key={tag} 
                       tag={tag} 
                       size="sm"
-                      color={color}
+                      color={tagColors[tag] || 'blue'}
                     />
                   );
                 })}
@@ -173,16 +173,11 @@ export default function FileItem({
                 )}
               </div>
             )}
+            </div>
+            
             
             <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
-              <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                file.provider === 'google_drive' 
-                  ? 'bg-green-100 text-green-700' 
-                  : 'bg-blue-100 text-blue-700'
-              }`}>
-                {file.provider === 'google_drive' ? 'Google Drive' : 'Dropbox'}
-              </span>
-              {file.type !== 'folder' && <span>{file.size ? `${file.size} octets` : 'N/A'}</span>}
+             {file.type !== 'folder' && <span>{file.size ? formatFileSize(file.size)  : 'N/A'}</span>} Modifié le: {new Date(file.modifiedTime).toLocaleDateString()}
             </div>
 
             {/* Description */}

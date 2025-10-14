@@ -1,12 +1,12 @@
-// Nouveau import
-import FilePreview from '../components/FileExplorer/FileExplorer'
+// Page qui appelle le composant FileExplorer
+import FileExplorer from '../components/FileExplorer';
 
-// Utilisation (identique)
-<FilePreview 
-  file={selectedFile}
-  userId={userId}
-  metadata={metadata}
-  onClose={() => setShowPreview(false)}
-  onDownload={handleDownload}
-  onShare={handleShare}
-/>
+function FileExplorerPage({ userId }) {
+  return (
+    <div className="max-w-7xl mx-auto">
+      <FileExplorer userId={userId} />
+    </div>
+  );
+}
+
+export default FileExplorerPage;

@@ -19,10 +19,11 @@ function createGoogleOAuthClient() {
 
 function getGoogleAuthUrl() {
   const oauth2Client = createGoogleOAuthClient();
-  const scopes = [
-    'https://www.googleapis.com/auth/drive',
-    'https://www.googleapis.com/auth/userinfo.email',
-  ];
+const scopes = [
+  'https://www.googleapis.com/auth/drive',
+  'https://www.googleapis.com/auth/userinfo.email',
+  'https://www.googleapis.com/auth/userinfo.profile', // ← NOUVEAU
+];
 
   return oauth2Client.generateAuthUrl({
     access_type: 'offline',

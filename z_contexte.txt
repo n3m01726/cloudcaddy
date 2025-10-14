@@ -1,0 +1,152 @@
+🧠 Structure du projet :
+───────────────────────────
+├── .DS_Store
+├── .gitignore
+├── README.md
+├── backend
+│   ├── .env
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── prisma
+│   │   ├── dev.db
+│   │   ├── migrations
+│   │   │   ├── 20251014131049_add_new_features
+│   │   │   │   └── migration.sql
+│   │   │   ├── 20251014131620_add_new_features
+│   │   │   │   └── migration.sql
+│   │   │   └── migration_lock.toml
+│   │   └── schema.prisma
+│   └── src
+│       ├── app.js
+│       ├── config
+│       │   ├── database.js
+│       │   ├── index.js
+│       │   └── oauth.js
+│       ├── connectors
+│       │   ├── DropboxProvider.js
+│       │   ├── GoogleDriveProvider.js
+│       │   ├── base
+│       │   │   ├── BaseStorageProvider.js
+│       │   │   └── ProviderFactory.js
+│       │   └── utils
+│       │       └── streamHelpers.js
+│       ├── core
+│       │   ├── middlewares
+│       │   │   └── tokenRefresh.js
+│       │   └── utils
+│       │       └── paths.js
+│       └── modules
+│           ├── auth
+│           │   └── routes.js
+│           ├── files
+│           │   ├── FileService.js
+│           │   └── routes.js
+│           └── metadata
+│               ├── MetadataService.js
+│               └── routes.js
+├── frontend
+│   ├── .DS_Store
+│   ├── .env
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── src
+│   │   ├── core
+│   │   │   ├── App.css
+│   │   │   ├── App.jsx
+│   │   │   ├── index.css
+│   │   │   ├── main.jsx
+│   │   │   └── services
+│   │   │       └── api.js
+│   │   ├── features
+│   │   │   ├── .DS_Store
+│   │   │   ├── auth
+│   │   │   │   ├── components
+│   │   │   │   │   └── ConnectServices.jsx
+│   │   │   │   └── pages
+│   │   │   │       ├── Connections.jsx
+│   │   │   │       ├── DebugPage.jsx
+│   │   │   │       └── Settings.jsx
+│   │   │   ├── debug
+│   │   │   │   └── index.jsx
+│   │   │   ├── files
+│   │   │   │   ├── components
+│   │   │   │   │   ├── FileActions.jsx
+│   │   │   │   │   ├── FileExplorer.jsx
+│   │   │   │   │   ├── FileItem.jsx
+│   │   │   │   │   ├── Files.jsx
+│   │   │   │   │   ├── FolderSelector.jsx
+│   │   │   │   │   ├── Footer.jsx
+│   │   │   │   │   ├── Navigation.jsx
+│   │   │   │   │   ├── SearchBar.jsx
+│   │   │   │   │   ├── Tabs.jsx
+│   │   │   │   │   └── TagFilter.jsx
+│   │   │   │   ├── pages
+│   │   │   │   │   └── FileExplorer.jsx
+│   │   │   │   ├── partials
+│   │   │   │   │   └── FilePreview
+│   │   │   │   │       ├── PreviewContent.jsx
+│   │   │   │   │       ├── PreviewFooter.jsx
+│   │   │   │   │       ├── PreviewHeader.jsx
+│   │   │   │   │       ├── PreviewSidebar.jsx
+│   │   │   │   │       ├── hooks
+│   │   │   │   │       │   ├── useMetadataPanel.js
+│   │   │   │   │       │   └── usePreviewLoader.js
+│   │   │   │   │       ├── index.jsx
+│   │   │   │   │       ├── utils
+│   │   │   │   │       │   ├── fileTypeDetector.js
+│   │   │   │   │       │   └── formatters.js
+│   │   │   │   │       └── viewers
+│   │   │   │   │           ├── AudioPreview.jsx
+│   │   │   │   │           ├── FallbackPreview.jsx
+│   │   │   │   │           ├── GoogleAppsPreview.jsx
+│   │   │   │   │           ├── ImagePreview.jsx
+│   │   │   │   │           ├── PDFPreview.jsx
+│   │   │   │   │           ├── TextPreview.jsx
+│   │   │   │   │           ├── VideoPreview.jsx
+│   │   │   │   │           └── index.js
+│   │   │   │   └── utils
+│   │   │   │       ├── filterFilesByProvider.js
+│   │   │   │       ├── formatDate.js
+│   │   │   │       ├── formatFileSize.js
+│   │   │   │       ├── generateBreadcrumb.js
+│   │   │   │       ├── handleDownloadFile.js
+│   │   │   │       ├── handleFolderNavigation.js
+│   │   │   │       ├── index.js
+│   │   │   │       ├── loadFiles.js
+│   │   │   │       ├── loadMetadataForFiles.js
+│   │   │   │       ├── sortFilesForAllTab.js
+│   │   │   │       └── utils.js
+│   │   │   └── tagManager
+│   │   │       └── components
+│   │   │           ├── TagBadge.jsx
+│   │   │           ├── TagInput.jsx
+│   │   │           └── TagManager.jsx
+│   │   └── shared
+│   │       ├── components
+│   │       │   ├── Badge.jsx
+│   │       │   ├── Breadcrumbs.jsx
+│   │       │   ├── Button.jsx
+│   │       │   ├── Card.jsx
+│   │       │   ├── Input.jsx
+│   │       │   ├── Navbar.jsx
+│   │       │   └── index.js
+│   │       └── hooks
+│   │           └── useUserInfo.js
+│   ├── tailwind.config.js
+│   └── vite.config.js
+└── tree.js
+
+
+📂 **Fichiers recommandés pour comprendre le projet**
+──────────────────────────────────────────────
+❌ (manquant) index.js
+❌ (manquant) core/startup.js
+❌ (manquant) core/bot.js
+❌ (manquant) core/lifecycle.js
+❌ (manquant) api/server.js
+❌ (manquant) api/routes.js
+❌ (manquant) utils/logger.js
+❌ (manquant) utils/errorHandler.js
+❌ (manquant) core/loadFiles.js

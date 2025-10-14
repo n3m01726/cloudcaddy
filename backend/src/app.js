@@ -10,7 +10,7 @@ const { checkDatabaseConnection } = require('@config/database.js');
 
 // 🧭 Import des routes
 const authRoutes = require('@modules/auth/routes.js');
-const filesRoutes = require('@modules/files/routes.js/');
+const filesRoutes = require('@modules/files/routes.js');
 const metadataRoutes = require('@modules/metadata/routes.js');
 
 // ----------------------

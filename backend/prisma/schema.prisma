@@ -1,5 +1,17 @@
 // backend/prisma/schema.prisma
-// Ajoutez le champ tagColors au modèle FileMetadata
+
+// Schéma de base de données pour le Multi-Cloud Manager
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
 
 model FileMetadata {
   id          String   @id @default(cuid())
@@ -8,12 +20,12 @@ model FileMetadata {
   cloudType   String   // 'google_drive' ou 'dropbox'
   
   // Tags et leurs couleurs
-  tags        String?  @db.Text  // JSON array: ["tag1", "tag2"]
-  tagColors   String?  @db.Text  // ⚠️ AJOUT IMPORTANT - JSON object: {"tag1": "red", "tag2": "blue"}
+  tags        String?  // JSON array: ["tag1", "tag2"]
+  tagColors   String?  // ⚠️ AJOUT IMPORTANT - JSON object: {"tag1": "red", "tag2": "blue"}
   
   // Métadonnées personnalisées
   customName  String?
-  description String?  @db.Text
+  description String?  
   starred     Boolean  @default(false)
   color       String?
   
@@ -40,10 +52,11 @@ model User {
 
 model CloudAccount {
   id           String   @id @default(cuid())
+  email        String?
   userId       String
   provider     String   // 'google_drive' ou 'dropbox'
-  accessToken  String   @db.Text
-  refreshToken String?  @db.Text
+  accessToken  String   
+  refreshToken String?  
   expiresAt    DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

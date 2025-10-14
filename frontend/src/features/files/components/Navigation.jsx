@@ -1,52 +1,54 @@
-import { ArrowLeft, Home } from 'lucide-react';
+import { Home, ChevronRight } from 'lucide-react';
 
-export default function Navigation({ folderHistory, currentFolderName, onBack, onHome, onBreadcrumbClick }) {
-  // Si nous sommes à la racine et qu'il n'y a pas d'historique, ne pas afficher la navigation
-  if (folderHistory.length === 0) {
-    return null;
+export default function Navigation({ folderHistory, currentFolderName, onHome, onBreadcrumbClick }) {
+  if (folderHistory.length === 0 && !currentFolderName) return null;
+
+  const breadcrumbItems = [
+    ...folderHistory.map((folder, index) => ({
+      name: folder.name,
+      index,
+      isLast: false,
+    })),
+  ];
+
+  if (currentFolderName) {
+    breadcrumbItems.push({
+      name: currentFolderName,
+      index: folderHistory.length,
+      isLast: true,
+    });
   }
 
   return (
-    <div className="flex items-center gap-4 px-6 py-3 border-b border-gray-200 bg-gray-50">
-      {/* GAUCHE : Back + Home */}
-      <div className="flex items-center gap-2 flex-shrink-0">
-        <button
-          onClick={onBack}
-          className="flex items-center justify-center w-8 h-8 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
-          title="Retour"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </button>
-        <button
-          onClick={onHome}
-          className="flex items-center justify-center w-8 h-8 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
-          title="Accueil"
-        >
-          <Home className="w-4 h-4" />
-        </button>
-      </div>
+    <nav className="flex items-center px-6 py-4 border-b border-gray-200 bg-gray-50 overflow-x-auto">
+      <ol className="flex items-center text-sm text-gray-600">
+        {/* Home */}
+        <li>
+          <button
+            onClick={onHome}
+            className="text-gray-500 hover:text-gray-700 flex items-center"
+          >
+            <Home className="w-4 h-4" />
+          </button>
+        </li>
 
-      {/* CENTRE : Breadcrumb */}
-      <div className="flex-1 flex items-center min-w-0">
-        <div className="flex items-center gap-2 text-sm truncate">
-          {folderHistory.map((folder, index) => (
-            <div key={index} className="flex items-center gap-1">
-              <button
-                onClick={() => onBreadcrumbClick && onBreadcrumbClick(index)}
-                className="text-blue-600 hover:text-blue-800 hover:underline truncate"
-              >
-                {folder.name}
-              </button>
-              {index < folderHistory.length - 0 && (
-                <span className="text-gray-400 mx-1">/</span>
-              )}
-            </div>
-          ))}
-          {currentFolderName && (
-            <span className="font-medium text-gray-900 truncate">{currentFolderName}</span>
-          )}
-        </div>
-      </div>
-    </div>
+        {/* Breadcrumb items */}
+        {breadcrumbItems.map((item, idx) => (
+  <li key={idx} className="flex items-center">
+    {idx > 0 && <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />}
+    {item.isLast ? (
+      <span className="font-medium text-gray-900 truncate">{item.name}</span>
+    ) : (
+      <button
+        onClick={() => onBreadcrumbClick?.(item.index)}
+        className="hover:text-gray-900 truncate"
+      >
+        {item.name}
+      </button>
+    )}
+  </li>
+))}
+      </ol>
+    </nav>
   );
 }

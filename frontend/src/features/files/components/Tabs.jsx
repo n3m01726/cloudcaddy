@@ -2,9 +2,9 @@ import { Search, RefreshCw } from 'lucide-react';
 
 export default function Tabs({ activeTab, setActiveTab, toggleSearchBar, showSearchBar, onRefresh }) {
   const tabs = [
-  { id: 'google_drive', label: 'Google Drive', activeColor: 'bg-[#0F9D58] text-green-100' },
-   //  { id: 'favorites', label: 'Favorites', activeColor: 'bg-indigo-100 text-indigo-600' },
-   //  { id: 'dropbox', label: 'Dropbox', activeColor: 'bg-[#0061FE] text-blue-100' },
+  { id: 'allDrives', label: 'Tous les drives', activeColor: 'bg-indigo-100 text-indigo-600' },
+  { id: 'google_drive', label: 'Google Drive', activeColor: 'bg-green-400 text-black-100' },
+  { id: 'dropbox', label: 'Dropbox', activeColor: 'bg-blue-400 text-blue-100' },
   ];
 
   return (
@@ -18,7 +18,7 @@ export default function Tabs({ activeTab, setActiveTab, toggleSearchBar, showSea
             className={`px-4 py-2 rounded-md font-medium transition-colors ${
               activeTab === tab.id 
                 ? tab.activeColor
-                : 'text-gray-600'
+                : 'bg-gray-200 text-gray-400'
             }`}
           >
             {tab.label}

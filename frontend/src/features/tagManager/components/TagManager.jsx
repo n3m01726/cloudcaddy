@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { X, Tag as TagIcon, Palette, Star } from 'lucide-react';
 import TagBadge from './TagBadge';
 import TagInput from './TagInput';
-import { metadataService } from '../../../core/services/api';
+import { metadataService } from '@core/services/api';
 
 const PREDEFINED_TAGS = [
   'Important',
@@ -68,12 +68,17 @@ export default function TagManager({
         setDescription(response.metadata.description || '');
         setStarred(response.metadata.starred || false);
         
-        // Charger les couleurs des tags
-        const colors = {};
-        (response.metadata.tags || []).forEach((tag, index) => {
-          colors[tag] = COLOR_OPTIONS[index % COLOR_OPTIONS.length].name;
-        });
-        setTagColors(colors);
+        // Charger les couleurs des tags depuis les métadonnées
+        // Si tagColors existe, l'utiliser, sinon assigner des couleurs par défaut
+        if (response.metadata.tagColors) {
+          setTagColors(response.metadata.tagColors);
+        } else {
+          const colors = {};
+          (response.metadata.tags || []).forEach((tag, index) => {
+            colors[tag] = COLOR_OPTIONS[index % COLOR_OPTIONS.length].name;
+          });
+          setTagColors(colors);
+        }
       }
     } catch (err) {
       console.error('Erreur chargement métadonnées:', err);
@@ -85,36 +90,40 @@ export default function TagManager({
 
   const handleAddTag = async (tag) => {
     const newTags = [...tags, tag];
-    setTags(newTags);
     
     // Assigner une couleur aléatoire au nouveau tag
-    setTagColors(prev => ({
-      ...prev,
-      [tag]: COLOR_OPTIONS[Math.floor(Math.random() * COLOR_OPTIONS.length)].name
-    }));
+    const newColor = COLOR_OPTIONS[Math.floor(Math.random() * COLOR_OPTIONS.length)].name;
+    const newTagColors = {
+      ...tagColors,
+      [tag]: newColor
+    };
+    
+    setTags(newTags);
+    setTagColors(newTagColors);
 
-    await saveMetadata({ tags: newTags });
+    await saveMetadata({ tags: newTags, tagColors: newTagColors });
   };
 
   const handleRemoveTag = async (tagToRemove) => {
     const newTags = tags.filter(t => t !== tagToRemove);
-    setTags(newTags);
     
     // Supprimer la couleur associée
-    setTagColors(prev => {
-      const newColors = { ...prev };
-      delete newColors[tagToRemove];
-      return newColors;
-    });
+    const newTagColors = { ...tagColors };
+    delete newTagColors[tagToRemove];
+    
+    setTags(newTags);
+    setTagColors(newTagColors);
 
-    await saveMetadata({ tags: newTags });
+    await saveMetadata({ tags: newTags, tagColors: newTagColors });
   };
 
-  const handleChangeTagColor = (tag, color) => {
-    setTagColors(prev => ({
-      ...prev,
+  const handleChangeTagColor = async (tag, color) => {
+    const newTagColors = {
+      ...tagColors,
       [tag]: color
-    }));
+    };
+    setTagColors(newTagColors);
+    await saveMetadata({ tagColors: newTagColors });
   };
 
   const saveMetadata = async (updates = {}) => {
@@ -127,7 +136,7 @@ export default function TagManager({
         customName: updates.customName !== undefined ? updates.customName : customName,
         description: updates.description !== undefined ? updates.description : description,
         starred: updates.starred !== undefined ? updates.starred : starred,
-        tagColors: { ...tagColors, ...(updates.tagColors || {}) }
+        tagColors: updates.tagColors !== undefined ? updates.tagColors : tagColors
       };
 
       // Utiliser updateMetadata pour sauvegarder toutes les métadonnées

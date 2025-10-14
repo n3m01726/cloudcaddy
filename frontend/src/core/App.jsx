@@ -1,15 +1,24 @@
 // Composant principal de l'application
 import { useState, useEffect } from 'react';
-import FileList from '@features/files/components/FileExplorer';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import DebugPage from '@features/auth/pages/DebugPage';
+import FileExplorer from '@features/files/pages/FileExplorer';
+import Connections from '@features/auth/pages/Connections';
+import Settings from '@features/auth/pages/Settings';
 import Navbar from '@shared/components/Navbar';
 import { authService } from '@core/services/api';
+import useUserInfo from '@shared/hooks/useUserInfo';
 import { Cloud } from 'lucide-react';
 
 function App() {
   const [userId, setUserId] = useState(null);
   const [connectedServices, setConnectedServices] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const [basicUser, setBasicUser] = useState(null);
+  const navigate = useNavigate();
+
+  // Hook pour récupérer les infos utilisateur avec photo
+  const { userInfo, loading: userInfoLoading } = useUserInfo(userId);
 
   useEffect(() => {
     // Vérifier si l'utilisateur revient d'une authentification OAuth
@@ -50,7 +59,7 @@ function App() {
   const loadUserStatus = async (id) => {
     try {
       const response = await authService.checkStatus(id);
-      setUser(response.user);
+      setBasicUser(response.user);
       setConnectedServices(response.connectedServices);
     } catch (err) {
       console.error('Erreur lors du chargement du statut:', err);
@@ -66,15 +75,19 @@ function App() {
     if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
       localStorage.removeItem('userId');
       setUserId(null);
-      setUser(null);
+      setBasicUser(null);
       setConnectedServices(null);
+      navigate('/');
     }
   };
 
   const hasConnectedServices = connectedServices && 
     (connectedServices.google_drive || connectedServices.dropbox);
 
-  if (loading) {
+  // Combiner les infos de base avec les infos complètes (incluant la photo)
+  const user = userInfo || basicUser;
+
+  if (loading || (userId && userInfoLoading && !basicUser)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
@@ -94,17 +107,16 @@ function App() {
             <div className="flex items-center justify-between h-16">
               {/* Logo et titre */}
               <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <Cloud className="w-5 h-5 text-white" />
-            </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                the nestDrive
-            </span>
+                <a href="/files" className="flex items-center gap-3">
+                  <div>
+                    <Cloud className="w-8 h-8 text-indigo-600" />
+                  </div>
+                  <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    driveNest
+                  </span>
+                </a>
               </div>
-              <div className="flex items-center gap-2">
-
-
-          </div>
+              
               {/* Menu utilisateur à droite */}
               <Navbar user={user} onLogout={handleLogout} />
             </div>
@@ -114,50 +126,108 @@ function App() {
 
       {/* Contenu principal avec padding-top pour compenser le header fixed */}
       <main className={`${user ? 'pt-24' : ''} pb-8`}>
-        {!userId ? (
-          // Écran de bienvenue
-          <div className="max-w-2xl mx-auto px-6 text-center">
-            <div className="bg-white rounded-lg shadow-xl p-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Bienvenue sur nestDrive
-              </h2>
-              <p className="text-gray-600 mb-8">
-                Connectez vos services cloud préférés et gérez tous vos fichiers depuis une seule interface.
-              </p>
-              <div className="flex justify-center">
-                <button
-                  onClick={async () => {
-                    try {
-                      const { authUrl } = await authService.getGoogleAuthUrl();
-                      window.location.href = authUrl;
-                    } catch {
-                      alert('Erreur lors de la connexion');
-                    }
-                  }}
-                  className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl cursor-pointer"
-                >
-                 Se connecter avec Google Drive
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Section de connexion des services */}
+        <Routes>
+          {/* Route de connexion */}
+          <Route 
+            path="/" 
+            element={
+              !userId ? (
+                <div className="max-w-2xl mx-auto px-6 text-center">
+                  <div className="bg-white rounded-lg shadow-xl p-12">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                      Bienvenue sur driveNest
+                    </h2>
+                    <p className="text-gray-600 mb-8">
+                      Connectez vos services cloud préférés et gérez tous vos fichiers depuis une seule interface.
+                    </p>
+                    <div className="flex justify-center">
+                      <button
+                        onClick={async () => {
+                          try {
+                            const { authUrl } = await authService.getGoogleAuthUrl();
+                            window.location.href = authUrl;
+                          } catch {
+                            alert('Erreur lors de la connexion');
+                          }
+                        }}
+                        className="px-8 py-3 bg-white text-gray-950 border-gray-400 border-1 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                      >
+                        Se connecter avec Google Drive
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Navigate to="/files" replace />
+              )
+            } 
+          />
 
-            {/* Liste des fichiers (affichée seulement si au moins un service est connecté) */}
-            {hasConnectedServices && (
-              <FileList userId={userId} />
-              
-            )}
-          </div>
-        )}
+          {/* Route pour la page des connexions */}
+          <Route 
+            path="/connections" 
+            element={
+              userId ? (
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <Connections 
+                    userId={userId} 
+                    connectedServices={connectedServices}
+                    onServicesUpdate={() => loadUserStatus(userId)}
+                  />
+                </div>
+              ) : (
+                <Navigate to="/" replace />
+              )
+            } 
+          />
+
+          {/* Route pour l'explorateur de fichiers */}
+          <Route 
+            path="/files" 
+            element={
+              userId && hasConnectedServices ? (
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <FileExplorer userId={userId} />
+                </div>
+              ) : userId ? (
+                <Navigate to="/connections" replace />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            } 
+          />
+
+          {/* Route pour les Settings */}
+          <Route 
+            path="/settings" 
+            element={
+              userId ? (
+                <Settings user={user} onLogout={handleLogout} />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            } 
+          />
+
+          {/* Route Debug */}
+          <Route path="/debug" element={<DebugPage />} />
+
+          {/* Route par défaut - redirection */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
 
       {/* Footer */}
       <footer className="mt-12 py-6 text-center text-sm text-gray-900">
-        <span class="inline-flex items-center rounded-md bg-blue-950 my-3 px-3 py-2 text-xs font-medium text-blue-200 inset-ring inset-ring-blue-500/20">ALPHA v0.0.8</span>
-        <p className="mt-1 text-gray-900">© 2025 nestDrive Inc. • Made with ❤️ by <a href='#'><b className='underline underline-offset-4 hover:text-blue-400'>the nestDrive Team</b></a></p>
+        <span className="inline-flex items-center rounded-md bg-blue-950 my-3 px-3 py-2 text-xs font-medium text-blue-200 inset-ring inset-ring-blue-500/20">
+          ALPHA v0.0.8
+        </span>
+        <p className="mt-1 text-gray-900">
+          © 2025 driveNest Inc. • Made with ❤️ by{' '}
+          <a href="#">
+            <b className="underline underline-offset-4 hover:text-blue-400">the driveNest Team</b>
+          </a>
+        </p>
       </footer>
     </div>
   );

@@ -238,8 +238,22 @@ export default function FileExplorer({ userId }) {
             onFolderClick={handleFolderClick}
             onDownload={handleDownload}
             downloading={downloading}
-            onFileMoved={() => handleLoadFiles()}
-            onFileCopied={() => handleLoadFiles()}
+onFileMoved={() => {
+  const currentState = providerStates[activeTab];
+  handleLoadFiles(
+    currentState?.currentFolder || null,
+    currentState?.currentFolderName || '',
+    activeTab
+  );
+}}
+onFileCopied={() => {
+  const currentState = providerStates[activeTab];
+  handleLoadFiles(
+    currentState?.currentFolder || null,
+    currentState?.currentFolderName || '',
+    activeTab
+  );
+}}
           />
         )}
 

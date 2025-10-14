@@ -14,6 +14,10 @@ const { google } = require('googleapis');
 
 const router = express.Router();
 
+/**
+ * GET /auth/google
+ * Initie le flux OAuth2 avec Google
+ */
 router.get('/google', (req, res) => {
   try {
     const authUrl = getGoogleAuthUrl();
@@ -24,6 +28,10 @@ router.get('/google', (req, res) => {
   }
 });
 
+/**
+ * GET /auth/google/callback
+ * Callback après authentification Google
+ */
 router.get('/google/callback', async (req, res) => {
   const { code, error } = req.query;
   if (error) return res.redirect(`${process.env.FRONTEND_URL}?error=auth_failed`);
@@ -66,6 +74,10 @@ router.get('/google/callback', async (req, res) => {
   }
 });
 
+/**
+ * GET /auth/dropbox
+ * Initie le flux OAuth2 avec Dropbox
+ */
 router.get('/dropbox', (req, res) => {
   try {
     const authUrl = getDropboxAuthUrl();
@@ -76,6 +88,10 @@ router.get('/dropbox', (req, res) => {
   }
 });
 
+/**
+ * GET /auth/dropbox/callback
+ * Callback après authentification Dropbox
+ */
 router.get('/dropbox/callback', async (req, res) => {
   const { code, error } = req.query;
   if (error) return res.redirect(`${process.env.FRONTEND_URL}?error=auth_failed`);
@@ -116,81 +132,132 @@ router.get('/dropbox/callback', async (req, res) => {
   }
 });
 
+/**
+ * GET /auth/status/:userId
+ * Récupère le statut de connexion de l'utilisateur
+ */
 router.get('/status/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
-    const user = await prisma.user.findUnique({ where: { id: userId }, include: { cloudAccounts: true } });
-    if (!user) return res.status(404).json({ success: false, error: 'Utilisateur non trouvé' });
+    const user = await prisma.user.findUnique({ 
+      where: { id: userId }, 
+      include: { cloudAccounts: true } 
+    });
+    
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'Utilisateur non trouvé' });
+    }
 
     const services = {
       google_drive: user.cloudAccounts.some(acc => acc.provider === 'google_drive'),
       dropbox: user.cloudAccounts.some(acc => acc.provider === 'dropbox'),
     };
 
-    res.json({ success: true, user: { id: user.id, email: user.email, name: user.name }, connectedServices: services });
+    res.json({ 
+      success: true, 
+      user: { id: user.id, email: user.email, name: user.name }, 
+      connectedServices: services 
+    });
   } catch (error) {
     console.error('Erreur statut auth:', error);
     res.status(500).json({ success: false, error: 'Erreur serveur' });
   }
 });
 
+/**
+ * GET /auth/user/info/:userId
+ * Récupère les informations détaillées de l'utilisateur avec photo de profil
+ */
 router.get('/user/info/:userId', async (req, res) => {
   const { userId } = req.params;
   
   try {
+    // Récupérer l'utilisateur et ses comptes cloud
     const user = await prisma.user.findUnique({ 
       where: { id: userId },
-      include: { cloudAccounts: { where: { provider: 'google_drive' } } }
+      include: { cloudAccounts: true }
     });
 
     if (!user) {
-      return res.status(404).json({ success: false, error: 'Utilisateur non trouvé' });
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Utilisateur non trouvé' 
+      });
     }
 
     const googleAccount = user.cloudAccounts.find(acc => acc.provider === 'google_drive');
     
+    // Si pas de compte Google, retourner les infos de base
     if (!googleAccount) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Aucun compte Google Drive connecté',
-        user: { name: user.name, email: user.email }
+      return res.json({ 
+        success: true, 
+        user: { 
+          id: user.id,
+          name: user.name, 
+          email: user.email,
+          picture: null 
+        }
       });
     }
 
+    // Créer un client Google authentifié
     const oauth2Client = createAuthenticatedGoogleClient(
       googleAccount.accessToken, 
-      googleAccount.refreshToken
+      googleAccount.refreshToken,
+      userId
     );
     
-    const drive = google.drive({ version: 'v3', auth: oauth2Client });
-    const aboutResponse = await drive.about.get({ fields: 'user' });
-    const driveUser = aboutResponse.data.user;
+    // Utiliser l'API OAuth2 v2 pour récupérer les infos utilisateur
+    const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
+    const userInfoResponse = await oauth2.userinfo.get();
+    const googleUser = userInfoResponse.data;
 
     res.json({
       success: true,
       user: {
         id: user.id,
-        name: driveUser.displayName || user.name,
-        email: driveUser.emailAddress || user.email,
-        picture: driveUser.photoLink,
-        givenName: driveUser.displayName?.split(' ')[0] || user.name,
-        familyName: driveUser.displayName?.split(' ').slice(1).join(' ') || ''
+        name: googleUser.name || user.name,
+        email: googleUser.email || user.email,
+        picture: googleUser.picture, // URL de la photo de profil
+        givenName: googleUser.given_name,
+        familyName: googleUser.family_name
       }
     });
 
   } catch (error) {
-    console.error('Erreur récupération info utilisateur:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erreur lors de la récupération des informations utilisateur' 
-    });
+    console.error('❌ Erreur récupération info utilisateur:', error);
+    
+    // En cas d'erreur, retourner les infos de base depuis la DB
+    try {
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      return res.json({
+        success: true,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          picture: null
+        }
+      });
+    } catch (dbError) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'Erreur lors de la récupération des informations utilisateur' 
+      });
+    }
   }
 });
 
+/**
+ * DELETE /auth/disconnect/:userId/:provider
+ * Déconnecte un service cloud
+ */
 router.delete('/disconnect/:userId/:provider', async (req, res) => {
   const { userId, provider } = req.params;
   try {
-    await prisma.cloudAccount.delete({ where: { userId_provider: { userId, provider } } });
+    await prisma.cloudAccount.delete({ 
+      where: { userId_provider: { userId, provider } } 
+    });
     res.json({ success: true, message: `${provider} déconnecté avec succès` });
   } catch (error) {
     console.error('Erreur déconnexion:', error);
