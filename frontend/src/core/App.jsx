@@ -1,8 +1,8 @@
 // Composant principal de l'application
 import { useState, useEffect } from 'react';
-import FileList from './components/FileExplorer/FileExplorer';
-import Navbar from '../shared/components/Navbar';
-import { authService } from '../../../frontend/src/services/api';
+import FileList from '@features/files/components/FileExplorer';
+import Navbar from '@shared/components/Navbar';
+import { authService } from '@core/services/api';
 import { Cloud } from 'lucide-react';
 
 function App() {
@@ -98,7 +98,7 @@ function App() {
               <Cloud className="w-5 h-5 text-white" />
             </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              cloudCaddy
+                the nestDrive
             </span>
               </div>
               <div className="flex items-center gap-2">
@@ -119,7 +119,7 @@ function App() {
           <div className="max-w-2xl mx-auto px-6 text-center">
             <div className="bg-white rounded-lg shadow-xl p-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Bienvenue sur votre cloudCaddy
+                Bienvenue sur nestDrive
               </h2>
               <p className="text-gray-600 mb-8">
                 Connectez vos services cloud préférés et gérez tous vos fichiers depuis une seule interface.
@@ -157,7 +157,7 @@ function App() {
       {/* Footer */}
       <footer className="mt-12 py-6 text-center text-sm text-gray-900">
         <span class="inline-flex items-center rounded-md bg-blue-950 my-3 px-3 py-2 text-xs font-medium text-blue-200 inset-ring inset-ring-blue-500/20">ALPHA v0.0.8</span>
-        <p className="mt-1 text-gray-900">© 2025 cloudCaddy Inc. • Made with ❤️ by <a href='#'><b className='underline underline-offset-4 hover:text-blue-400'>the cloudCaddy Team</b></a></p>
+        <p className="mt-1 text-gray-900">© 2025 nestDrive Inc. • Made with ❤️ by <a href='#'><b className='underline underline-offset-4 hover:text-blue-400'>the nestDrive Team</b></a></p>
       </footer>
     </div>
   );

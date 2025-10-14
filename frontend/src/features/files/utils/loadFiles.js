@@ -1,5 +1,5 @@
 import { filesService } from '../../../core/services/api';
-import { loadMetadataForFiles } from '../../../../../frontend/src/utils/loadMetadataForFiles';
+import { loadMetadataForFiles } from './loadMetadataForFiles';
 export const loadFiles = async (
   folderId,
   folderName,

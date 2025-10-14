@@ -13,6 +13,12 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(path.dirname(fileURLToPath(import.meta.url)), './src'),
+      '@config': path.resolve(path.dirname(fileURLToPath(import.meta.url)), './src/config'),
+      '@components': path.resolve(path.dirname(fileURLToPath(import.meta.url)), './src/components'),
+      '@features': path.resolve(path.dirname(fileURLToPath(import.meta.url)), './src/features'),
+      '@shared': path.resolve(path.dirname(fileURLToPath(import.meta.url)), './src/shared'),
+      '@core': path.resolve(path.dirname(fileURLToPath(import.meta.url)), './src/core'),
+
     },
   },
 })

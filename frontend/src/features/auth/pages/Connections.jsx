@@ -1,6 +1,6 @@
-        import ConnectServices from './components/Auth/ConnectServices';
+        import {ConnectServices, handleServicesUpdate, userId}  from '@features/auth/components/ConnectServices';
          <ConnectServices
               userId={userId}
-              connectedServices={connectedServices}
+              connectedServices={ConnectServices}
               onUpdate={handleServicesUpdate}
             />

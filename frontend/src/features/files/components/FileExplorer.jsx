@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import Tabs from './partials/Tabs';
-import Navigation from './partials/Navigation';
-import SearchBar from './partials/SearchBar';
-import Files from './partials/Files';
-import Footer from './partials/Footer';
+import Tabs from './Tabs';
+import Navigation from './Navigation';
+import SearchBar from './SearchBar';
+import Files from './Files';
+import Footer from './Footer';
 //import Favorites from './views/Favorites';
-import { loadFiles } from '../../utils/loadFiles';
-import { loadMetadataForFiles } from '../../utils/loadMetadataForFiles';
-import { filesService } from '../../services/api';
+import { loadFiles } from '../utils/loadFiles';
+import { loadMetadataForFiles } from '../utils/loadMetadataForFiles';
+import { filesService } from '../../../core/services/api';
 
 
 export default function FileExplorer({ userId }) {

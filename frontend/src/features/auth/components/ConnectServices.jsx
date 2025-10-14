@@ -1,7 +1,7 @@
 // Composant pour connecter les services cloud
 import { useState } from 'react';
 import { Cloud, Check } from 'lucide-react';
-import { authService } from '../../../../../frontend/src/services/api';
+import { authService } from '@core/services/api';
 
 export default function ConnectServices({ userId, connectedServices, onUpdate }) {
   const [loading, setLoading] = useState(false);
