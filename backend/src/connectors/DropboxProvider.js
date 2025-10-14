@@ -107,6 +107,16 @@ class DropboxConnector {
       provider: 'dropbox',
     };
   }
+    async deleteFile(path) {
+    const data = await this.request('/files/delete_v2', { path });
+    return {
+      id: data.metadata.id,
+      name: data.metadata.name,
+      path: data.metadata.path_lower,
+      success: true,
+      message: 'Fichier supprimé avec succès'
+    };
+  }
 }
 
 module.exports = DropboxConnector;

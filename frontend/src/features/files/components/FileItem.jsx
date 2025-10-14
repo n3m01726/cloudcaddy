@@ -121,6 +121,9 @@ export default function FileItem({
       onFileMoved?.(file, result);
     } else if (action === 'copy') {
       onFileCopied?.(file, result);
+    } else if (action === 'delete') {
+      // Notifier le parent pour rafraîchir la liste
+      onFileMoved?.(); // Réutilise le même callback pour rafraîchir
     }
   };
 

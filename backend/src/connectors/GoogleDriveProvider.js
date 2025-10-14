@@ -188,6 +188,23 @@ class GoogleDriveProvider extends BaseStorageProvider {
     });
   }
 
+  async deleteFile(fileId) {
+    return this._handleOperation('delete', 'deleteFile', async () => {
+      await this.drive.files.delete({
+        fileId
+      });
+
+      return {
+        success: true,
+        fileId,
+        message: 'Fichier supprimé avec succès'
+      };
+    });
+  }
+
+
+
+
   // ===== MÉTHODES PRIVÉES =====
 
   _detectFileType(file) {

@@ -401,6 +401,87 @@ router.post('/:userId/download', async (req, res) => {
     res.status(500).json({ success: false, error: 'Erreur lors du téléchargement' });
   }
 });
+// À ajouter dans routes.js après la route /copy
 
+/* ------------------------------------------------------------------
+ * SUPPRESSION DE FICHIER
+ * DELETE /files/:userId/:provider/:fileId
+ * ------------------------------------------------------------------ */
+router.delete('/:userId/:provider/:fileId', async (req, res) => {
+  const { userId, provider, fileId } = req.params;
+
+  try {
+    const account = await prisma.cloudAccount.findUnique({
+      where: { userId_provider: { userId, provider } },
+    });
+    
+    if (!account) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Service cloud non connecté' 
+      });
+    }
+
+    if (provider === 'google_drive') {
+      const gdrive = new GoogleDriveConnector(
+        account.accessToken, 
+        account.refreshToken,
+        userId
+      );
+      const result = await gdrive.deleteFile(fileId);
+      
+      // Supprimer aussi les métadonnées associées si elles existent
+      try {
+        await prisma.fileMetadata.delete({
+          where: {
+            userId_fileId_cloudType: {
+              userId,
+              fileId,
+              cloudType: provider
+            }
+          }
+        });
+      } catch (metaError) {
+        // Pas grave si les métadonnées n'existent pas
+        console.log('Aucune métadonnée à supprimer');
+      }
+      
+      return res.json({ success: true, result });
+      
+    } else if (provider === 'dropbox') {
+      const dropbox = new DropboxConnector(account.accessToken);
+      const result = await dropbox.deleteFile(fileId);
+      
+      // Supprimer les métadonnées
+      try {
+        await prisma.fileMetadata.delete({
+          where: {
+            userId_fileId_cloudType: {
+              userId,
+              fileId,
+              cloudType: provider
+            }
+          }
+        });
+      } catch (metaError) {
+        console.log('Aucune métadonnée à supprimer');
+      }
+      
+      return res.json({ success: true, result });
+    }
+
+    res.status(400).json({ 
+      success: false, 
+      error: 'Provider non supporté pour la suppression' 
+    });
+    
+  } catch (error) {
+    console.error('Erreur suppression:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message || 'Erreur lors de la suppression du fichier' 
+    });
+  }
+});
 
 module.exports = router;

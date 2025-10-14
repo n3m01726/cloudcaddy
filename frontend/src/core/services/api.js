@@ -97,7 +97,11 @@ export const filesService = {
     const res = await api.post(`/files/${userId}/copy`, { provider, fileId, newParentId, newName });
     return res.data;
   },
-
+  
+  async deleteFile(userId, provider, fileId) {
+    const res = await api.delete(`/files/${userId}/${provider}/${fileId}`);
+    return res.data;
+  },
   /**
    * 🔹 Obtenir tous les fichiers favoris (starred) pour tous les providers
    */
