@@ -88,7 +88,7 @@ function createAuthenticatedGoogleClient(accessToken, refreshToken = null, userI
 function getDropboxAuthUrl() {
   const clientId = process.env.DROPBOX_CLIENT_ID;
   const redirectUri = process.env.DROPBOX_REDIRECT_URI;
-  const scopes = 'files.metadata.read files.content.read files.content.write';
+  const scopes = 'account_info.read files.metadata.read files.content.read files.content.write'; // ← Ajoute account_info.read
 
   return `https://www.dropbox.com/oauth2/authorize?` +
     `client_id=${clientId}&` +
@@ -103,6 +103,12 @@ async function getDropboxTokensFromCode(code) {
   const clientSecret = process.env.DROPBOX_CLIENT_SECRET;
   const redirectUri = process.env.DROPBOX_REDIRECT_URI;
 
+  console.log('🔍 DEBUG Dropbox Token Exchange:');
+  console.log('- Client ID:', clientId ? `${clientId.substring(0, 10)}...` : 'MISSING');
+  console.log('- Client Secret:', clientSecret ? 'SET' : 'MISSING');
+  console.log('- Redirect URI:', redirectUri);
+  console.log('- Code reçu:', code ? `${code.substring(0, 20)}...` : 'MISSING');
+
   try {
     const response = await axios.post(
       'https://api.dropboxapi.com/oauth2/token',
@@ -116,13 +122,17 @@ async function getDropboxTokensFromCode(code) {
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
     );
 
+    console.log('✅ Tokens Dropbox reçus avec succès');
     return {
       access_token: response.data.access_token,
       refresh_token: response.data.refresh_token,
       expires_in: response.data.expires_in,
     };
   } catch (error) {
-    console.error("❌ Erreur lors de l'échange du code Dropbox:", error.response?.data || error.message);
+    console.error("❌ ERREUR DÉTAILLÉE Dropbox:");
+    console.error('- Status:', error.response?.status);
+    console.error('- Data:', JSON.stringify(error.response?.data, null, 2));
+    console.error('- Message:', error.message);
     throw new Error("Impossible d'obtenir les tokens Dropbox");
   }
 }

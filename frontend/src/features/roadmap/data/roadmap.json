@@ -4,11 +4,18 @@
   "sections": [
     {
       "phase": "Core Structure",
-      "status": "in-progress",
+      "status": "done",
       "description": "Foundational architecture.",
       "tasks": [
+        "[DONE] Refactoring the project folder structure",
+        "[DONE] Set up Node.js backend + SQLite via Prisma",
+        "[DONE] Implement cloud API connectors (Drive, Dropbox, MEGA)",
+        "[DONE] Create FileExplorer core component",
+        "[DONE] Basic authentication and token storage",
+        "[DONE] Initial React frontend with Tailwind CSS",
+        "[DONE] Basic file operations (list, upload, download, delete)",
+        "[DONE] Initial MVP demo and feedback gathering"
         
-        "Implement cloud API connectors (Dropbox, MEGA, OneDrive)"
       ]
     },
     {
@@ -16,8 +23,21 @@
       "status": "in-progress",
       "description": "Refining the interface for usability and consistency.",
       "tasks": [
-        "Responsive design pass with Tailwind"
-        
+        "Responsive design pass with Tailwind",
+        "[DONE] Persistent tag colors and folder navigation",
+        "[DONE] Tooltip and preview improvements",
+        "[DONE] Enhance header and navigation bar"
+      ]
+    },
+    {
+      "phase": "App Pages",
+      "status": "done",
+      "description": "Establishing clear, separated routes for main sections.",
+      "tasks": [
+        "[DONE] Create /about_roadmap page",
+        "[DONE] Create /settings page",
+        "[DONE] Create /connections page from App.jsx logic",
+        "[DONE] Add /logout route and redirect handling"
       ]
     },
     {
@@ -25,6 +45,7 @@
       "status": "planned",
       "description": "User quality-of-life and deeper cloud features.",
       "tasks": [
+        "Implement cloud API connectors (OneDrive)",
         "Unified dashboard with cloud summaries",
         "Activity history (uploads, syncs, deletions)",
         "User preferences (theme, view mode)",
@@ -40,25 +61,6 @@
         "Cloud sync monitoring with alerts",
         "Public sharing links",
         "AI-assisted search and file tagging"
-      ]
-    },
-        {
-      "phase": "All Done Tasks",
-      "status": "done",
-      "description": "Foundational architecture and first stable prototype.",
-      "tasks": [
-        "Set up Node.js backend + SQLite via Prisma",
-        "Implement cloud API connectors (Drive)",
-        "Create FileExplorer core component",
-        "Basic authentication and token storage",
-        "Refactoring the project folder structure",
-        "Persistent tag colors and folder navigation",
-        "Tooltip and preview improvements", 
-        "Enhance header and navigation bar",
-        "Create /about_roadmap page",
-        "Create /settings page",
-        "Create /connections page from App.jsx logic",
-        "Add /logout route and redirect handling"
       ]
     }
   ]
