@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Settings, Link2, LogOut, ChevronDown, Cloud, HardDrive } from 'lucide-react';
+import { Settings, Link2, LogOut, ChevronDown, Cloud, HardDrive, Route, Sparkles } from 'lucide-react';
 
 export default function Navbar({ user, onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,8 +17,10 @@ export default function Navbar({ user, onLogout }) {
   }, []);
 
   const menuItems = [
+    { label: 'Accéder à mes fichiers', href: '/files', icon: HardDrive, description: 'Voir vos fichiers' },
     { label: 'Connexions', href: '/connections', icon: Link2, description: 'Gérer vos clouds' },
     { label: 'Paramètres', href: '/settings', icon: Settings, description: 'Configuration' },
+    { label: 'Roadmap', href: '/roadmap', icon: Route, description: 'Où nous en sommes!' },
   ];
 
   const getInitial = () => {
@@ -119,7 +121,9 @@ export default function Navbar({ user, onLogout }) {
                 <div className="text-xl font-bold text-gray-900">{cloudStats.usedSpace}</div>
                 <div className="text-xs text-gray-500">sur {cloudStats.totalSpace}</div>
               </div>
+              
             </div>
+            <div className='text-xs mt-3'>Consulter votre <a href='/dashboard' className="inline-flex underline underline-offset-4 hover:text-blue-400">tableau de bord<Sparkles className='ml-1 w-3 h-3 text-orange-600' /></a> pour plus de détails.</div>
           </div>
 
           {/* Navigation */}

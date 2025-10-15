@@ -4,21 +4,10 @@
   "sections": [
     {
       "phase": "Core Structure",
-      "status": "done",
-      "description": "Foundational architecture and first stable prototype.",
-      "tasks": [
-        "Set up Node.js backend + SQLite via Prisma",
-        "Implement cloud API connectors (Drive, Dropbox, MEGA)",
-        "Create FileExplorer core component",
-        "Basic authentication and token storage"
-      ]
-    },
-    {
-      "phase": "Core Structure",
       "status": "in-progress",
       "description": "Foundational architecture.",
       "tasks": [
-        "[ASAP] Refactoring the project folder structure",
+        
         "Implement cloud API connectors (Dropbox, MEGA, OneDrive)"
       ]
     },
@@ -27,21 +16,8 @@
       "status": "in-progress",
       "description": "Refining the interface for usability and consistency.",
       "tasks": [
-        "[DONE] Persistent tag colors and folder navigation",
-        "Tooltip and preview improvements",
-        "Responsive design pass with Tailwind",
-        "Enhance header and navigation bar"
-      ]
-    },
-    {
-      "phase": "App Pages",
-      "status": "planned",
-      "description": "Establishing clear, separated routes for main sections.",
-      "tasks": [
-        "Create /about_roadmap page",
-        "Create /settings page",
-        "Create /connections page from App.jsx logic",
-        "Add /logout route and redirect handling"
+        "Responsive design pass with Tailwind"
+        
       ]
     },
     {
@@ -64,6 +40,25 @@
         "Cloud sync monitoring with alerts",
         "Public sharing links",
         "AI-assisted search and file tagging"
+      ]
+    },
+        {
+      "phase": "All Done Tasks",
+      "status": "done",
+      "description": "Foundational architecture and first stable prototype.",
+      "tasks": [
+        "Set up Node.js backend + SQLite via Prisma",
+        "Implement cloud API connectors (Drive)",
+        "Create FileExplorer core component",
+        "Basic authentication and token storage",
+        "Refactoring the project folder structure",
+        "Persistent tag colors and folder navigation",
+        "Tooltip and preview improvements", 
+        "Enhance header and navigation bar",
+        "Create /about_roadmap page",
+        "Create /settings page",
+        "Create /connections page from App.jsx logic",
+        "Add /logout route and redirect handling"
       ]
     }
   ]

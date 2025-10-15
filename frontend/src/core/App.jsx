@@ -4,6 +4,7 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import FileExplorer from '@features/files/pages/FileExplorer';
 import Connections from '@features/auth/pages/Connections';
 import Settings from '@features/auth/pages/Settings';
+import Roadmap from '@features/roadmap/components/Roadmap';
 import Navbar from '@shared/components/Navbar';
 import { authService } from '@core/services/api';
 import useUserInfo from '@shared/hooks/useUserInfo';
@@ -208,11 +209,22 @@ function App() {
             } 
           />
 
+                    {/* Route pour les Settings */}
+          <Route 
+            path="/roadmap" 
+            element={
+              userId ? (
+                <Roadmap />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            } 
+          />
+
           {/* Route par défaut - redirection */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
-
       {/* Footer */}
       <footer className="mt-12 py-6 text-center text-sm text-gray-900">
         <span className="inline-flex items-center rounded-md bg-blue-950 my-3 px-3 py-2 text-xs font-medium text-blue-200 inset-ring inset-ring-blue-500/20">
