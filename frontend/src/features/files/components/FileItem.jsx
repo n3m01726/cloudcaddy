@@ -261,7 +261,7 @@ export default function FileItem({
         />
       )}
 
-      {/* Actions Modal (s'ouvre via right-click OU MoreVertical) */}
+ {/* Actions Modal (s'ouvre via right-click OU MoreVertical) */}
       {showActions && (
         <FileActions
           file={file}
@@ -271,6 +271,10 @@ export default function FileItem({
           onClose={() => setShowActions(false)}
           onSuccess={handleActionSuccess}
           onError={handleActionError}
+          onOpenInfo={() => {
+            setShowActions(false);
+            setShowTagManager(true);
+          }}
         />
       )}
 

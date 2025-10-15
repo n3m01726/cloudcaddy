@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Move, Copy, Trash2, X, AlertTriangle } from 'lucide-react';
+import { Move, Copy, Trash2, X, AlertTriangle, Info } from 'lucide-react';
 import { filesService } from '../../../core/services/api';
 import FolderSelector from './FolderSelector';
 
@@ -10,7 +10,8 @@ export default function FileActions({
   position = { top: 0, left: 0 },
   onClose, 
   onSuccess,
-  onError 
+  onError,
+  onOpenInfo // 👈 Nouveau callback pour ouvrir le TagManager
 }) {
   const [showFolderSelector, setShowFolderSelector] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -20,6 +21,9 @@ export default function FileActions({
   const handleAction = (actionType) => {
     if (actionType === 'delete') {
       setShowDeleteConfirm(true);
+    } else if (actionType === 'info') {
+      onOpenInfo?.();
+      onClose();
     } else {
       setAction(actionType);
       setShowFolderSelector(true);
@@ -105,19 +109,21 @@ export default function FileActions({
             left: `${position.left}px`
           }}
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-3 border-b border-gray-200">
-            <h3 className="font-medium text-gray-900">Actions</h3>
-            <button
-              onClick={onClose}
-              className="p-1 hover:bg-gray-100 rounded"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
 
           {/* Actions */}
           <div className="py-2">
+            {/* 👇 NOUVEAU: Action Informations */}
+            <button
+              onClick={() => handleAction('info')}
+              disabled={loading}
+              className="w-full flex items-center space-x-3 px-3 py-4 text-left hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Info className="w-4 h-4" />
+              <span>Lire les informations</span>
+            </button>
+
+            <div className="divide-y-2 border-gray-600 my-1"></div>
+
             <button
               onClick={() => handleAction('move')}
               disabled={loading}
@@ -135,6 +141,8 @@ export default function FileActions({
               <Copy className="w-4 h-4 text-gray-600" />
               <span>Copier</span>
             </button>
+
+            <div className="border-t border-gray-100 my-1"></div>
 
             <button
               onClick={() => handleAction('delete')}
@@ -186,7 +194,7 @@ export default function FileActions({
               <strong>{file.name}</strong>
             </p>
             <p className="text-sm text-red-600 mt-3">
-              ⚠️ Cette action est irréversible.
+              ⚠️ Cette action est irréversible. Le fichier sera définitivement supprimé de votre stockage cloud.
             </p>
           </div>
 
