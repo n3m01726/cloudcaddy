@@ -17,10 +17,10 @@ export default function Navbar({ user, onLogout }) {
   }, []);
 
   const menuItems = [
-    { label: 'Accéder à mes fichiers', href: '/files', icon: HardDrive, description: 'Voir vos fichiers' },
-    { label: 'Connexions', href: '/connections', icon: Link2, description: 'Gérer vos clouds' },
-    { label: 'Paramètres', href: '/settings', icon: Settings, description: 'Configuration' },
-    { label: 'Roadmap', href: '/roadmap', icon: Route, description: 'Où nous en sommes!' },
+    { label: 'Accéder à mes fichiers', shortLabel: 'Fichiers', href: '/files', icon: HardDrive, description: 'Voir vos fichiers' },
+    { label: 'Connexions', shortLabel: 'Connexions', href: '/connections', icon: Link2, description: 'Gérer vos clouds' },
+    { label: 'Paramètres', shortLabel: 'Paramètres', href: '/settings', icon: Settings, description: 'Configuration' },
+    { label: 'Roadmap', shortLabel: 'Roadmap', href: '/roadmap', icon: Route, description: 'Où nous en sommes!' },
   ];
 
   const getInitial = () => {
@@ -29,7 +29,6 @@ export default function Navbar({ user, onLogout }) {
     return '?';
   };
 
-  // Mock data pour les stats (à remplacer par vos vraies données)
   const cloudStats = {
     connected: 2,
     totalSpace: '15 GB',
@@ -39,9 +38,9 @@ export default function Navbar({ user, onLogout }) {
   // Composant Avatar réutilisable
   const Avatar = ({ size = 'md', className = '' }) => {
     const sizes = {
-      sm: 'w-10 h-10 text-base',
+      sm: 'w-8 h-8 text-sm',
       md: 'w-10 h-10 text-base',
-      lg: 'w-14 h-14 text-xl'
+      lg: 'w-12 h-12 sm:w-14 sm:h-14 text-lg sm:text-xl'
     };
 
     return (
@@ -65,7 +64,7 @@ export default function Navbar({ user, onLogout }) {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-all duration-200 group"
+        className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-xl hover:bg-gray-50 transition-all duration-200 group"
         aria-label="Menu utilisateur"
         aria-expanded={isOpen}
       >
@@ -86,16 +85,16 @@ export default function Navbar({ user, onLogout }) {
         />
       </button>
 
-      {/* Menu déroulant */}
+      {/* Menu déroulant - Responsive */}
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute right-0 mt-3 w-[calc(100vw-2rem)] sm:w-96 max-w-md bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
           
           {/* En-tête avec profil */}
-          <div className="px-5 py-4 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border-b border-gray-100">
+          <div className="px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border-b border-gray-100">
             <div className="flex items-center gap-3">
               <Avatar size="lg" className="shadow-lg" />
               <div className="flex-1 min-w-0">
-                <div className="text-base font-semibold text-gray-900 truncate">
+                <div className="text-sm sm:text-base font-semibold text-gray-900 truncate">
                   {user?.name || 'Utilisateur'}
                 </div>
                 <div className="text-xs text-gray-600 truncate">{user?.email}</div>
@@ -104,44 +103,52 @@ export default function Navbar({ user, onLogout }) {
           </div>
 
           {/* Stats des clouds */}
-          <div className="px-5 py-4 bg-gray-50 border-b border-gray-100">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-white rounded-lg p-3 border border-gray-200">
-                <div className="flex items-center gap-2 mb-1">
-                  <Cloud className="w-4 h-4 text-indigo-600" />
+          <div className="px-4 sm:px-5 py-3 sm:py-4 bg-gray-50 border-b border-gray-100">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="bg-white rounded-lg p-2.5 sm:p-3 border border-gray-200">
+                <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                  <Cloud className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />
                   <span className="text-xs font-medium text-gray-500">Clouds</span>
                 </div>
-                <div className="text-xl font-bold text-gray-900">{cloudStats.connected}</div>
+                <div className="text-lg sm:text-xl font-bold text-gray-900">{cloudStats.connected}</div>
               </div>
-              <div className="bg-white rounded-lg p-3 border border-gray-200">
-                <div className="flex items-center gap-2 mb-1">
-                  <HardDrive className="w-4 h-4 text-purple-600" />
+              <div className="bg-white rounded-lg p-2.5 sm:p-3 border border-gray-200">
+                <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+                  <HardDrive className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600" />
                   <span className="text-xs font-medium text-gray-500">Espace</span>
                 </div>
-                <div className="text-xl font-bold text-gray-900">{cloudStats.usedSpace}</div>
+                <div className="text-lg sm:text-xl font-bold text-gray-900">{cloudStats.usedSpace}</div>
                 <div className="text-xs text-gray-500">sur {cloudStats.totalSpace}</div>
               </div>
-              
             </div>
-            <div className='text-xs mt-3'>Consulter votre <a href='/dashboard' className="inline-flex underline underline-offset-4 hover:text-blue-400">tableau de bord<Sparkles className='ml-1 w-3 h-3 text-orange-600' /></a> pour plus de détails.</div>
+            <div className='text-xs mt-2 sm:mt-3'>
+              Consulter votre{' '}
+              <a href='/dashboard' className="inline-flex items-center underline underline-offset-4 hover:text-blue-400">
+                tableau de bord<Sparkles className='ml-1 w-3 h-3 text-orange-600' />
+              </a>
+              {' '}pour plus de détails.
+            </div>
           </div>
 
           {/* Navigation */}
-          <div className="py-2">
+          <div className="py-1 sm:py-2">
             {menuItems.map((item, index) => {
               const Icon = item.icon;
               return (
                 <a
                   key={index}
                   href={item.href}
-                  className="flex items-center gap-3 px-5 py-3 text-gray-700 hover:bg-indigo-50 transition-all duration-200 group"
+                  className="flex items-center gap-3 px-4 sm:px-5 py-2.5 sm:py-3 text-gray-700 hover:bg-indigo-50 transition-all duration-200 group"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-gray-100 group-hover:bg-indigo-100 flex items-center justify-center transition-colors duration-200">
-                    <Icon className="w-5 h-5 text-gray-600 group-hover:text-indigo-600 transition-colors duration-200" />
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gray-100 group-hover:bg-indigo-100 flex items-center justify-center transition-colors duration-200 flex-shrink-0">
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 group-hover:text-indigo-600 transition-colors duration-200" />
                   </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-semibold">{item.label}</div>
-                    <div className="text-xs text-gray-500">{item.description}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold truncate">
+                      <span className="sm:hidden">{item.shortLabel}</span>
+                      <span className="hidden sm:inline">{item.label}</span>
+                    </div>
+                    <div className="text-xs text-gray-500 truncate">{item.description}</div>
                   </div>
                 </a>
               );
@@ -155,14 +162,14 @@ export default function Navbar({ user, onLogout }) {
                 setIsOpen(false);
                 onLogout?.();
               }}
-              className="w-full flex items-center gap-3 px-5 py-3 text-red-600 hover:bg-red-50 transition-all duration-200 group"
+              className="w-full flex items-center gap-3 px-4 sm:px-5 py-2.5 sm:py-3 text-red-600 hover:bg-red-50 transition-all duration-200 group"
             >
-              <div className="w-10 h-10 rounded-lg bg-red-50 group-hover:bg-red-100 flex items-center justify-center transition-colors duration-200">
-                <LogOut className="w-5 h-5" />
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-red-50 group-hover:bg-red-100 flex items-center justify-center transition-colors duration-200 flex-shrink-0">
+                <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <div className="flex-1 text-left">
-                <div className="text-sm font-semibold">Déconnexion</div>
-                <div className="text-xs text-red-500">Quitter l'application</div>
+              <div className="flex-1 text-left min-w-0">
+                <div className="text-sm font-semibold truncate">Déconnexion</div>
+                <div className="text-xs text-red-500 truncate">Quitter l'application</div>
               </div>
             </button>
           </div>

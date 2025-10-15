@@ -1,11 +1,7 @@
 // ============================================
-// viewers/VideoPreview.jsx (~70 lignes)
+// VideoPreview.jsx - RESPONSIVE
 // ============================================
-/**
- * Viewer pour les vidéos
- * Supporte MP4, WebM, MOV, AVI, MKV
- */
-export default function VideoPreview({ file, previewData }) {
+export function VideoPreview({ file, previewData }) {
   const videoUrl = previewData.previewUrl || 
                    previewData.url || 
                    previewData.webContentLink ||
@@ -14,7 +10,7 @@ export default function VideoPreview({ file, previewData }) {
   const mimeType = previewData.mimeType || file.mimeType || 'video/mp4';
 
   return (
-    <div className="flex items-center justify-center bg-black rounded-lg h-[500px]">
+    <div className="flex items-center justify-center bg-black rounded-lg min-h-[300px] sm:h-[500px] p-2">
       <video 
         controls 
         className="max-h-full max-w-full rounded"

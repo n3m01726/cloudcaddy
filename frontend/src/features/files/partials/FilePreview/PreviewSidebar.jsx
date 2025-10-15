@@ -1,12 +1,9 @@
-// ============================================
-// PreviewSidebar.jsx (~130 lignes)
-// ============================================
-import { X, HardDrive, Calendar, Tag, Star } from 'lucide-react';
+import { X, HardDrive, Calendar, Tag } from 'lucide-react';
 import { formatFileSize, formatDate } from './utils/formatters';
 
 /**
- * Sidebar de métadonnées du fichier
- * Affiche toutes les informations détaillées : taille, date, tags, description, etc.
+ * Sidebar de métadonnées du fichier - RESPONSIVE
+ * Sur mobile: Modal en bas, sur desktop: sidebar à droite
  */
 export default function PreviewSidebar({ 
   file, 
@@ -17,16 +14,16 @@ export default function PreviewSidebar({
   const hasCustomName = metadata?.customName && metadata.customName !== file.name;
 
   return (
-    <div className="w-1/3 border-l bg-gray-50 p-4 overflow-auto">
+    <div className="w-full h-full border-l bg-gray-50 p-4 overflow-auto">
       {/* Header de la sidebar */}
-      <div className="flex items-center justify-between mb-4">
-        <h4 className="font-semibold text-gray-900">Détails</h4>
+      <div className="flex items-center justify-between mb-4 sticky top-0 bg-gray-50 pb-2 border-b lg:border-none">
+        <h4 className="font-semibold text-gray-900 text-base sm:text-lg">Détails</h4>
         <button 
           onClick={onClose}
-          className="text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+          className="text-gray-500 hover:text-gray-700 transition-colors p-1"
           title="Masquer les détails"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
       </div>
 
@@ -88,7 +85,7 @@ export default function PreviewSidebar({
             <div className="flex items-center gap-2 text-gray-600 mb-2">
               <span className="text-sm font-medium">Description</span>
             </div>
-            <p className="text-sm text-gray-700 pl-6 whitespace-pre-wrap">
+            <p className="text-sm text-gray-700 pl-6 whitespace-pre-wrap break-words">
               {metadata.description}
             </p>
           </div>
@@ -125,7 +122,7 @@ function MetadataItem({ icon, label, value }) {
         {icon}
         <span className="text-sm font-medium">{label}</span>
       </div>
-      <p className="text-sm text-gray-900 pl-6">{value}</p>
+      <p className="text-sm text-gray-900 pl-6 break-words">{value}</p>
     </div>
   );
 }
@@ -158,7 +155,6 @@ function TagBadge({ tag, color }) {
  * Icône du provider cloud
  */
 function ProviderIcon({ provider }) {
-  // Mapping des couleurs par provider
   const providerColors = {
     google_drive: 'from-blue-500 to-purple-500',
     dropbox: 'from-blue-400 to-blue-600',

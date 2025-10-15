@@ -1,9 +1,3 @@
-// ============================================
-// FilePreview/index.jsx (~80 lignes)
-// Composant principal de prévisualisation de fichiers
-// Remplace l'ancien FilePreviewModal.jsx de 494 lignes
-// ============================================
-
 import PreviewHeader from './PreviewHeader';
 import PreviewContent from './PreviewContent';
 import PreviewSidebar from './PreviewSidebar';
@@ -11,15 +5,8 @@ import { usePreviewLoader } from './hooks/usePreviewLoader';
 import { useMetadataPanel } from './hooks/useMetadataPanel';
 
 /**
- * Modal de prévisualisation de fichiers
- * Gère l'affichage et la navigation dans les fichiers
- * 
- * @param {Object} file - Fichier à prévisualiser
- * @param {string} userId - ID de l'utilisateur
- * @param {Object} metadata - Métadonnées du fichier (tags, description, etc.)
- * @param {Function} onClose - Callback de fermeture
- * @param {Function} onDownload - Callback de téléchargement
- * @param {Function} onShare - Callback de partage
+ * Modal de prévisualisation de fichiers - VERSION RESPONSIVE
+ * Adaptée pour mobile, tablette et desktop
  */
 export default function FilePreview({ 
   file, 
@@ -29,19 +16,16 @@ export default function FilePreview({
   onDownload, 
   onShare 
 }) {
-  // Chargement des données de preview via l'API
   const { previewData, loading, error } = usePreviewLoader(file, userId);
-  
-  // Gestion de l'affichage de la sidebar de métadonnées
   const { showMetadata, toggle, show } = useMetadataPanel(true);
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-2 sm:p-4"
       onClick={onClose}
     >
       <div 
-        className="relative bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden"
+        className="relative bg-white rounded-xl shadow-2xl w-full max-w-6xl h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header avec titre et actions */}
@@ -53,34 +37,38 @@ export default function FilePreview({
           onClose={onClose}
         />
 
-        {/* Contenu principal : Preview + Sidebar */}
-        <div className="flex overflow-hidden" style={{ height: 'calc(90vh - 120px)' }}>
-          {/* Zone de preview */}
-          <PreviewContent 
-            file={file}
-            userId={userId}
-            previewData={previewData}
-            loading={loading}
-            error={error}
-            showMetadata={showMetadata}
-            onDownload={onDownload}
-          />
-
-          {/* Sidebar de métadonnées (conditionnelle) */}
-          {showMetadata && (
-            <PreviewSidebar 
+        {/* Contenu principal : Preview + Sidebar (flex-1 pour prendre l'espace restant) */}
+        <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
+          {/* Zone de preview - Pleine largeur sur mobile, 2/3 sur desktop si sidebar ouverte */}
+          <div className={`${showMetadata ? 'lg:w-2/3' : 'w-full'} overflow-auto transition-all`}>
+            <PreviewContent 
               file={file}
-              metadata={metadata}
+              userId={userId}
               previewData={previewData}
-              onClose={toggle}
+              loading={loading}
+              error={error}
+              showMetadata={showMetadata}
+              onDownload={onDownload}
             />
+          </div>
+
+          {/* Sidebar de métadonnées - Cachée sur mobile, visible sur desktop */}
+          {showMetadata && (
+            <div className="hidden lg:block lg:w-1/3">
+              <PreviewSidebar 
+                file={file}
+                metadata={metadata}
+                previewData={previewData}
+                onClose={toggle}
+              />
+            </div>
           )}
 
-          {/* Bouton pour réafficher la sidebar si masquée */}
+          {/* Bouton flottant pour afficher les détails (mobile) */}
           {!showMetadata && (
             <button
               onClick={show}
-              className="absolute right-4 top-20 p-2 bg-white rounded-lg shadow-lg hover:bg-gray-50 transition-colors  cursor-pointer"
+              className="fixed bottom-6 right-6 lg:absolute lg:right-4 lg:top-20 p-3 bg-indigo-600 text-white rounded-full shadow-2xl hover:bg-indigo-700 transition-colors z-10"
               title="Afficher les détails"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,10 +77,24 @@ export default function FilePreview({
             </button>
           )}
         </div>
+
+        {/* Modal Sidebar pour mobile (en overlay) */}
+        {showMetadata && (
+          <div className="lg:hidden fixed inset-0 z-50 bg-black/50" onClick={toggle}>
+            <div 
+              className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[70vh] overflow-auto animate-in slide-in-from-bottom duration-300"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <PreviewSidebar 
+                file={file}
+                metadata={metadata}
+                previewData={previewData}
+                onClose={toggle}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-
-// Export nommé pour flexibilité
-export { FilePreview };

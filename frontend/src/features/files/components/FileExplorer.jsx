@@ -1,14 +1,13 @@
+// frontend/src/features/files/components/FileExplorer.jsx
 import { useState, useEffect, useCallback } from 'react';
 import Tabs from './Tabs';
 import Navigation from './Navigation';
 import SearchBar from './SearchBar';
 import Files from './Files';
 import Footer from './Footer';
-//import Favorites from './views/Favorites';
 import { loadFiles } from '../utils/loadFiles';
 import { loadMetadataForFiles } from '../utils/loadMetadataForFiles';
 import { filesService } from '../../../core/services/api';
-
 
 export default function FileExplorer({ userId }) {
   const [files, setFiles] = useState([]);
@@ -45,9 +44,7 @@ export default function FileExplorer({ userId }) {
     handleLoadFiles();
   }, [userId, activeTab, handleLoadFiles]);
 
-  // --------------------------
   // Navigation dans les dossiers
-  // --------------------------
   const handleFolderClick = folder => {
     const provider = folder.provider;
     setProviderStates(prev => ({
@@ -98,9 +95,7 @@ export default function FileExplorer({ userId }) {
     }
   };
 
-  // --------------------------
   // Recherche
-  // --------------------------
   const handleSearch = async e => {
     e?.preventDefault();
     if (!searchQuery.trim()) {
@@ -124,33 +119,27 @@ export default function FileExplorer({ userId }) {
     }
   };
 
-  // --------------------------
-  // TÃ©lÃ©chargement
-  // --------------------------
+  // Téléchargement
   const handleDownload = async file => {
     setDownloading(file.id);
     try {
       await filesService.downloadFile(userId, file.provider, file.id, file.name);
     } catch (err) {
-      setError(`Erreur lors du tÃ©lÃ©chargement de ${file.name}`);
+      setError(`Erreur lors du téléchargement de ${file.name}`);
       console.error(err);
     } finally {
       setDownloading(null);
     }
   };
 
-  // --------------------------
-  // RafraÃ®chir les fichiers
-  // --------------------------
+  // Rafraîchir les fichiers
   const handleRefresh = () => {
     if (activeTab === 'favorites') return;
     const currentState = providerStates[activeTab];
     handleLoadFiles(currentState?.currentFolder || null, currentState?.currentFolderName || '', activeTab);
   };
 
-  // --------------------------
   // Gestion des onglets
-  // --------------------------
   const handleTabChange = newTab => {
     setActiveTab(newTab);
     if (newTab === 'favorites') return;
@@ -158,9 +147,7 @@ export default function FileExplorer({ userId }) {
     handleLoadFiles(providerState.currentFolder, providerState.currentFolderName, newTab);
   };
 
-  // --------------------------
   // Breadcrumb pour navigation
-  // --------------------------
   const handleBreadcrumbClick = index => {
     if (activeTab === 'favorites') return;
     const currentState = providerStates[activeTab];
@@ -174,18 +161,12 @@ export default function FileExplorer({ userId }) {
   };
 
   const currentProviderState = activeTab === 'favorites' ? null : providerStates[activeTab];
-
-  // --------------------------
-  // Filtrage des fichiers selon l'onglet actif
-  // --------------------------
   const filteredFiles = activeTab === 'favorites' ? [] : activeTab === 'all' ? files : files.filter(f => f.provider === activeTab);
 
-  // --------------------------
-  // Rendu
-  // --------------------------
+  // Rendu avec classes responsive
   return (
-    <div className="w-full max-w-6xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-md">
+    <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-3 sm:py-6">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <Tabs
           activeTab={activeTab}
           setActiveTab={handleTabChange}
@@ -214,21 +195,22 @@ export default function FileExplorer({ userId }) {
         />
 
         {error && (
-          <div className="m-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-center justify-between">
-            <span>{error}</span>
-            <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700">âœ•</button>
+          <div className="m-3 sm:m-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <span className="text-sm sm:text-base">{error}</span>
+            <button 
+              onClick={() => setError(null)} 
+              className="text-red-500 hover:text-red-700 self-end sm:self-auto"
+            >
+              ✕
+            </button>
           </div>
         )}
 
         {/* Onglet Favoris */}
         {activeTab === 'favorites' ? (
-          <Favorites
-            userId={userId}
-            onDownload={handleDownload}
-            onFolderClick={handleFolderClick}
-            onFileMoved={() => {}}
-            onFileCopied={() => {}}
-          />
+          <div className="p-3 sm:p-6">
+            <p className="text-center text-gray-500">Favoris - À venir</p>
+          </div>
         ) : (
           <Files
             files={filteredFiles}
@@ -238,22 +220,22 @@ export default function FileExplorer({ userId }) {
             onFolderClick={handleFolderClick}
             onDownload={handleDownload}
             downloading={downloading}
-onFileMoved={() => {
-  const currentState = providerStates[activeTab];
-  handleLoadFiles(
-    currentState?.currentFolder || null,
-    currentState?.currentFolderName || '',
-    activeTab
-  );
-}}
-onFileCopied={() => {
-  const currentState = providerStates[activeTab];
-  handleLoadFiles(
-    currentState?.currentFolder || null,
-    currentState?.currentFolderName || '',
-    activeTab
-  );
-}}
+            onFileMoved={() => {
+              const currentState = providerStates[activeTab];
+              handleLoadFiles(
+                currentState?.currentFolder || null,
+                currentState?.currentFolderName || '',
+                activeTab
+              );
+            }}
+            onFileCopied={() => {
+              const currentState = providerStates[activeTab];
+              handleLoadFiles(
+                currentState?.currentFolder || null,
+                currentState?.currentFolderName || '',
+                activeTab
+              );
+            }}
           />
         )}
 

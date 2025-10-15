@@ -1,3 +1,4 @@
+// pages/FileExplorer.jsx
 // Page qui appelle le composant FileExplorer
 import FileExplorer from '../components/FileExplorer';
 

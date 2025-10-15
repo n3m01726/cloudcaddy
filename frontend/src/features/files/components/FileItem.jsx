@@ -83,11 +83,9 @@ export default function FileItem({
     e.preventDefault();
     e.stopPropagation();
     
-    // Calculer la position du menu
     const x = e.clientX;
     const y = e.clientY;
     
-    // Ajuster si le menu dépasse l'écran
     const menuWidth = 200;
     const menuHeight = 200;
     const adjustedX = x + menuWidth > window.innerWidth ? x - menuWidth : x;
@@ -101,12 +99,10 @@ export default function FileItem({
   const handleMoreClick = (e) => {
     e.stopPropagation();
     
-    // Position du bouton
     const rect = e.currentTarget.getBoundingClientRect();
     const x = rect.left;
-    const y = rect.bottom + 5; // 5px en dessous du bouton
+    const y = rect.bottom + 5;
     
-    // Ajuster si le menu dépasse l'écran
     const menuWidth = 200;
     const menuHeight = 200;
     const adjustedX = x + menuWidth > window.innerWidth ? x - menuWidth + rect.width : x;
@@ -122,8 +118,7 @@ export default function FileItem({
     } else if (action === 'copy') {
       onFileCopied?.(file, result);
     } else if (action === 'delete') {
-      // Notifier le parent pour rafraîchir la liste
-      onFileMoved?.(); // Réutilise le même callback pour rafraîchir
+      onFileMoved?.();
     }
   };
 
@@ -150,7 +145,7 @@ export default function FileItem({
   return (
     <>
       <div
-        className={`flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all group ${
+        className={`flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all group ${
           file.type === 'folder' ? 'cursor-pointer' : ''
         } ${starred ? 'ring-2 ring-yellow-200 bg-yellow-50 border-yellow-200 hover:bg-yellow-50 hover:ring-yellow-300 hover:border-yellow-100' : ''}`}
         onClick={() => {
@@ -159,66 +154,77 @@ export default function FileItem({
         }}
         onContextMenu={handleContextMenu}
       >
-        <div className="flex items-center gap-3 flex-1 min-w-0">
+        {/* Section principale : Icône + Info */}
+        <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
           <IconComponent 
-            className={`w-8 h-8 ${file.type === 'folder' ? 'text-blue-500' : 'text-gray-400'} flex-shrink-0`} 
+            className={`w-7 h-7 sm:w-8 sm:h-8 ${file.type === 'folder' ? 'text-blue-500' : 'text-gray-400'} flex-shrink-0 mt-0.5 sm:mt-0`} 
           />
           
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <h3 className="font-medium truncate">{displayName}</h3>
+            {/* Nom + Loading indicator */}
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-medium truncate text-sm sm:text-base">{displayName}</h3>
               
               {loadingMetadata && (
                 <RefreshCw className="w-3 h-3 text-gray-400 animate-spin flex-shrink-0" />
               )}
-        
-              {/* Tags avec couleurs */}
-              {tags.length > 0 && (
-                <div className="flex flex-wrap gap-1"> 
-                  {tags.slice(0, 3).map((tag) => (
-                    <TagBadge 
-                      key={tag} 
-                      tag={tag} 
-                      size="sm"
-                      color={tagColors[tag] || 'blue'}
-                    />
-                  ))}
-                  {tags.length > 3 && (
-                    <span className="text-xs text-gray-500 px-2 py-0.5">
-                      +{tags.length - 3} autres
-                    </span>
-                  )}
-                </div>
-              )}
             </div>
             
-            <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
-              {file.type !== 'folder' && (
-                <span>{file.size ? formatFileSize(file.size) : 'N/A'}</span>
+            {/* Tags - Masqués sur très petit écran, visibles sur mobile moyen+ */}
+            {tags.length > 0 && (
+              <div className="hidden xs:flex flex-wrap gap-1 mb-2"> 
+                {tags.slice(0, 2).map((tag) => (
+                  <TagBadge 
+                    key={tag} 
+                    tag={tag} 
+                    size="sm"
+                    color={tagColors[tag] || 'blue'}
+                  />
+                ))}
+                {tags.length > 2 && (
+                  <span className="text-xs text-gray-500 px-1.5 py-0.5">
+                    +{tags.length - 2}
+                  </span>
+                )}
+              </div>
+            )}
+            
+            {/* Infos : Taille + Date */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-500">
+              {file.type !== 'folder' && file.size && (
+                <span className="font-medium">{formatFileSize(file.size)}</span>
               )}
-              <span>Modifié le: {new Date(file.modifiedTime).toLocaleDateString()}</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="truncate">
+                {new Date(file.modifiedTime).toLocaleDateString('fr-FR', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric'
+                })}
+              </span>
             </div>
 
-            {/* Description */}
+            {/* Description - Seulement desktop */}
             {metadata?.description && (
-              <p className="text-sm text-gray-600 mt-1 line-clamp-1">
+              <p className="hidden md:block text-sm text-gray-600 mt-1 line-clamp-1">
                 {metadata.description}
               </p>
             )}
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* Boutons d'action */}
+        <div className="flex items-center gap-1 sm:gap-2 mt-3 sm:mt-0 sm:ml-4 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity self-end sm:self-auto">
           {/* Bouton Tags */}
           <button
             onClick={(e) => { 
               e.stopPropagation(); 
               setShowTagManager(true); 
             }}
-            className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-100 rounded-lg transition-colors"
+            className="p-1.5 sm:p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-100 rounded-lg transition-colors"
             title="Gérer les tags"
           >
-            <TagIcon className="w-5 h-5" />
+            <TagIcon className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
           
           {/* Bouton Download */}
@@ -229,13 +235,13 @@ export default function FileItem({
                 onDownload(file); 
               }}
               disabled={downloading === file.id}
-              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-100 rounded-lg transition-colors disabled:opacity-100"
+              className="p-1.5 sm:p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-100 rounded-lg transition-colors disabled:opacity-100"
               title="Télécharger"
             >
               {downloading === file.id ? (
-                <RefreshCw className="w-5 h-5 animate-spin" />
+                <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
               ) : (
-                <Download className="w-5 h-5" />
+                <Download className="w-4 h-4 sm:w-5 sm:h-5" />
               )}
             </button>
           )}
@@ -243,10 +249,10 @@ export default function FileItem({
           {/* Bouton Actions (MoreVertical) */}
           <button
             onClick={handleMoreClick}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1.5 sm:p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
             title="Plus d'actions"
           >
-            <MoreVertical className="w-5 h-5" />
+            <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>
@@ -261,7 +267,7 @@ export default function FileItem({
         />
       )}
 
- {/* Actions Modal (s'ouvre via right-click OU MoreVertical) */}
+      {/* Actions Modal */}
       {showActions && (
         <FileActions
           file={file}

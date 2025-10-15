@@ -55,6 +55,7 @@
 │   │   ├── core
 │   │   │   ├── App.css
 │   │   │   ├── App.jsx
+│   │   │   ├── components
 │   │   │   ├── index.css
 │   │   │   ├── main.jsx
 │   │   │   └── services
@@ -66,12 +67,13 @@
 │   │   │   │   │   └── ConnectServices.jsx
 │   │   │   │   └── pages
 │   │   │   │       ├── Connections.jsx
-│   │   │   │       ├── DebugPage.jsx
 │   │   │   │       └── Settings.jsx
 │   │   │   ├── debug
 │   │   │   │   └── index.jsx
 │   │   │   ├── files
+│   │   │   │   ├── .DS_Store
 │   │   │   │   ├── components
+│   │   │   │   │   ├── .DS_Store
 │   │   │   │   │   ├── FileActions.jsx
 │   │   │   │   │   ├── FileExplorer.jsx
 │   │   │   │   │   ├── FileItem.jsx
@@ -118,12 +120,20 @@
 │   │   │   │       ├── loadMetadataForFiles.js
 │   │   │   │       ├── sortFilesForAllTab.js
 │   │   │   │       └── utils.js
+│   │   │   ├── roadmap
+│   │   │   │   ├── components
+│   │   │   │   │   └── Roadmap.jsx
+│   │   │   │   └── data
+│   │   │   │       └── roadmap.json
+│   │   │   ├── settings
+│   │   │   │   └── pages
 │   │   │   └── tagManager
 │   │   │       └── components
 │   │   │           ├── TagBadge.jsx
 │   │   │           ├── TagInput.jsx
 │   │   │           └── TagManager.jsx
 │   │   └── shared
+│   │       ├── .DS_Store
 │   │       ├── components
 │   │       │   ├── Badge.jsx
 │   │       │   ├── Breadcrumbs.jsx
@@ -133,6 +143,7 @@
 │   │       │   ├── Navbar.jsx
 │   │       │   └── index.js
 │   │       └── hooks
+│   │           ├── .DS_Store
 │   │           └── useUserInfo.js
 │   ├── tailwind.config.js
 │   └── vite.config.js
