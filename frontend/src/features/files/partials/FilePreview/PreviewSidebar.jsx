@@ -1,10 +1,12 @@
 import { X, HardDrive, Calendar, Tag } from 'lucide-react';
-import { formatFileSize, formatDate } from './utils/formatters';
+
+import { formatFileSize } from "@features/files/utils/formatFileSize";
+import { formatDate } from "@features/files/utils/formatDate";
 
 /**
- * Sidebar de métadonnées du fichier - RESPONSIVE
- * Sur mobile: Modal en bas, sur desktop: sidebar à droite
- */
+* Sidebar de métadonnées du fichier - RESPONSIVE
+* Sur mobile: Modal en bas, sur desktop: sidebar à droite
+*/
 export default function PreviewSidebar({ 
   file, 
   metadata, 

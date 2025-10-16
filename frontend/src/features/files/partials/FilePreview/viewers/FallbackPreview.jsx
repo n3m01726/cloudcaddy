@@ -3,7 +3,7 @@
 // ============================================
 import { AlertCircle, ExternalLink, Download } from 'lucide-react';
 
-export function FallbackPreview({ file, previewData, onDownload }) {
+export default function FallbackPreview({ file, previewData, onDownload }) {
   const ext = file.name?.split('.').pop()?.toUpperCase() || 'INCONNU';
 
   return (

@@ -20,18 +20,20 @@ export default function Navigation({ folderHistory, currentFolderName, onHome, o
   }
 
   return (
-    <nav className="flex items-center px-6 py-4 border-b border-gray-200 bg-gray-50 overflow-x-auto">
-      <ol className="flex items-center text-sm text-gray-600">
-        {/* Home */}
-        <li>
+    <nav className="flex items-center px-3 sm:px-6 py-3 sm:py-4 border-b border-gray-200 bg-gray-50 overflow-x-auto scrollbar-hide">
+      <ol className="flex items-center text-xs sm:text-sm text-gray-600 min-w-0 flex-nowrap">
+        {/* Home - Toujours visible */}
+        <li className="flex-shrink-0">
           <button
             onClick={onHome}
-            className="text-gray-500 hover:text-gray-700 flex items-center"
+            className="text-gray-500 hover:text-gray-700 flex items-center p-1"
+            aria-label="Retour à l'accueil"
           >
-            <Home className="w-4 h-4" />
+            <Home className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </li>
 
+ 
         {/* Breadcrumb items */}
         {breadcrumbItems.map((item, idx) => (
   <li key={idx} className="flex items-center">
@@ -52,3 +54,17 @@ export default function Navigation({ folderHistory, currentFolderName, onHome, o
     </nav>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

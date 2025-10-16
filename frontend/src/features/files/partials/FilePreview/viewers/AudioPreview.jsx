@@ -1,7 +1,7 @@
 // ============================================
 // AudioPreview.jsx - RESPONSIVE
 // ============================================
-export function AudioPreview({ file, previewData }) {
+export default function AudioPreview({ file, previewData }) {
   const audioUrl = previewData.previewUrl || 
                    previewData.url || 
                    previewData.webContentLink ||

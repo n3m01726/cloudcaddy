@@ -1,10 +1,11 @@
+
 // ============================================
 // ImagePreview.jsx - RESPONSIVE
 // ============================================
 import { useState } from 'react';
 import { AlertCircle, ExternalLink } from 'lucide-react';
 
-export function ImagePreview({ file, userId, previewData }) {
+export default function ImagePreview({ file, userId, previewData }) {
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
   const imgSrc = `${API_URL}/files/${userId}/thumbnail/${file.provider}/${file.id}`;
   

@@ -9,6 +9,9 @@ export default {
       fontFamily: {
         bricolage: ['Bricolage Grotesque', 'sans-serif'],
       },
+      screens: {
+        'xs': '475px',
+      },
     },
   },
   plugins: [],

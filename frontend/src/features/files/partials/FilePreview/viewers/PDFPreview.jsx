@@ -1,7 +1,7 @@
 // ============================================
 // PDFPreview.jsx - RESPONSIVE
 // ============================================
-export function PDFPreview({ file, previewData }) {
+export default function PDFPreview({ file, previewData }) {
   const pdfUrl = previewData.previewUrl || 
                  previewData.url ||
                  `https://drive.google.com/file/d/${file.id}/preview`;
