@@ -114,7 +114,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
                 className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg 
                   text-[#666666] hover:bg-[#F5F5F5] transition"
               >
-                <FolderHeart className={`w-4 h-4 ${fav.color} fill-current`} />
+                <FolderHeart className={`w-6 h-6 ${fav.color} fill-current`} />
                 <span className="text-sm">{fav.name}</span>
               </button>
             ))}
