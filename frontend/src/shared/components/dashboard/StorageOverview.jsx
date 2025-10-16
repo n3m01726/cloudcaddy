@@ -1,19 +1,37 @@
+import { FaGoogle, FaDropbox } from 'react-icons/fa';
 const StorageOverview = ({ storageData }) => {
   // Mock data
-  const mockData = {
-    totalUsed: 8,
-    totalAvailable: 10,
-    providers: [
-      { name: 'Google Drive', used: 5.2, color: '#4285F4', icon: '🔵' },
-      { name: 'Dropbox', used: 2.8, color: '#0061FF', icon: '🔷' },
-    ],
-    byType: [
-      { type: 'Documents', size: 3.2 },
-      { type: 'Images', size: 2.8 },
-      { type: 'Videos', size: 1.5 },
-      { type: 'Others', size: 0.5 },
-    ],
-  };
+const mockData = {
+  totalUsed: 8,
+  totalAvailable: 10,
+  providers: [
+    { 
+      name: 'Google Drive',
+      used: 5.2,
+      color: '#4285F4',
+      icon: <FaGoogle className="text-[#4285F4]" />,
+    },
+    { 
+      name: 'Dropbox',
+      used: 2.8,
+      color: '#0061FF',
+      icon: <FaDropbox className="text-[#0061FF]" />,
+    },
+  ],
+  byType: [
+    { type: 'Documents', size: 3.2 },
+    { type: 'Images', size: 2.8 },
+    { type: 'Videos', size: 1.5 },
+    { type: 'Others', size: 0.5 },
+  ],
+};
+
+
+
+
+
+
+
 
   const data = storageData || mockData;
   const percentage = (data.totalUsed / data.totalAvailable) * 100;

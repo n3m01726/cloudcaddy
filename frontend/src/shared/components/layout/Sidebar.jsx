@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { 
   Cloud, Search, Folder, Image, Users, Inbox, Trash2, 
-  Star, Plus, Settings, Map, LogOut, CheckCircle, PlusCircle, Crown
+  FolderHeart, Plus, Settings, Map, LogOut, CheckCircle, PlusCircle, Crown
 } from 'lucide-react';
-
+import { FaGoogle, FaDropbox, FaFolder } from 'react-icons/fa'; // react-icons utilise FontAwesome
 const Sidebar = ({ currentPath = '/', onNavigate }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -17,14 +17,14 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
   ];
 
   const favorites = [
-    { id: 1, name: 'Work Documents', icon: Star, color: 'text-yellow-400' },
-    { id: 2, name: 'Photos 2024', icon: Star, color: 'text-yellow-400' },
-    { id: 3, name: 'Client Projects', icon: Star, color: 'text-yellow-400' },
+    { id: 1, name: 'Work Documents', icon: FolderHeart, color: 'text-yellow-400' },
+    { id: 2, name: 'Photos 2024', icon: FolderHeart, color: 'text-yellow-400' },
+    { id: 3, name: 'Client Projects', icon: FolderHeart, color: 'text-yellow-400' },
   ];
 
   const connectedServices = [
-    { id: 'google', name: 'Google Drive', icon: '🔵', connected: true },
-    { id: 'dropbox', name: 'Dropbox', icon: '🔷', connected: true },
+    { id: 'google', name: 'Google Drive', icon: <FaGoogle className="text-[#4285F4]" />, connected: true },
+    { id: 'dropbox', name: 'Dropbox', icon: <FaDropbox className="text-[#0061FF]" />, connected: true },
   ];
 
   const storageUsed = 8;
@@ -114,7 +114,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
                 className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg 
                   text-[#666666] hover:bg-[#F5F5F5] transition"
               >
-                <Star className={`w-4 h-4 ${fav.color} fill-current`} />
+                <FolderHeart className={`w-4 h-4 ${fav.color} fill-current`} />
                 <span className="text-sm">{fav.name}</span>
               </button>
             ))}

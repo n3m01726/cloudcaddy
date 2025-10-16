@@ -81,14 +81,14 @@ const ActivityFeed = ({ activities = [] }) => {
               <div className={`w-8 h-8 ${activity.bgColor} rounded-full flex items-center justify-center flex-shrink-0`}>
                 <Icon className={`w-4 h-4 ${activity.iconColor}`} />
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 text-left">
+              <p className="text-xs text-[#999999] mt-1">
+                  {formatDate(activity.time)}
+                </p>
                 <p className="text-sm text-[#1A1A1A]">
                   <span className="font-medium">{activity.user}</span>{' '}
                   {activity.action}{' '}
                   <span className="font-medium">{activity.target}</span>
-                </p>
-                <p className="text-xs text-[#999999] mt-1">
-                  {formatDate(activity.time)}
                 </p>
               </div>
             </div>

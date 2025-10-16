@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+body {
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
 /* Cacher les scrollbars mais garder le scroll */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;

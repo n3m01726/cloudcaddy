@@ -1,7 +1,7 @@
 import { FileText, FileSpreadsheet, Image as ImageIcon, FileCode, MoreHorizontal } from 'lucide-react';
 import { formatFileSize } from '@/features/files/utils/formatFileSize';
 import { formatDate } from '@/features/files/utils/formatDate';
-
+import { FaGoogle, FaDropbox, FaFolder } from 'react-icons/fa'; // react-icons utilise FontAwesome
 const RecentFiles = ({ files = [], onViewAll }) => {
   // Mock data si pas de fichiers fournis
   const mockFiles = [
@@ -65,11 +65,11 @@ const RecentFiles = ({ files = [], onViewAll }) => {
     return { Icon: FileText, bgColor: 'bg-gray-100', iconColor: 'text-gray-600' };
   };
 
-  const getProviderIcon = (provider) => {
-    if (provider === 'google') return '🔵';
-    if (provider === 'dropbox') return '🔷';
-    return '📁';
-  };
+const getProviderIcon = (provider) => {
+  if (provider === 'google') return <FaGoogle className='text-[#4285F4]'/>;
+  if (provider === 'dropbox') return <FaDropbox className='text-[#0061FF]'/>;
+  return <FaFolder />;
+};
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6">
