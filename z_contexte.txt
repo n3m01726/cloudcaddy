@@ -87,6 +87,13 @@
 │   │   │   │   ├── pages
 │   │   │   │   │   └── FileExplorer.jsx
 │   │   │   │   ├── partials
+│   │   │   │   │   ├── FileItem
+│   │   │   │   │   │   ├── hooks
+│   │   │   │   │   │   │   ├── useFileActionsMenu.js
+│   │   │   │   │   │   │   └── useFileMetadata.js
+│   │   │   │   │   │   ├── index.jsx
+│   │   │   │   │   │   └── utils
+│   │   │   │   │   │       └── fileIcons.js
 │   │   │   │   │   └── FilePreview
 │   │   │   │   │       ├── PreviewContent.jsx
 │   │   │   │   │       ├── PreviewFooter.jsx
@@ -97,8 +104,7 @@
 │   │   │   │   │       │   └── usePreviewLoader.js
 │   │   │   │   │       ├── index.jsx
 │   │   │   │   │       ├── utils
-│   │   │   │   │       │   ├── fileTypeDetector.js
-│   │   │   │   │       │   └── formatters.js
+│   │   │   │   │       │   └── fileTypeDetector.js
 │   │   │   │   │       └── viewers
 │   │   │   │   │           ├── AudioPreview.jsx
 │   │   │   │   │           ├── FallbackPreview.jsx
@@ -123,8 +129,9 @@
 │   │   │   ├── roadmap
 │   │   │   │   ├── components
 │   │   │   │   │   └── Roadmap.jsx
-│   │   │   │   └── data
-│   │   │   │       └── roadmap.json
+│   │   │   │   ├── data
+│   │   │   │   │   └── roadmap.json
+│   │   │   │   └── pages
 │   │   │   ├── settings
 │   │   │   │   └── pages
 │   │   │   └── tagManager
@@ -142,11 +149,13 @@
 │   │       │   ├── Input.jsx
 │   │       │   ├── Navbar.jsx
 │   │       │   └── index.js
-│   │       └── hooks
-│   │           ├── .DS_Store
-│   │           └── useUserInfo.js
+│   │       ├── hooks
+│   │       │   ├── .DS_Store
+│   │       │   └── useUserInfo.js
+│   │       └── utils
 │   ├── tailwind.config.js
 │   └── vite.config.js
+├── index_dash.html
 └── tree.js
 
 
