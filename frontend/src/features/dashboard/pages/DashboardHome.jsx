@@ -11,11 +11,8 @@ import {
   FileRequests,
 } from '@/shared/components/dashboard';
 
-const DashboardHome = () => {
+const DashboardHome = ({ userId }) => { // ← Reçoit userId en prop
   const navigate = useNavigate();
-  
-  // Récupérer userId depuis localStorage
-  const userId = localStorage.getItem('userId');
   
   // Charger les données du dashboard
   const { data, loading, error, refresh } = useDashboardData(userId);
@@ -35,7 +32,7 @@ const DashboardHome = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center h-full">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#3B82F6] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-[#666666]">Loading dashboard...</p>
@@ -67,8 +64,8 @@ const DashboardHome = () => {
   return (
     <div className="p-6 space-y-6">
       
-      {/* Welcome Banner */}
-      <WelcomeBanner onViewActivity={handleViewActivity} />
+ {/* Welcome Banner */}
+    <WelcomeBanner userId={userId} onViewActivity={handleViewActivity} /> {/* ← Ajouter userId */}
 
       {/* Quick Actions */}
       <QuickActions />

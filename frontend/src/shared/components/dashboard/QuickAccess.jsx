@@ -1,41 +1,17 @@
-import { Folder, MoreHorizontal } from 'lucide-react';
+import { Folder, MoreHorizontal, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const QuickAccess = ({ folders = [] }) => {
   const navigate = useNavigate();
-
-  // Fonction pour assigner une couleur selon le type de fichier
-  const getFolderColor = (file) => {
-    const mime = file.mimeType?.toLowerCase() || '';
-    
-    if (mime.includes('pdf') || mime.includes('document')) {
-      return 'text-blue-500';
-    }
-    if (mime.includes('spreadsheet') || mime.includes('excel')) {
-      return 'text-green-500';
-    }
-    if (mime.includes('image')) {
-      return 'text-purple-500';
-    }
-    if (mime.includes('video')) {
-      return 'text-red-500';
-    }
-    if (mime.includes('presentation')) {
-      return 'text-orange-500';
-    }
-    
-    // Couleur par défaut
-    return 'text-yellow-500';
-  };
 
   // Convertir les fichiers starred en format folders
   const displayFolders = folders.length > 0 
     ? folders.slice(0, 4).map(file => ({
         id: file.id,
         name: file.name,
-        color: getFolderColor(file),
+        color: 'text-yellow-500',
+        fileCount: 1,
         provider: file.provider,
-        mimeType: file.mimeType,
       }))
     : [];
 
@@ -46,10 +22,10 @@ const QuickAccess = ({ folders = [] }) => {
           <h3 className="text-lg font-semibold text-[#1A1A1A]">Quick Access</h3>
         </div>
         <div className="text-center py-8">
-          <Folder className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-          <p className="text-[#999999] text-sm">No quick access items</p>
+          <Star className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+          <p className="text-[#999999] text-sm">Aucun favori</p>
           <p className="text-[#999999] text-xs mt-1">
-            Add files to quick access for faster access
+            Ajoutez des fichiers aux favoris pour un accès rapide
           </p>
         </div>
       </div>
@@ -76,7 +52,7 @@ const QuickAccess = ({ folders = [] }) => {
             onClick={() => navigate('/files')}
           >
             <div className="flex items-center space-x-3 mb-2">
-              <Folder className={`w-5 h-5 ${folder.color}`} />
+              <Star className={`w-5 h-5 ${folder.color} fill-current`} />
               <span className="text-sm font-medium text-[#1A1A1A] truncate flex-1">
                 {folder.name}
               </span>

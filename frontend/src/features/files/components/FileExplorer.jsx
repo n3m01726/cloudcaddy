@@ -9,7 +9,7 @@ import { loadFiles } from '../utils/loadFiles';
 import { loadMetadataForFiles } from '../utils/loadMetadataForFiles';
 import { filesService } from '../../../core/services/api';
 
-export default function FileExplorer({ userId }) {
+export default function FileExplorer({ userId, filter }) {
   const [files, setFiles] = useState([]);
   const [metadata, setMetadata] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,9 @@ export default function FileExplorer({ userId }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [downloading, setDownloading] = useState(null);
-  const [activeTab, setActiveTab] = useState('google_drive');
+  
+  // Gérer le filtre depuis les props (pour /photos, /shared, etc.)
+  const [activeTab, setActiveTab] = useState(filter || 'all');
   const [searchBarVisible, setSearchBarVisible] = useState(false);
 
   const [providerStates, setProviderStates] = useState({
@@ -44,6 +46,13 @@ export default function FileExplorer({ userId }) {
     handleLoadFiles();
   }, [userId, activeTab, handleLoadFiles]);
 
+  // Mettre à jour activeTab si le filtre change
+  useEffect(() => {
+    if (filter && filter !== activeTab) {
+      setActiveTab(filter);
+    }
+  }, [filter, activeTab]);
+
   // Navigation dans les dossiers
   const handleFolderClick = folder => {
     const provider = folder.provider;
@@ -65,7 +74,7 @@ export default function FileExplorer({ userId }) {
 
   const handleBackClick = () => {
     if (activeTab === 'favorites') return;
-    const currentProvider = activeTab;
+    const currentProvider = activeTab === 'all' ? 'google_drive' : activeTab;
     const currentState = providerStates[currentProvider];
     if (!currentState.folderHistory.length) return;
 
@@ -100,8 +109,9 @@ export default function FileExplorer({ userId }) {
     e?.preventDefault();
     if (!searchQuery.trim()) {
       if (activeTab === 'favorites') return;
-      const providerState = providerStates[activeTab];
-      handleLoadFiles(providerState.currentFolder, providerState.currentFolderName, activeTab);
+      const currentProvider = activeTab === 'all' ? 'google_drive' : activeTab;
+      const providerState = providerStates[currentProvider];
+      handleLoadFiles(providerState.currentFolder, providerState.currentFolderName, currentProvider);
       return;
     }
     setIsSearching(true);
@@ -110,7 +120,7 @@ export default function FileExplorer({ userId }) {
       const response = await filesService.searchFiles(userId, searchQuery);
       const filesList = response.files || [];
       setFiles(filesList);
-      await loadMetadataForFiles(filesList);
+      await loadMetadataForFiles(filesList, userId, setMetadata);
     } catch (err) {
       setError('Erreur lors de la recherche');
       console.error(err);
@@ -135,38 +145,45 @@ export default function FileExplorer({ userId }) {
   // Rafraîchir les fichiers
   const handleRefresh = () => {
     if (activeTab === 'favorites') return;
-    const currentState = providerStates[activeTab];
-    handleLoadFiles(currentState?.currentFolder || null, currentState?.currentFolderName || '', activeTab);
+    const currentProvider = activeTab === 'all' ? 'google_drive' : activeTab;
+    const currentState = providerStates[currentProvider];
+    handleLoadFiles(currentState?.currentFolder || null, currentState?.currentFolderName || '', currentProvider);
   };
 
   // Gestion des onglets
   const handleTabChange = newTab => {
     setActiveTab(newTab);
     if (newTab === 'favorites') return;
-    const providerState = providerStates[newTab];
+    const providerState = providerStates[newTab] || { currentFolder: null, currentFolderName: '' };
     handleLoadFiles(providerState.currentFolder, providerState.currentFolderName, newTab);
   };
 
   // Breadcrumb pour navigation
   const handleBreadcrumbClick = index => {
     if (activeTab === 'favorites') return;
-    const currentState = providerStates[activeTab];
+    const currentProvider = activeTab === 'all' ? 'google_drive' : activeTab;
+    const currentState = providerStates[currentProvider];
     const targetFolder = currentState.folderHistory[index];
     const newHistory = currentState.folderHistory.slice(0, index);
     setProviderStates(prev => ({
       ...prev,
-      [activeTab]: { ...prev[activeTab], folderHistory: newHistory }
+      [currentProvider]: { ...prev[currentProvider], folderHistory: newHistory }
     }));
-    handleLoadFiles(targetFolder.id === 'root' ? null : targetFolder.id, targetFolder.name, activeTab);
+    handleLoadFiles(targetFolder.id === 'root' ? null : targetFolder.id, targetFolder.name, currentProvider);
   };
 
-  const currentProviderState = activeTab === 'favorites' ? null : providerStates[activeTab];
-  const filteredFiles = activeTab === 'favorites' ? [] : activeTab === 'all' ? files : files.filter(f => f.provider === activeTab);
+  const currentProvider = activeTab === 'all' ? 'google_drive' : activeTab;
+  const currentProviderState = activeTab === 'favorites' ? null : providerStates[currentProvider];
+  const filteredFiles = activeTab === 'favorites' 
+    ? [] 
+    : activeTab === 'all' 
+      ? files 
+      : files.filter(f => f.provider === activeTab);
 
-  // Rendu avec classes responsive
+  // Rendu SANS les wrappers max-w et padding (MainLayout s'en occupe)
   return (
-    <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-3 sm:py-6">
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="w-full">
+      <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
         <Tabs
           activeTab={activeTab}
           setActiveTab={handleTabChange}
@@ -195,11 +212,11 @@ export default function FileExplorer({ userId }) {
         />
 
         {error && (
-          <div className="m-3 sm:m-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <span className="text-sm sm:text-base">{error}</span>
+          <div className="m-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-center justify-between">
+            <span>{error}</span>
             <button 
               onClick={() => setError(null)} 
-              className="text-red-500 hover:text-red-700 self-end sm:self-auto"
+              className="text-red-500 hover:text-red-700"
             >
               ✕
             </button>
@@ -208,7 +225,7 @@ export default function FileExplorer({ userId }) {
 
         {/* Onglet Favoris */}
         {activeTab === 'favorites' ? (
-          <div className="p-3 sm:p-6">
+          <div className="p-6">
             <p className="text-center text-gray-500">Favoris - À venir</p>
           </div>
         ) : (
@@ -221,19 +238,21 @@ export default function FileExplorer({ userId }) {
             onDownload={handleDownload}
             downloading={downloading}
             onFileMoved={() => {
-              const currentState = providerStates[activeTab];
+              const currentProvider = activeTab === 'all' ? 'google_drive' : activeTab;
+              const currentState = providerStates[currentProvider];
               handleLoadFiles(
                 currentState?.currentFolder || null,
                 currentState?.currentFolderName || '',
-                activeTab
+                currentProvider
               );
             }}
             onFileCopied={() => {
-              const currentState = providerStates[activeTab];
+              const currentProvider = activeTab === 'all' ? 'google_drive' : activeTab;
+              const currentState = providerStates[currentProvider];
               handleLoadFiles(
                 currentState?.currentFolder || null,
                 currentState?.currentFolderName || '',
-                activeTab
+                currentProvider
               );
             }}
           />

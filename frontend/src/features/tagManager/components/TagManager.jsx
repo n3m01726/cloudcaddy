@@ -1,6 +1,6 @@
 // frontend/src/components/Tags/TagManager.jsx
 import { useState, useEffect } from 'react';
-import { X, Tag as TagIcon, Palette, Folder } from 'lucide-react';
+import { X, Tag as TagIcon, Palette, FolderPlus, Star } from 'lucide-react';
 import TagBadge from './TagBadge';
 import TagInput from './TagInput';
 import { metadataService } from '@core/services/api';
@@ -233,15 +233,16 @@ export default function TagManager({
     }}
     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
       starred 
-        ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200' 
+        ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
     }`}
   >
-    <Folder className={`w-5 h-5 ${starred ? 'fill-yellow-500' : ''}`} />
+    <FolderPlus className={`w-5 h-5 ${starred ? 'border-blue-500' : ''}`} />
     <span className="font-medium">
-      {starred ? 'In Quick Access' : 'Add to Quick Access'}
+      {starred ? 'Added to Quick Access' : 'Add to Quick Access'}
     </span>
-  </button>
+    </button>
+
 </div>
 
             {/* Tags existants */}

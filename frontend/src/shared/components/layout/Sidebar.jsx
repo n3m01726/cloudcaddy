@@ -56,10 +56,10 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
   };
 
   return (
-    <aside className="w-60 bg-white border-r border-gray-200 flex flex-col">
+    <aside className="w-60 bg-white border-r border-gray-200 flex flex-col border-b border-t border-gray-200">
       
       {/* Logo */}
-      <div className="h-16 flex items-center px-6 border-b border-gray-200">
+      <div className="h-16 flex items-center px-6 ">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-[#3B82F6] rounded-lg flex items-center justify-center">
             <Cloud className="w-4 h-4 text-white" />
@@ -69,7 +69,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto py-4">
+      <div className="overflow-y-auto py-4">
         
         {/* Quick Search */}
         <div className="px-4 mb-4">
@@ -159,15 +159,16 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
         </div>
       </div>
 
-      {/* Bottom Section */}
-      <div className="border-t border-gray-200 p-4">
-        {/* Storage Info */}
-        <div className="bg-gradient-to-br from-[#3B82F6] to-blue-600 rounded-xl p-4 mb-3 text-white">
+      {/* Bottom Section 
+      <div className="border-t border-gray-200 px-4">
+        {/* Storage Info
+        <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl p-4 mb-3 text-white mt-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium">Pro Plan</span>
-            <Crown className="w-4 h-4 text-yellow-300" />
+            <span className="text-sm font-bold">UPGRADE TO PRO PLAN</span>
+            <Crown className="w-6 h-6 text-white-300" />
           </div>
-          <div className="mb-2">
+          <span className="text-xs">Unlock more power! Upgrade to Pro and enjoy advanced features designed to save you time and boost your workflow.</span>
+          <div className="mb-2 mt-4">
             <div className="w-full bg-white/30 rounded-full h-2">
               <div 
                 className="bg-white rounded-full h-2 transition-all duration-500" 
@@ -179,34 +180,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
             {storageUsed}GB of {storageTotal}GB used
           </div>
         </div>
-
-        {/* Settings */}
-        <div className="space-y-1">
-          <button
-            onClick={() => onNavigate?.('/settings')}
-            className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg 
-              text-[#666666] hover:bg-[#F5F5F5] transition"
-          >
-            <Settings className="w-4 h-4" />
-            <span className="text-sm">Settings</span>
-          </button>
-          <button
-            onClick={() => onNavigate?.('/roadmap')}
-            className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg 
-              text-[#666666] hover:bg-[#F5F5F5] transition"
-          >
-            <Map className="w-4 h-4" />
-            <span className="text-sm">Roadmap</span>
-          </button>
-          <button
-            className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg 
-              text-red-500 hover:bg-red-50 transition"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="text-sm">Logout</span>
-          </button>
-        </div>
-      </div>
+      </div>*/}
     </aside>
   );
 };

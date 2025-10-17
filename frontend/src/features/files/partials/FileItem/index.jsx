@@ -25,6 +25,7 @@ const fileIcons = {
 
 export default function FileItem({ 
   file, 
+  metadata: metadataFromProps, // ← Renommer la prop pour éviter conflit
   userId, 
   onFolderClick, 
   onDownload, 
@@ -36,7 +37,7 @@ export default function FileItem({
   const [showActions, setShowActions] = useState(false);
   const [actionPosition, setActionPosition] = useState({ top: 0, left: 0 });
   const [showTagManager, setShowTagManager] = useState(false);
-  const [metadata, setMetadata] = useState(null);
+  const [metadata, setMetadata] = useState(metadataFromProps || null); // ← Initialiser avec props
   const [loadingMetadata, setLoadingMetadata] = useState(false);
   
   const isLoadingRef = useRef(false);
@@ -44,9 +45,19 @@ export default function FileItem({
   const ext = file.name.split('.').pop().toLowerCase();
   const IconComponent = file.type === 'folder' ? Folder : (fileIcons[ext] || fileIcons.default);
 
+  // ✅ Synchroniser avec les props si elles changent
   useEffect(() => {
-    loadMetadata();
-  }, [file.id, file.provider, userId]);
+    if (metadataFromProps) {
+      setMetadata(metadataFromProps);
+    }
+  }, [metadataFromProps]);
+
+  // ✅ Charger les métadonnées seulement si pas déjà fournies
+  useEffect(() => {
+    if (!metadataFromProps) {
+      loadMetadata();
+    }
+  }, [file.id, file.provider, userId, metadataFromProps]);
 
   const loadMetadata = async () => {
     if (isLoadingRef.current) return;
@@ -163,25 +174,24 @@ export default function FileItem({
               {loadingMetadata && (
                 <RefreshCw className="w-3 h-3 text-gray-400 animate-spin flex-shrink-0" />
               )}
-        
-              {/* Tags - Visibles sur tablet et desktop */}
-              {tags.length > 0 && (
-                <div className="hidden sm:flex flex-wrap gap-1"> 
-                  {tags.slice(0, 3).map((tag) => (
-                    <TagBadge 
-                      key={tag} 
-                      tag={tag} 
-                      size="sm"
-                      color={tagColors[tag] || 'blue'}
-                    />
-                  ))}
-                  {tags.length > 3 && (
-                    <span className="text-xs text-gray-500 px-1.5 py-0.5">
-                      +{tags.length - 3}
-                    </span>
-                  )}
-                </div>
-              )}
+                  {/* Tags - Masqués sur très petit écran, visibles sur mobile moyen+ */}
+            {tags.length > 0 && (
+              <div className="hidden xs:flex flex-wrap gap-1 mb-2"> 
+                {tags.slice(0, 2).map((tag) => (
+                  <TagBadge 
+                    key={tag} 
+                    tag={tag} 
+                    size="sm"
+                    color={tagColors[tag] || 'blue'}
+                  />
+                ))}
+                {tags.length > 2 && (
+                  <span className="text-xs text-gray-500 px-1.5 py-0.5">
+                    +{tags.length - 2}
+                  </span>
+                )}
+              </div>
+            )}
             </div>
             
             {/* Infos : Taille + Date */}

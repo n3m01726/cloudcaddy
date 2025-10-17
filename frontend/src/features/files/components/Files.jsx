@@ -4,7 +4,17 @@ import { RefreshCw, File, ChevronDown } from 'lucide-react';
 
 const FILES_PER_PAGE = 10;
 
-export default function Files({ files, loading, userId, onFolderClick, onDownload, downloading, onFileMoved, onFileCopied }) {
+export default function Files({ 
+  files, 
+  metadata, // ← AJOUTE ÇA dans les props
+  loading, 
+  userId, 
+  onFolderClick, 
+  onDownload, 
+  downloading, 
+  onFileMoved, 
+  onFileCopied 
+}) {
   const [displayCount, setDisplayCount] = useState(FILES_PER_PAGE);
 
   // Fichiers à afficher basés sur le compteur
@@ -45,18 +55,24 @@ export default function Files({ files, loading, userId, onFolderClick, onDownloa
   return (
     <div className="border-b border-gray-200">
       <div className="p-3 sm:p-6 space-y-2">
-        {displayedFiles.map(file => (
-          <FileItem
-            key={`${file.provider}-${file.id}`}
-            file={file}
-            userId={userId}
-            onFolderClick={onFolderClick}
-            onDownload={onDownload}
-            downloading={downloading}
-            onFileMoved={onFileMoved}
-            onFileCopied={onFileCopied}
-          />
-        ))}
+        {displayedFiles.map(file => {
+          // ✅ Trouver les métadonnées pour ce fichier
+          const fileMeta = metadata?.find(m => m.fileId === file.id);
+          
+          return (
+            <FileItem
+              key={`${file.provider}-${file.id}`}
+              file={file}
+              metadata={fileMeta} // ← AJOUTE ÇA
+              userId={userId}
+              onFolderClick={onFolderClick}
+              onDownload={onDownload}
+              downloading={downloading}
+              onFileMoved={onFileMoved}
+              onFileCopied={onFileCopied}
+            />
+          );
+        })}
       </div>
 
       {hasMore && (
