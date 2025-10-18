@@ -37,7 +37,7 @@ const QuickAccess = ({ folders = [] }) => {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-[#1A1A1A]">Quick Access</h3>
         <button 
-          onClick={() => navigate('/files?tab=starred')}
+          onClick={() => navigate('/photos')}
           className="text-[#999999] hover:text-[#1A1A1A]"
         >
           <MoreHorizontal className="w-4 h-4" />

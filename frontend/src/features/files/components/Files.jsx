@@ -1,20 +1,10 @@
 import { useState, useMemo } from 'react';
-import FileItem from './FileItem';
+import FileItem from '../partials/FileItem/index';
 import { RefreshCw, File, ChevronDown } from 'lucide-react';
 
 const FILES_PER_PAGE = 10;
 
-export default function Files({ 
-  files, 
-  metadata, // ← AJOUTE ÇA dans les props
-  loading, 
-  userId, 
-  onFolderClick, 
-  onDownload, 
-  downloading, 
-  onFileMoved, 
-  onFileCopied 
-}) {
+export default function Files({ files, loading, userId, onFolderClick, onDownload, downloading, onFileMoved, onFileCopied }) {
   const [displayCount, setDisplayCount] = useState(FILES_PER_PAGE);
 
   // Fichiers à afficher basés sur le compteur
@@ -38,7 +28,7 @@ export default function Files({
     return (
       <div className="text-center py-12 text-gray-500 border-b border-gray-200">
         <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-2" />
-        <p className="text-sm sm:text-base">Chargement des fichiers...</p>
+        Chargement des fichiers...
       </div>
     );
   }
@@ -46,53 +36,40 @@ export default function Files({
   if (!files.length) {
     return (
       <div className="text-center py-12 text-gray-500 border-b border-gray-200">
-        <File className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 opacity-50" />
-        <p className="text-sm sm:text-base">Aucun fichier trouvé</p>
+        <File className="w-12 h-12 mx-auto mb-2 opacity-50" />
+        <p>Aucun fichier trouvé</p>
       </div>
     );
   }
 
   return (
     <div className="border-b border-gray-200">
-      <div className="p-3 sm:p-6 space-y-2">
-     {displayedFiles.map(file => {
-  // ✅ Trouver les métadonnées pour ce fichier
-  const fileMeta = metadata?.find(m => m.fileId === file.id);
-  
-  console.log(`🔎 Matching for ${file.name}:`, {
-    fileId: file.id,
-    foundMeta: !!fileMeta,
-    metaFileId: fileMeta?.fileId,
-    tags: fileMeta?.tags
-  }); // ← DEBUG
-  
-  return (
-    <FileItem
-      key={`${file.provider}-${file.id}`}
-      file={file}
-      metadata={fileMeta}
-      userId={userId}
-      onFolderClick={onFolderClick}
-      onDownload={onDownload}
-      downloading={downloading}
-      onFileMoved={onFileMoved}
-      onFileCopied={onFileCopied}
-    />
-  );
-})}
+      <div className="p-6 space-y-2">
+        {displayedFiles.map(file => (
+          <FileItem
+            key={`${file.provider}-${file.id}`}
+            file={file}
+            userId={userId}
+            onFolderClick={onFolderClick}
+            onDownload={onDownload}
+            downloading={downloading}
+            onFileMoved={onFileMoved}
+            onFileCopied={onFileCopied}
+          />
+        ))}
       </div>
 
       {hasMore && (
-        <div className="flex flex-col items-center py-4 sm:py-6 px-3 sm:px-6 bg-gray-50">
-          <p className="text-xs sm:text-sm text-gray-600 mb-3 text-center">
-            <span className="font-medium">{displayedFiles.length}</span> sur <span className="font-medium">{files.length}</span> fichiers
-            <span className="block sm:inline text-gray-400 sm:ml-1">
+        <div className="flex flex-col items-center py-6 px-6 bg-gray-50">
+          <p className="text-sm text-gray-600 mb-3">
+            Affichage de {displayedFiles.length} sur {files.length} fichiers
+            <span className="text-gray-400 ml-1">
               ({remainingCount} restant{remainingCount > 1 ? 's' : ''})
             </span>
           </p>
           <button
             onClick={handleLoadMore}
-            className="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors text-gray-700 font-medium shadow-sm text-sm sm:text-base w-full sm:w-auto justify-center"
+            className="flex items-center gap-2 px-6 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors text-gray-700 font-medium shadow-sm"
           >
             <ChevronDown className="w-4 h-4" />
             Charger plus de fichiers

@@ -16,8 +16,8 @@
         "[BUG] Topbar missing Google avatar, name, and email",
         "[BUG] Quick Access opens FileExplorer instead of FilePreview",
         "[BUG] Recent Files opens FileExplorer instead of FilePreview",
-        "[BUG] Favorites star and tags not displayed",
-        "[BUG] Closing Tag Manager refreshes entire FileExplorer instead of updating only the element"
+        "[DONE] Favorites star and tags not displayed",
+        "[DONE] Closing Tag Manager refreshes entire FileExplorer instead of updating only the element"
       ]
     },
 

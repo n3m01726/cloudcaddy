@@ -6,8 +6,7 @@ import SearchBar from './SearchBar';
 import Files from './Files';
 import Footer from './Footer';
 import { loadFiles } from '../utils/loadFiles';
-import { loadMetadataForFiles } from '../utils/loadMetadataForFiles';
-import { filesService } from '../../../core/services/api';
+import { filesService } from '@core/services/api';
 
 export default function FileExplorer({ userId, filter }) {
   const [files, setFiles] = useState([]);
