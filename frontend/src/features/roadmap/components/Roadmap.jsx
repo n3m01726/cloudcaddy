@@ -14,11 +14,6 @@ export default function Roadmap() {
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <header className="mb-10 border-b border-gray-200 pb-4">
-        <h1 className="text-3xl font-semibold text-gray-800">Project Roadmap</h1>
-        <p className="text-sm text-gray-500">
-          Version {version} • Last update:{" "}
-          {new Date(lastUpdate).toLocaleDateString()}
-        </p>
       </header>
 
       {/* Timeline */}

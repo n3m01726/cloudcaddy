@@ -55,24 +55,31 @@ export default function Files({
   return (
     <div className="border-b border-gray-200">
       <div className="p-3 sm:p-6 space-y-2">
-        {displayedFiles.map(file => {
-          // ✅ Trouver les métadonnées pour ce fichier
-          const fileMeta = metadata?.find(m => m.fileId === file.id);
-          
-          return (
-            <FileItem
-              key={`${file.provider}-${file.id}`}
-              file={file}
-              metadata={fileMeta} // ← AJOUTE ÇA
-              userId={userId}
-              onFolderClick={onFolderClick}
-              onDownload={onDownload}
-              downloading={downloading}
-              onFileMoved={onFileMoved}
-              onFileCopied={onFileCopied}
-            />
-          );
-        })}
+     {displayedFiles.map(file => {
+  // ✅ Trouver les métadonnées pour ce fichier
+  const fileMeta = metadata?.find(m => m.fileId === file.id);
+  
+  console.log(`🔎 Matching for ${file.name}:`, {
+    fileId: file.id,
+    foundMeta: !!fileMeta,
+    metaFileId: fileMeta?.fileId,
+    tags: fileMeta?.tags
+  }); // ← DEBUG
+  
+  return (
+    <FileItem
+      key={`${file.provider}-${file.id}`}
+      file={file}
+      metadata={fileMeta}
+      userId={userId}
+      onFolderClick={onFolderClick}
+      onDownload={onDownload}
+      downloading={downloading}
+      onFileMoved={onFileMoved}
+      onFileCopied={onFileCopied}
+    />
+  );
+})}
       </div>
 
       {hasMore && (

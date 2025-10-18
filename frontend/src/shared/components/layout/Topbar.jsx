@@ -2,6 +2,7 @@ import { Bell, LayoutGrid, UserPlus, Settings, LogOut, Map, PlugZap } from 'luci
 import { useUserInfo } from '@/shared/hooks/useUserInfo';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import roadmapData from "@features/roadmap/data/roadmap.json";
 
 const Topbar = ({ userId }) => {
   const { userInfo, loading } = useUserInfo(userId);
@@ -17,7 +18,15 @@ const routeInfo = {
   '/dashboard': { title: 'Dashboard', description: 'Vue générale de vos activités' },
   '/connections': { title: 'Connexions', description: 'Gérez vos clouds' },
   '/settings': { title: 'Paramètres', description: 'Configurez votre compte' },
-  '/roadmap': { title: 'Roadmap', description: 'Suivez les prochaines fonctionnalités' },
+  '/roadmap': { 
+    title: 'Roadmap',
+    description: (
+      <p className="text-sm text-gray-500">
+        Version {roadmapData.version} • Last update:{" "}
+        {new Date(roadmapData.lastUpdate).toLocaleDateString()}
+      </p>
+    )
+  },
   '/files': { title: 'Mes fichiers', description: 'Accédez à tous vos fichiers' },
 };
 

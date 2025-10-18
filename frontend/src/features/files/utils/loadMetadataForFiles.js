@@ -1,4 +1,5 @@
-import { metadataService } from '@core/services/api.js';
+import { metadataService } from '../../../core/services/api';
+
 export const loadMetadataForFiles = async (filesList, userId, setMetadata) => {
   try {
     const metadataPromises = filesList.map((file) =>

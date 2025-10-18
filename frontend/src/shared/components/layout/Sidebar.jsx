@@ -24,7 +24,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
 
   const connectedServices = [
     { id: 'google', name: 'Google Drive', icon: <FaGoogle className="text-[#4285F4]" />, connected: true },
-    { id: 'dropbox', name: 'Dropbox', icon: <FaDropbox className="text-[#0061FF]" />, connected: true },
+    { id: 'dropbox', name: 'Dropbox', icon: <FaDropbox className="text-[#0061FF]" />, connected: false },
   ];
 
   const storageUsed = 8;
