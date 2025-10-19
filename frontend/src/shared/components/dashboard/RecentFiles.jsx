@@ -1,4 +1,4 @@
-import { FileText, FileSpreadsheet, Image as ImageIcon, FileCode, MoreHorizontal } from 'lucide-react';
+import { Folder, FileText, FileSpreadsheet, Image as ImageIcon, FileCode, MoreHorizontal } from 'lucide-react';
 import { formatFileSize } from '@/features/files/utils/formatFileSize';
 import { formatDate } from '@/features/files/utils/formatDate';
 
@@ -38,7 +38,7 @@ const RecentFiles = ({ files = [], onViewAll }) => {
     if (mime.includes('presentation') || mime.includes('powerpoint')) {
       return { Icon: FileCode, bgColor: 'bg-orange-100', iconColor: 'text-orange-600' };
     }
-    return { Icon: FileText, bgColor: 'bg-gray-100', iconColor: 'text-gray-600' };
+    return { Icon: Folder, bgColor: 'bg-gray-100', iconColor: 'text-gray-600' };
   };
 
   const getProviderIcon = (provider) => {
