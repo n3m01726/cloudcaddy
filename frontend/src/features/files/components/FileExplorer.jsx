@@ -119,7 +119,6 @@ export default function FileExplorer({ userId, filter }) {
       const response = await filesService.searchFiles(userId, searchQuery);
       const filesList = response.files || [];
       setFiles(filesList);
-      await loadMetadataForFiles(filesList, userId, setMetadata);
     } catch (err) {
       setError('Erreur lors de la recherche');
       console.error(err);
@@ -159,8 +158,8 @@ export default function FileExplorer({ userId, filter }) {
 
   // Breadcrumb pour navigation
   const handleBreadcrumbClick = index => {
-    if (activeTab === 'favorites') return;
-    const currentProvider = activeTab === 'all' ? 'google_drive' : activeTab;
+    if (activeTab === 'allDrives') return;
+    const currentProvider = activeTab === 'allDrives' ? 'google_drive' : activeTab;
     const currentState = providerStates[currentProvider];
     const targetFolder = currentState.folderHistory[index];
     const newHistory = currentState.folderHistory.slice(0, index);

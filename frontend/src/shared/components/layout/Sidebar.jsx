@@ -24,7 +24,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
 
   const connectedServices = [
     { id: 'google', name: 'Google Drive', icon: <FaGoogle className="text-[#4285F4]" />, connected: true },
-    { id: 'dropbox', name: 'Dropbox', icon: <FaDropbox className="text-[#0061FF]" />, connected: false },
+    { id: 'dropbox', name: 'Dropbox', icon: <FaDropbox className="text-[#0061FF]" />, connected: true },
   ];
 
   const storageUsed = 8;
@@ -56,7 +56,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
   };
 
   return (
-    <aside className="w-60 bg-white border-r border-gray-200 flex flex-col border-b border-t border-gray-200">
+    <aside className="w-60 bg-white border-r flex flex-col border-b border-t border-gray-200">
       
       {/* Logo */}
       <div className="h-16 flex items-center px-6 ">
@@ -142,6 +142,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
                   <span>{service.icon}</span>
                   <span className="text-sm">{service.name}</span>
                 </div>
+                <span className="text-xs">{storagePercentage}%</span> 
                 {service.connected && (
                   <CheckCircle className="w-4 h-4 text-green-500" />
                 )}

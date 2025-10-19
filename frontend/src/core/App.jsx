@@ -131,11 +131,13 @@ function App() {
               <Route path="/roadmap" element={<Roadmap />} />
               <Route path="/activity" element={<div className="p-6">Activity Feed - Coming Soon</div>} />
               <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="/connections" element={<Connections userId={userId} />} />
             </Routes>
           </MainLayout>
         } />
       ) : (
-        <Route path="*" element={<Navigate to="/connections" replace />} />
+        <div> Something happens.</div>
+        
       )}
     </Routes>
   );
