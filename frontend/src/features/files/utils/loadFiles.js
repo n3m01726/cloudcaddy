@@ -1,12 +1,12 @@
-import { filesService } from '../../../core/services/api';
-import { loadMetadataForFiles } from './loadMetadataForFiles';
+import { filesService } from '@core/services/api';
+
 export const loadFiles = async (
   folderId,
   folderName,
   provider,
   userId,
   setFiles,
-  setMetadata,
+  setMetadata, // ← Garder pour compatibilité mais ne plus utiliser
   setProviderStates,
   setLoading,
   setError,
@@ -15,12 +15,15 @@ export const loadFiles = async (
   setLoading(true);
   setError(null);
   setSearchQuery('');
+  
   try {
     const response = await filesService.listFiles(userId, folderId);
     const filesList = response.files || [];
     setFiles(filesList);
-    // Charger les métadonnées pour tous les fichiers affichés
-    await loadMetadataForFiles(filesList, userId, setMetadata);
+
+    // ❌ NE PLUS charger les métadonnées ici
+    // Chaque FileItem va les charger lui-même
+    
     if (provider) {
       setProviderStates((prev) => ({
         ...prev,

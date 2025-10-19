@@ -9,26 +9,22 @@ const statusColors = {
 };
 
 export default function Roadmap() {
-  const { version, lastUpdate, sections } = roadmapData;
+  const { sections } = roadmapData;
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <header className="mb-10 border-b border-gray-200 pb-4">
-        <h1 className="text-3xl font-semibold text-gray-800">Project Roadmap</h1>
-        <p className="text-sm text-gray-500">
-          Version {version} • Last update:{" "}
-          {new Date(lastUpdate).toLocaleDateString()}
-        </p>
       </header>
 
       {/* Timeline */}
-      <div className="relative">
+      <div className="relative z-[1]">
         {/* Vertical line */}
-        <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-300"></div>
+        <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-300 z-0"></div>
+
 
         <div className="space-y-10">
           {sections.map((section, index) => (
-            <div key={index} className="relative pl-10">
+            <div key={index} className=" relative z-0 pl-10">
               {/* Point */}
               <span
                 className={`absolute left-[0.625rem] top-1 w-3.5 h-3.5 rounded-full border-2 ${statusColors[section.status]}`}

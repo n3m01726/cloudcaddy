@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+body {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #FAFAFA;
+  /* PAS de text-align ici ! */
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 /* Cacher les scrollbars mais garder le scroll */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;

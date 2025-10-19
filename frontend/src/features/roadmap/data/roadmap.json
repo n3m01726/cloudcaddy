@@ -1,23 +1,8 @@
 {
   "version": "0.8.0",
-  "lastUpdate": "2025-10-06",
+  "lastUpdate": "2025-10-18",
   "sections": [
-    {
-      "phase": "Core Structure",
-      "status": "done",
-      "description": "Foundational architecture.",
-      "tasks": [
-        "[DONE] Refactoring the project folder structure",
-        "[DONE] Set up Node.js backend + SQLite via Prisma",
-        "[DONE] Implement cloud API connectors (Drive, Dropbox, MEGA)",
-        "[DONE] Create FileExplorer core component",
-        "[DONE] Basic authentication and token storage",
-        "[DONE] Initial React frontend with Tailwind CSS",
-        "[DONE] Basic file operations (list, upload, download, delete)",
-        "[DONE] Initial MVP demo and feedback gathering"
-        
-      ]
-    },
+
     {
       "phase": "UI & Experience",
       "status": "in-progress",
@@ -26,9 +11,40 @@
         "Responsive design pass with Tailwind",
         "[DONE] Persistent tag colors and folder navigation",
         "[DONE] Tooltip and preview improvements",
-        "[DONE] Enhance header and navigation bar"
+        "[DONE] Enhance header and navigation bar",
+        "[DONE] Loading not centered in Dashboard",
+        "[DONE] Topbar missing Google avatar, name, and email",
+        "[DONE] Favorites star and tags not displayed",
+        "[DONE] Closing Tag Manager refreshes entire FileExplorer instead of updating only the element"
       ]
     },
+
+    {
+      "phase": "Enhancements",
+      "status": "planned",
+      "description": "User quality-of-life and deeper cloud features.",
+      "tasks": [
+        "Implement cloud API connectors (OneDrive)",
+        "Unified dashboard with cloud summaries",
+        "Activity history (uploads, syncs, deletions)",
+        "User preferences (theme, view mode)",
+        "Keyboard shortcuts and quick actions",
+        "[BUG] Error 500 when moving or copying a file"
+      ]
+    },
+
+    {
+      "phase": "Future Vision",
+      "status": "idea",
+      "description": "Long-term additions to expand beyond MVP.",
+      "tasks": [
+        "Team and shared spaces",
+        "Cloud sync monitoring with alerts",
+        "Public sharing links",
+        "AI-assisted search and file tagging"
+      ]
+    },
+
     {
       "phase": "App Pages",
       "status": "done",
@@ -40,28 +56,22 @@
         "[DONE] Add /logout route and redirect handling"
       ]
     },
+
     {
-      "phase": "Enhancements",
-      "status": "planned",
-      "description": "User quality-of-life and deeper cloud features.",
+      "phase": "Core Structure",
+      "status": "done",
+      "description": "Foundational architecture.",
       "tasks": [
-        "Implement cloud API connectors (OneDrive)",
-        "Unified dashboard with cloud summaries",
-        "Activity history (uploads, syncs, deletions)",
-        "User preferences (theme, view mode)",
-        "Keyboard shortcuts and quick actions"
-      ]
-    },
-    {
-      "phase": "Future Vision",
-      "status": "idea",
-      "description": "Long-term additions to expand beyond MVP.",
-      "tasks": [
-        "Team and shared spaces",
-        "Cloud sync monitoring with alerts",
-        "Public sharing links",
-        "AI-assisted search and file tagging"
+        "[DONE] Refactoring the project folder structure",
+        "[DONE] Set up Node.js backend + SQLite via Prisma",
+        "[DONE] Implement cloud API connectors (Drive, Dropbox)",
+        "[DONE] Create FileExplorer core component",
+        "[DONE] Basic authentication and token storage",
+        "[DONE] Initial React frontend with Tailwind CSS",
+        "[DONE] Basic file operations (list, upload, download, delete)",
+        "[DONE] Initial MVP demo and feedback gathering"
       ]
     }
+
   ]
 }
