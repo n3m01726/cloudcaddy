@@ -12,10 +12,8 @@
         "[DONE] Persistent tag colors and folder navigation",
         "[DONE] Tooltip and preview improvements",
         "[DONE] Enhance header and navigation bar",
-        "[BUG] Loading not centered in Dashboard",
-        "[BUG] Topbar missing Google avatar, name, and email",
-        "[BUG] Quick Access opens FileExplorer instead of FilePreview",
-        "[BUG] Recent Files opens FileExplorer instead of FilePreview",
+        "[DONE] Loading not centered in Dashboard",
+        "[DONE] Topbar missing Google avatar, name, and email",
         "[DONE] Favorites star and tags not displayed",
         "[DONE] Closing Tag Manager refreshes entire FileExplorer instead of updating only the element"
       ]

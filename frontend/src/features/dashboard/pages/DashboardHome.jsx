@@ -32,7 +32,7 @@ const DashboardHome = ({ userId }) => { // ← Reçoit userId en prop
 
   if (loading) {
     return (
-      <div className="flex items-center h-full">
+      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]"> {/* ← Hauteur écran - topbar */}
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#3B82F6] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-[#666666]">Loading dashboard...</p>
