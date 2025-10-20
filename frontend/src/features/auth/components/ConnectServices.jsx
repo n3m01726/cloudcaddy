@@ -1,168 +1,223 @@
-// Composant pour connecter les services cloud
+// frontend/src/features/auth/components/ConnectServices.jsx
 import { useState } from 'react';
-import { Cloud, Check } from 'lucide-react';
+import { Check, AlertCircle, Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { authService } from '@core/services/api';
 
 export default function ConnectServices({ userId, connectedServices, onUpdate }) {
   const [loading, setLoading] = useState(false);
+  const [loadingProvider, setLoadingProvider] = useState(null);
   const [error, setError] = useState(null);
 
   const handleConnectGoogle = async () => {
-    setLoading(true);
-    setError(null);
-
     try {
-      const { authUrl } = await authService.getGoogleAuthUrl();
-      // Rediriger vers l'URL d'authentification Google
+      setLoading(true);
+      setLoadingProvider('google_drive');
+      setError(null);
+      const { authUrl } = await authService.getGoogleAuthUrl(userId);
       window.location.href = authUrl;
     } catch (err) {
+      console.error('Erreur connexion Google Drive:', err);
       setError('Erreur lors de la connexion à Google Drive');
-      console.error(err);
       setLoading(false);
-    }
-  };
-
-  const handleDisconnect = async (provider) => {
-    if (!confirm(`Êtes-vous sûr de vouloir déconnecter ${provider} ?`)) {
-      return;
-    }
-
-    try {
-      await authService.disconnect(userId, provider);
-      onUpdate();
-    } catch (err) {
-      setError(`Erreur lors de la déconnexion de ${provider}`);
-      console.error(err);
+      setLoadingProvider(null);
     }
   };
 
   const handleConnectDropbox = async () => {
-  setLoading(true);
-  setError(null);
+    try {
+      setLoading(true);
+      setLoadingProvider('dropbox');
+      setError(null);
+      const { authUrl } = await authService.getDropboxAuthUrl(userId);
+      window.location.href = authUrl;
+    } catch (err) {
+      console.error('Erreur connexion Dropbox:', err);
+      setError('Erreur lors de la connexion à Dropbox');
+      setLoading(false);
+      setLoadingProvider(null);
+    }
+  };
 
-  try {
-    const { authUrl } = await authService.getDropboxAuthUrl();
-    // Redirige l'utilisateur vers Dropbox OAuth
-    window.location.href = authUrl;
-  } catch (err) {
-    setError('Erreur lors de la connexion à Dropbox');
-    console.error(err);
-    setLoading(false);
-  }
-};
+  const handleDisconnect = async (provider) => {
+    const providerName = provider === 'google_drive' ? 'Google Drive' : 'Dropbox';
+    
+    if (!confirm(
+      `⚠️ Êtes-vous sûr de vouloir déconnecter ${providerName} ?\n\n` +
+      `Vous devrez vous reconnecter pour accéder à vos fichiers.\n\n` +
+      `Vos fichiers sur ${providerName} ne seront PAS supprimés.`
+    )) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setLoadingProvider(provider);
+      setError(null);
+      await authService.disconnect(userId, provider);
+      await onUpdate?.();
+      
+      // Message de succès
+      const successMsg = document.createElement('div');
+      successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-in slide-in-from-top-2';
+      successMsg.innerHTML = `
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <span>${providerName} déconnecté avec succès</span>
+        </div>
+      `;
+      document.body.appendChild(successMsg);
+      setTimeout(() => successMsg.remove(), 3000);
+      
+    } catch (err) {
+      console.error(`Erreur déconnexion ${providerName}:`, err);
+      setError(`Erreur lors de la déconnexion de ${providerName}`);
+    } finally {
+      setLoading(false);
+      setLoadingProvider(null);
+    }
+  };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-          <Cloud className="w-6 h-6" />
-          Connecter vos services cloud
-        </h2>
-
-        {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {error}
+    <div className="space-y-4">
+      {/* Message d'erreur */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-red-900 font-medium">Erreur</p>
+            <p className="text-red-700 text-sm">{error}</p>
           </div>
-        )}
+          <button
+            onClick={() => setError(null)}
+            className="text-red-400 hover:text-red-600"
+          >
+            <XCircle className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
-        <div className="space-y-4">
-          {/* Google Drive */}
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-indigo-400 transition-colors">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6" viewBox="0 0 24 24">
-                  <path
-                    fill="#4285F4"
-                    d="M7.71 3.5L1.15 15l3.35 5.5h6.56L7.71 3.5z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M14.29 3.5l-3.34 5.5 3.34 5.5h6.56l3.35-5.5-3.35-5.5h-6.56z"
-                  />
-                  <path
-                    fill="#FBBC04"
-                    d="M1.15 15l3.35 5.5L12 15l-3.35-5.5L1.15 15z"
-                  />
+      {/* Google Drive Card */}
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-shadow">
+        <div className="p-6">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none">
+                  <path d="M7.71 3.5L1.13 15L4.55 21L11.13 9L7.71 3.5Z" fill="#0066DA"/>
+                  <path d="M14.9 3.5L8.32 15L11.74 21L18.32 9L14.9 3.5Z" fill="#00AC47"/>
+                  <path d="M14.9 3.5H7.71L11.13 9L14.9 3.5Z" fill="#EA4335"/>
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Google Drive</h3>
-                <p className="text-sm text-gray-600">
-                  {connectedServices?.google_drive 
-                    ? 'Connecté' 
-                    : 'Stockage cloud de Google'}
-                </p>
+                <h3 className="text-xl font-semibold text-gray-900">Google Drive</h3>
+                <p className="text-sm text-gray-500 mt-1">Stockage cloud de Google</p>
               </div>
             </div>
-            
+            <div className="flex items-center gap-2">
+              {connectedServices?.google_drive ? (
+                <span className="flex items-center gap-1.5 text-green-600 text-sm font-medium bg-green-50 px-3 py-1.5 rounded-full">
+                  <CheckCircle className="w-4 h-4" />
+                  Connecté
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 text-gray-400 text-sm font-medium bg-gray-50 px-3 py-1.5 rounded-full">
+                  <XCircle className="w-4 h-4" />
+                  Non connecté
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-gray-100">
             {connectedServices?.google_drive ? (
-              <div className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-green-500" />
-                <button
-                  onClick={() => handleDisconnect('google_drive')}
-                  className="px-4 py-2 text-sm text-red-600 hover:text-red-700 font-medium cursor-pointer"
-                >
-                  Déconnecter
-                </button>
-              </div>
+              <button
+                onClick={() => handleDisconnect('google_drive')}
+                disabled={loading}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-50 text-red-600 rounded-lg font-medium hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loadingProvider === 'google_drive' && (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                )}
+                Déconnecter
+              </button>
             ) : (
               <button
                 onClick={handleConnectGoogle}
                 disabled={loading}
-                className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm hover:shadow disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Connexion...' : 'Connecter'}
+                {loadingProvider === 'google_drive' && (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                )}
+                Connecter Google Drive
               </button>
             )}
           </div>
-
-{/* Dropbox */}
-<div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-  <div className="flex items-center gap-3">
-    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-      <svg className="w-6 h-6" viewBox="0 0 24 24">
-        <path
-          fill="#0061FF"
-          d="M6 1.5l-6 4 6 4 6-4-6-4zm12 0l-6 4 6 4 6-4-6-4zM0 13.5l6 4 6-4-6-4-6 4zm12 0l6 4 6-4-6-4-6 4zM6 18l6 4.5 6-4.5-6-4-6 4.5z"
-        />
-      </svg>
-    </div>
-    <div>
-      <h3 className="font-semibold text-lg">Dropbox</h3>
-      <p className="text-sm text-gray-600">
-        {connectedServices?.dropbox 
-          ? 'Connecté' 
-          : 'Stockage cloud Dropbox'}
-      </p>
-    </div>
-  </div>
-
-  {connectedServices?.dropbox ? (
-    <div className="flex items-center gap-2">
-      <Check className="w-5 h-5 text-green-500" />
-      <button
-        onClick={() => handleDisconnect('dropbox')}
-        className="px-4 py-2 text-sm text-red-600 hover:text-red-700 font-medium cursor-pointer"
-      >
-        Déconnecter
-      </button>
-    </div>
-  ) : (
-    <button
-      onClick={handleConnectDropbox}
-      disabled={loading}
-      className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium cursor-pointer"
-    >
-      {loading ? 'Connexion...' : 'Connecter'}
-    </button>
-  )}
-</div>
-
         </div>
+      </div>
 
-        <p className="mt-6 text-sm text-gray-500 text-center">
-          Vos données sont sécurisées. Nous ne stockons que les tokens d'accès OAuth2.
-        </p>
+      {/* Dropbox Card */}
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-shadow">
+        <div className="p-6">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-7 h-7" viewBox="0 0 24 24" fill="#0061FF">
+                  <path d="M6 1.5L0 5L6 8.5L12 5L6 1.5Z"/>
+                  <path d="M18 1.5L12 5L18 8.5L24 5L18 1.5Z"/>
+                  <path d="M0 11.5L6 15L12 11.5L6 8L0 11.5Z"/>
+                  <path d="M12 11.5L18 15L24 11.5L18 8L12 11.5Z"/>
+                  <path d="M6 16L12 19.5L18 16L12 12.5L6 16Z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">Dropbox</h3>
+                <p className="text-sm text-gray-500 mt-1">Plateforme de stockage cloud</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {connectedServices?.dropbox ? (
+                <span className="flex items-center gap-1.5 text-green-600 text-sm font-medium bg-green-50 px-3 py-1.5 rounded-full">
+                  <CheckCircle className="w-4 h-4" />
+                  Connecté
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 text-gray-400 text-sm font-medium bg-gray-50 px-3 py-1.5 rounded-full">
+                  <XCircle className="w-4 h-4" />
+                  Non connecté
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-gray-100">
+            {connectedServices?.dropbox ? (
+              <button
+                onClick={() => handleDisconnect('dropbox')}
+                disabled={loading}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-50 text-red-600 rounded-lg font-medium hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loadingProvider === 'dropbox' && (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                )}
+                Déconnecter
+              </button>
+            ) : (
+              <button
+                onClick={handleConnectDropbox}
+                disabled={loading}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm hover:shadow disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loadingProvider === 'dropbox' && (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                )}
+                Connecter Dropbox
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
