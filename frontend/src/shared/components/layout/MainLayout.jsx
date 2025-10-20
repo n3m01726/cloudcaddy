@@ -2,7 +2,7 @@ import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children, userId }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,7 +18,7 @@ const MainLayout = ({ children }) => {
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Topbar />
+        <Topbar userId={userId} />
         <main className="flex-1 overflow-y-auto">
           {children}
         </main>

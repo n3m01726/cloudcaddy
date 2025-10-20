@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { 
   Cloud, Search, Folder, Image, Users, Inbox, Trash2, 
-  FolderHeart, Plus, Settings, Map, LogOut, CheckCircle, PlusCircle, Crown
+  FolderHeart, Plus, LayoutDashboard, CheckCircle, PlusCircle, Crown
 } from 'lucide-react';
-import { FaGoogle, FaDropbox, FaFolder } from 'react-icons/fa'; // react-icons utilise FontAwesome
+import { FaGoogle, FaDropbox } from 'react-icons/fa'; // react-icons utilise FontAwesome
 const Sidebar = ({ currentPath = '/', onNavigate }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const navItems = [
-    { id: 'dashboard', icon: Folder, label: 'Dashboard', path: '/' },
+    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', path: '/' },
     { id: 'all', icon: Folder, label: 'All Files', path: '/files' },
     { id: 'photos', icon: Image, label: 'Photos', path: '/photos' },
     { id: 'shared', icon: Users, label: 'Shared', path: '/shared' },
