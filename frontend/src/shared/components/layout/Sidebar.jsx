@@ -160,9 +160,9 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
         </div>
       </div>
 
-      {/* Bottom Section 
+      {/* Bottom Section */} 
       <div className="border-t border-gray-200 px-4">
-        {/* Storage Info
+        {/* Storage Info */}
         <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl p-4 mb-3 text-white mt-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-bold">UPGRADE TO PRO PLAN</span>
@@ -181,7 +181,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
             {storageUsed}GB of {storageTotal}GB used
           </div>
         </div>
-      </div>*/}
+      </div>
     </aside>
   );
 };

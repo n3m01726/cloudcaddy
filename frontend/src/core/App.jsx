@@ -136,8 +136,7 @@ function App() {
           </MainLayout>
         } />
       ) : (
-        <div> Something happens.</div>
-        
+       <Route path="/toNowhere" element={<div className="p-6">404. Simple as that. Come back with us <a href='/' className='underline underline-offset-4'>here</a></div>} />
       )}
     </Routes>
   );
