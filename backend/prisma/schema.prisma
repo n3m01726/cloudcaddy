@@ -48,6 +48,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   
   cloudAccounts CloudAccount[]
+  notifications Notification[]
 }
 
 model CloudAccount {
@@ -64,4 +65,23 @@ model CloudAccount {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@unique([userId, provider], name: "userId_provider")
+}
+
+// Ajoute ce modèle à ton schema.prisma existant
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  source    String   // 'app' | 'google' | 'dropbox'
+  type      String   // 'upload', 'share', 'delete', 'connect', etc.
+  message   String
+  metadata  Json?    // Données additionnelles (fileId, etc.)
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([isRead])
+  @@map("notifications")
 }

@@ -103,7 +103,7 @@ function App() {
     <Routes>
       {/* Route publique pour les connexions */}
       <Route 
-        path="/connections" 
+        path="/" 
         element={
           <Connections 
             userId={userId} 
