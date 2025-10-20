@@ -141,8 +141,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
                 <div className="flex items-center space-x-3">
                   <span>{service.icon}</span>
                   <span className="text-sm">{service.name}</span>
-                </div>
-                <span className="text-xs">{storagePercentage}%</span> 
+                </div> 
                 {service.connected && (
                   <CheckCircle className="w-4 h-4 text-green-500" />
                 )}
