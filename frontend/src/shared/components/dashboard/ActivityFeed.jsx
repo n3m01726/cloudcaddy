@@ -1,5 +1,5 @@
 import { Share2, Upload, Edit3, Trash2, Star } from 'lucide-react';
-import { formatDate } from '@/features/files/utils/formatDate';
+import { formatDate} from "@features/files/utils/formatters.js";
 
 const ActivityFeed = ({ activities = [] }) => {
   // Mock data

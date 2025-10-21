@@ -8,17 +8,35 @@ import ConnectServices from '../components/ConnectServices';
 function Connections({ userId, connectedServices: initialServices, onServicesUpdate }) {
   const navigate = useNavigate();
   const [connectedServices, setConnectedServices] = useState(initialServices);
-  const [loading, setLoading] = useState(!initialServices);
+  const [loading, setLoading] = useState(false); // ✅ Commencer à false
   const [error, setError] = useState(null);
 
-  // Charger les services connectés au montage si non fournis
+  // Charger les services connectés seulement si on a un userId
   useEffect(() => {
-    if (!initialServices && userId) {
-      loadConnectedServices();
+    // ✅ Si pas de userId, pas besoin de charger → pas de loading
+    if (!userId) {
+      setLoading(false);
+      setConnectedServices(null);
+      return;
     }
+
+    // ✅ Si on a déjà les services initiaux, pas besoin de charger
+    if (initialServices) {
+      setConnectedServices(initialServices);
+      setLoading(false);
+      return;
+    }
+
+    // ✅ Charger seulement si userId existe et pas de services initiaux
+    loadConnectedServices();
   }, [userId, initialServices]);
 
   const loadConnectedServices = async () => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await authService.checkStatus(userId);
@@ -41,19 +59,20 @@ function Connections({ userId, connectedServices: initialServices, onServicesUpd
   const hasConnectedServices = connectedServices && 
     (connectedServices.google_drive || connectedServices.dropbox);
 
+  // ✅ Loading screen seulement si vraiment en train de charger
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#3B82F6] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[#666666]">Chargement...</p>
+          <p className="text-[#666666]">Chargement des services...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-4xl mx-auto space-y-8 px-4 sm:px-6 lg:px-8 py-8">
       {/* En-tête avec icône moderne */}
       <div className="text-center">
         <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -78,6 +97,23 @@ function Connections({ userId, connectedServices: initialServices, onServicesUpd
         </div>
       )}
 
+      {/* Message si pas encore de userId (première visite) */}
+      {!userId && (
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-6">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Cloud className="w-5 h-5 text-amber-600" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-amber-900 mb-1">Bienvenue !</h4>
+              <p className="text-amber-800 text-sm">
+                Connectez votre premier service cloud pour commencer à utiliser CloudHub.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Composant ConnectServices réutilisé */}
       <ConnectServices 
         userId={userId}
@@ -85,8 +121,8 @@ function Connections({ userId, connectedServices: initialServices, onServicesUpd
         onUpdate={handleServicesUpdate}
       />
 
-      {/* Message si aucun service connecté */}
-      {!hasConnectedServices && (
+      {/* Message si aucun service connecté (mais userId existe) */}
+      {userId && !hasConnectedServices && (
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">

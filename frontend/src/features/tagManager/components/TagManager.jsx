@@ -204,7 +204,7 @@ export default function TagManager({
                 onChange={(e) => setCustomName(e.target.value)}
                 onBlur={() => saveMetadata({ customName })}
                 placeholder={file.name}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               />
             </div>
 
@@ -219,7 +219,7 @@ export default function TagManager({
                 onBlur={() => saveMetadata({ description })}
                 placeholder="Ajoutez une description..."
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               />
             </div>
 

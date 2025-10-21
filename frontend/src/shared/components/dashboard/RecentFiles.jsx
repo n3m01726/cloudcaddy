@@ -1,6 +1,5 @@
 import { Folder, FileText, FileSpreadsheet, Image as ImageIcon, FileCode, MoreHorizontal } from 'lucide-react';
-import { formatFileSize } from '@/features/files/utils/formatFileSize';
-import { formatDate } from '@/features/files/utils/formatDate';
+import { formatDate, formatFileSize } from "@features/files/utils/formatters.js";
 
 const RecentFiles = ({ files = [], onViewAll }) => {
   

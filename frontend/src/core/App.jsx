@@ -42,6 +42,7 @@ function App() {
     if (error) {
       console.error('❌ OAuth error:', error);
       alert(`Erreur d'authentification: ${error}`);
+      setLoading(false);
       navigate('/connections', { replace: true });
       return;
     }
@@ -101,7 +102,7 @@ function App() {
 
   return (
     <Routes>
-      {/* Route publique pour les connexions */}
+      {/* Route publique pour les connexions - TOUJOURS accessible */}
       <Route 
         path="/connections" 
         element={
@@ -113,30 +114,26 @@ function App() {
         } 
       />
 
-      {/* Routes protégées */}
+      {/* Routes protégées avec MainLayout */}
       {isAuthenticated ? (
-        <Route path="/*" element={
-          <MainLayout userId={userId}>
-            <Routes>
-              <Route path="/" element={<DashboardHome userId={userId} />} />
-              <Route path="/files" element={<FileExplorer userId={userId} />} />
-              <Route path="/photos" element={<div className="p-6">Photos Files - Coming Soon</div>} />
-              <Route path="/shared"  element={<div className="p-6">Shared Files - Coming Soon</div>} />
-              <Route path="/requests" element={<div className="p-6">File Requests - Coming Soon</div>} />
-              <Route path="/trash" element={<div className="p-6">Trash - Coming Soon</div>} />
-              <Route 
-                path="/settings" 
-                element={<Settings user={{ id: userId }} onLogout={handleLogout} />} 
-              />
-              <Route path="/roadmap" element={<Roadmap />} />
-              <Route path="/activity" element={<div className="p-6">Activity Feed - Coming Soon</div>} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-              <Route path="/connections" element={<Connections userId={userId} />} />
-            </Routes>
-          </MainLayout>
-        } />
+        <>
+          <Route path="/" element={<MainLayout userId={userId}><DashboardHome userId={userId} /></MainLayout>} />
+          <Route path="/files" element={<MainLayout userId={userId}><FileExplorer userId={userId} /></MainLayout>} />
+          <Route path="/photos" element={<MainLayout userId={userId}><div className="p-6">Photos Files - Coming Soon</div></MainLayout>} />
+          <Route path="/shared" element={<MainLayout userId={userId}><div className="p-6">Shared Files - Coming Soon</div></MainLayout>} />
+          <Route path="/requests" element={<MainLayout userId={userId}><div className="p-6">File Requests - Coming Soon</div></MainLayout>} />
+          <Route path="/trash" element={<MainLayout userId={userId}><div className="p-6">Trash - Coming Soon</div></MainLayout>} />
+          <Route path="/settings" element={<MainLayout userId={userId}><Settings user={{ id: userId }} onLogout={handleLogout} /></MainLayout>} />
+          <Route path="/roadmap" element={<MainLayout userId={userId}><Roadmap /></MainLayout>} />
+          <Route path="/activity" element={<MainLayout userId={userId}><div className="p-6">Activity Feed - Coming Soon</div></MainLayout>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </>
       ) : (
-       <Route path="/toNowhere" element={<div className="p-6">404. Simple as that. Come back with us <a href='/' className='underline underline-offset-4'>here</a></div>} />
+        /* Routes non authentifiées - rediriger vers /connections */
+        <>
+          <Route path="/" element={<Navigate to="/connections" replace />} />
+          <Route path="*" element={<Navigate to="/connections" replace />} />
+        </>
       )}
     </Routes>
   );
