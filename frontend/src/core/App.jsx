@@ -104,7 +104,7 @@ function App() {
     <Routes>
       {/* Route publique pour les connexions - TOUJOURS accessible */}
       <Route 
-        path="/connections" 
+        path="/*" 
         element={
           <Connections 
             userId={userId} 
@@ -123,7 +123,7 @@ function App() {
           <Route path="/shared" element={<MainLayout userId={userId}><div className="p-6">Shared Files - Coming Soon</div></MainLayout>} />
           <Route path="/requests" element={<MainLayout userId={userId}><div className="p-6">File Requests - Coming Soon</div></MainLayout>} />
           <Route path="/trash" element={<MainLayout userId={userId}><div className="p-6">Trash - Coming Soon</div></MainLayout>} />
-          <Route path="/settings" element={<MainLayout userId={userId}><Settings user={{ id: userId }} onLogout={handleLogout} /></MainLayout>} />
+          <Route path="/settings" element={<MainLayout userId={userId}><Settings userId={userId} onLogout={handleLogout} /></MainLayout>} />
           <Route path="/roadmap" element={<MainLayout userId={userId}><Roadmap /></MainLayout>} />
           <Route path="/activity" element={<MainLayout userId={userId}><div className="p-6">Activity Feed - Coming Soon</div></MainLayout>} />
           <Route path="*" element={<Navigate to="/" replace />} />

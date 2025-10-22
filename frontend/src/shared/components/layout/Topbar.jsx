@@ -14,7 +14,7 @@ const Topbar = ({ userId }) => {
 
   return (
     <header
-      className="h-16 bg-white/80 backdrop-blur-lg border-b border-gray-200 
+      className="h-16 bg-white/80 backdrop-blur-lg border-y border-gray-200 
       flex items-center justify-between px-6"
     >
       {/* Left: Title */}

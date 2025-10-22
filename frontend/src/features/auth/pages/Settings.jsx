@@ -1,6 +1,7 @@
 // Page des paramètres utilisateur
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUserInfo } from '@shared/hooks/useUserInfo';
 import { 
   Settings as SettingsIcon, 
   User, 
@@ -15,10 +16,30 @@ import {
   Link2
 } from 'lucide-react';
 
-function Settings({ user, onLogout }) {
+function Settings ({ userId, onLogout, user }) {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('account');
 
+  // 🔹 Hook principal : si userId n’est pas fourni, tente d’utiliser user?.id
+  const { userInfo, loading, error } = useUserInfo(userId || user?.id);
+  const userData = userInfo || user;
+
+  // 🔸 États de chargement et d’erreur
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center text-gray-500">
+        Chargement des informations utilisateur...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-full items-center justify-center text-red-600">
+        Erreur : {error}
+      </div>
+    );
+  }
   const handleDeleteAccount = () => {
     if (confirm('⚠️ ATTENTION !\n\nÊtes-vous sûr de vouloir supprimer votre compte ?\n\nCette action est irréversible et supprimera :\n- Toutes vos connexions aux services cloud\n- Toutes vos métadonnées (tags, favoris)\n- Toutes vos données utilisateur\n\nVos fichiers sur Google Drive et Dropbox ne seront PAS supprimés.')) {
       if (confirm('Confirmez-vous vraiment la suppression de votre compte ?\n\nTapez "SUPPRIMER" pour confirmer.')) {
@@ -117,7 +138,7 @@ function Settings({ user, onLogout }) {
                     Email
                   </label>
                   <div className="px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <p className="text-gray-900">{user?.email || 'Non disponible'}</p>
+                    <p className="text-gray-900">{userData?.email || 'Non disponible'}</p>
                   </div>
                 </div>
 
@@ -126,22 +147,7 @@ function Settings({ user, onLogout }) {
                     ID Utilisateur
                   </label>
                   <div className="px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 font-mono text-sm">
-                    <p className="text-gray-600">{user?.id || 'N/A'}</p>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Membre depuis
-                  </label>
-                  <div className="px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <p className="text-gray-900">
-                      {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                      }) : 'Non disponible'}
-                    </p>
+                    <p className="text-gray-600">{userData?.id || 'N/A'}</p>
                   </div>
                 </div>
               </div>

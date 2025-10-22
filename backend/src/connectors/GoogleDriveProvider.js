@@ -138,20 +138,23 @@ class GoogleDriveProvider extends BaseStorageProvider {
 
   async moveFile(fileId, newParentId, options = {}) {
     return this._handleOperation('move', 'moveFile', async () => {
-      let { oldParentId } = options;
+      const oldParentId = options?.oldParentId;
 
       if (!oldParentId) {
         const fileResponse = await this.drive.files.get({
           fileId,
           fields: 'parents'
         });
-        oldParentId = fileResponse.data.parents[0];
+        if (!fileResponse.data.parents || fileResponse.data.parents.length === 0) {
+          throw new Error('Aucun parent trouvé pour ce fichier');
+        }
+        options = { ...options, oldParentId: fileResponse.data.parents[0] };
       }
 
       const response = await this.drive.files.update({
         fileId,
         addParents: newParentId,
-        removeParents: oldParentId,
+        removeParents: options.oldParentId,
         fields: 'id, name, parents, webViewLink'
       });
 
@@ -166,7 +169,8 @@ class GoogleDriveProvider extends BaseStorageProvider {
 
   async copyFile(fileId, newParentId, options = {}) {
     return this._handleOperation('copy', 'copyFile', async () => {
-      const { newName } = options;
+      // Gérer le cas où options est null ou undefined
+      const newName = options?.newName;
 
       const copyMetadata = {
         parents: [newParentId],
@@ -201,9 +205,6 @@ class GoogleDriveProvider extends BaseStorageProvider {
       };
     });
   }
-
-
-
 
   // ===== MÉTHODES PRIVÉES =====
 

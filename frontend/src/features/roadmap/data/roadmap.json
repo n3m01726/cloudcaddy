@@ -8,14 +8,8 @@
       "status": "in-progress",
       "description": "Refining the interface for usability and consistency.",
       "tasks": [
-        "Responsive design pass with Tailwind",
-        "[DONE] Persistent tag colors and folder navigation",
-        "[DONE] Tooltip and preview improvements",
-        "[DONE] Enhance header and navigation bar",
-        "[DONE] Loading not centered in Dashboard",
-        "[DONE] Topbar missing Google avatar, name, and email",
-        "[DONE] Favorites star and tags not displayed",
-        "[DONE] Closing Tag Manager refreshes entire FileExplorer instead of updating only the element"
+        "Responsive design pass with Tailwind"
+
       ]
     },
 
@@ -42,34 +36,6 @@
         "Cloud sync monitoring with alerts",
         "Public sharing links",
         "AI-assisted search and file tagging"
-      ]
-    },
-
-    {
-      "phase": "App Pages",
-      "status": "done",
-      "description": "Establishing clear, separated routes for main sections.",
-      "tasks": [
-        "[DONE] Create /about_roadmap page",
-        "[DONE] Create /settings page",
-        "[DONE] Create /connections page from App.jsx logic",
-        "[DONE] Add /logout route and redirect handling"
-      ]
-    },
-
-    {
-      "phase": "Core Structure",
-      "status": "done",
-      "description": "Foundational architecture.",
-      "tasks": [
-        "[DONE] Refactoring the project folder structure",
-        "[DONE] Set up Node.js backend + SQLite via Prisma",
-        "[DONE] Implement cloud API connectors (Drive, Dropbox)",
-        "[DONE] Create FileExplorer core component",
-        "[DONE] Basic authentication and token storage",
-        "[DONE] Initial React frontend with Tailwind CSS",
-        "[DONE] Basic file operations (list, upload, download, delete)",
-        "[DONE] Initial MVP demo and feedback gathering"
       ]
     }
 
