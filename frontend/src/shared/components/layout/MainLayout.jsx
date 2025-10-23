@@ -24,6 +24,7 @@ const MainLayout = ({ children, userId }) => {
         </main>
       </div>
     </div>
+    
   );
 };
 

@@ -13,6 +13,7 @@ const { checkDatabaseConnection } = require('@config/database.js');
 const authRoutes = require('@modules/auth/routes.js');
 const filesRoutes = require('@modules/files/routes.js');
 const metadataRoutes = require('@modules/metadata/routes.js');
+const notificationRoutes = require('@modules/notifications/routes.js');
 
 // ----------------------
 // ⚙️ Initialisation
@@ -51,6 +52,9 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+
+app.use('/notifications', notificationRoutes);
 
 // Route racine
 app.get('/', (req, res) => {

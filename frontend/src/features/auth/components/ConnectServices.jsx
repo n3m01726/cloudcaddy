@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Check, AlertCircle, Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { authService } from '@core/services/api';
+import NotificationHelpers from '@/features/notifications/utils/notificationHelpers';
 
 export default function ConnectServices({ userId, connectedServices, onUpdate }) {
   const [loading, setLoading] = useState(false);
@@ -38,46 +39,51 @@ export default function ConnectServices({ userId, connectedServices, onUpdate })
     }
   };
 
-  const handleDisconnect = async (provider) => {
-    const providerName = provider === 'google_drive' ? 'Google Drive' : 'Dropbox';
-    
-    if (!confirm(
-      `⚠️ Êtes-vous sûr de vouloir déconnecter ${providerName} ?\n\n` +
-      `Vous devrez vous reconnecter pour accéder à vos fichiers.\n\n` +
-      `Vos fichiers sur ${providerName} ne seront PAS supprimés.`
-    )) {
-      return;
-    }
+const handleDisconnect = async (provider) => {
+  const providerName = provider === 'google_drive' ? 'Google Drive' : 'Dropbox';
+  
+  if (!confirm(
+    `⚠️ Êtes-vous sûr de vouloir déconnecter ${providerName} ?\n\n` +
+    `Vous devrez vous reconnecter pour accéder à vos fichiers.\n\n` +
+    `Vos fichiers sur ${providerName} ne seront PAS supprimés.`
+  )) {
+    return;
+  }
 
-    try {
-      setLoading(true);
-      setLoadingProvider(provider);
-      setError(null);
-      await authService.disconnect(userId, provider);
-      await onUpdate?.();
-      
-      // Message de succès
-      const successMsg = document.createElement('div');
-      successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-in slide-in-from-top-2';
-      successMsg.innerHTML = `
-        <div class="flex items-center gap-2">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-          </svg>
-          <span>${providerName} déconnecté avec succès</span>
-        </div>
-      `;
-      document.body.appendChild(successMsg);
-      setTimeout(() => successMsg.remove(), 3000);
-      
-    } catch (err) {
-      console.error(`Erreur déconnexion ${providerName}:`, err);
-      setError(`Erreur lors de la déconnexion de ${providerName}`);
-    } finally {
-      setLoading(false);
-      setLoadingProvider(null);
-    }
-  };
+  try {
+    setLoading(true);
+    setLoadingProvider(provider);
+    setError(null);
+    
+    await authService.disconnect(userId, provider);
+    await onUpdate?.();
+    
+    // 🔔 NOTIFICATION
+    await NotificationHelpers.onServiceDisconnected(userId, providerName);
+    
+    // Message de succès
+    const successMsg = document.createElement('div');
+    successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-in slide-in-from-top-2';
+    successMsg.innerHTML = `
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span>${providerName} déconnecté avec succès</span>
+      </div>
+    `;
+    document.body.appendChild(successMsg);
+    setTimeout(() => successMsg.remove(), 3000);
+    
+  } catch (err) {
+    console.error(`Erreur déconnexion ${providerName}:`, err);
+    setError(`Erreur lors de la déconnexion de ${providerName}`);
+    await NotificationHelpers.onError(userId, `Impossible de déconnecter ${providerName}`);
+  } finally {
+    setLoading(false);
+    setLoadingProvider(null);
+  }
+};
 
   return (
     <div className="space-y-4">

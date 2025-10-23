@@ -142,3 +142,62 @@ export const metadataService = {
     return res.data;
   }
 };
+
+// frontend/src/core/services/api.js
+// Ajoute cette section au fichier existant
+
+// --------------------------
+// Notification Service
+// --------------------------
+export const notificationService = {
+  /**
+   * Récupère le flux de notifications
+   */
+  async getFeed(userId, options = {}) {
+    const { source, includeRead = true, limit = 20 } = options;
+    const params = new URLSearchParams();
+    
+    if (source) params.append('source', source);
+    params.append('includeRead', includeRead);
+    params.append('limit', limit);
+    
+    const res = await api.get(`/notifications/feed/${userId}?${params}`);
+    return res.data;
+  },
+
+  /**
+   * Compte les notifications non lues
+   */
+  async getUnreadCount(userId) {
+    const res = await api.get(`/notifications/unread/${userId}`);
+    return res.data;
+  },
+
+  /**
+   * Crée une notification interne
+   */
+  async create(userId, type, message, metadata = {}) {
+    const res = await api.post(`/notifications/create/${userId}`, {
+      type,
+      message,
+      metadata
+    });
+    return res.data;
+  },
+
+  /**
+   * Marque une notification comme lue
+   */
+  async markAsRead(notificationId, userId) {
+    const res = await api.put(`/notifications/read/${notificationId}/${userId}`);
+    return res.data;
+  },
+
+  /**
+   * Marque toutes les notifications comme lues
+   */
+  async markAllAsRead(userId) {
+    const res = await api.put(`/notifications/read-all/${userId}`);
+    return res.data;
+  }
+};
