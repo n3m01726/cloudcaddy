@@ -129,16 +129,6 @@ export default function FileActions({
     <>
       {/* Overlay */}
       <div className="fixed inset-0 z-40 bg-black/20" onClick={onClose} />
-      
-      {/* Barre de navigation à trois colonnes */}
-      <div className="flex items-center justify-between p-4 bg-gray-100 rounded-lg mb-2">
-        <div className="flex items-center space-x-4">
-          <i className="fas fa-hand-rock text-2xl text-gray-700"></i>
-          <p className="text-lg font-medium text-gray-900">
-            {action ? `${action === 'move' ? 'Déplacement' : action === 'copy' ? 'Copie' : 'Suppression'} de ${file.name}` : `Bienvenue, ${file.name} !`}
-          </p>
-        </div>
-      </div>
 
       {/* Menu Actions */}
       {!showDeleteConfirm && (

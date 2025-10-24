@@ -1,11 +1,29 @@
+   // frontend/src/features/files/components/Files.jsx (ADAPTED VERSION)
 import { useState, useMemo } from 'react';
-import FileItem from '../partials/FileItem/index';
+import FileItem from '@features/files/partials/FileItem';
 import { RefreshCw, File, ChevronDown } from 'lucide-react';
+import { SelectionProvider, useSelection } from '@features/files/context/SelectionContext'; // 🆕 NEW
+import BulkActionsToolbar from './BulkActionsToolbar'; // 🆕 NEW
+import CreateFolderModal from './CreateFolderModal'; // 🆕 NEW
 
 const FILES_PER_PAGE = 10;
 
-export default function Files({ files, loading, userId, onFolderClick, onDownload, downloading, onFileMoved, onFileCopied }) {
+// 🆕 Inner component that uses selection context
+const FilesContent = ({ 
+  files, 
+  loading, 
+  userId, 
+  onFolderClick, 
+  onDownload, 
+  downloading, 
+  onFileMoved, 
+  onFileCopied 
+}) => {
   const [displayCount, setDisplayCount] = useState(FILES_PER_PAGE);
+  const [isModalOpen, setIsModalOpen] = useState(false); // 🆕 NEW
+
+  // 🆕 Selection hooks
+  const { getSelectedFileObjects, clearSelection } = useSelection();
 
   // Fichiers à afficher basés sur le compteur
   const displayedFiles = useMemo(() => {
@@ -23,6 +41,46 @@ export default function Files({ files, loading, userId, onFolderClick, onDownloa
   useMemo(() => {
     setDisplayCount(FILES_PER_PAGE);
   }, [files]);
+
+  // 🆕 Handle create folder modal
+  const handleOpenModal = (selectedFiles) => {
+    setIsModalOpen(true);
+  };
+
+  // 🆕 Handle create folder confirmation
+  const handleCreateFolder = async (data) => {
+    try {
+      console.log('Creating folder with data:', data);
+      
+      const response = await fetch('http://localhost:5000/api/files/create-folder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          folderName: data.folderName,
+          provider: data.provider,
+          fileIds: data.files.map(f => f.id),
+          parentId: 'root' // Or pass current folder ID if you have navigation
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert(`✅ Dossier "${data.folderName}" créé avec succès!\n${result.summary.successful}/${result.summary.total} fichiers déplacés.`);
+        
+        // Refresh the file list
+        onFileMoved?.();
+        
+        // Clear selection
+        clearSelection();
+      } else {
+        throw new Error(result.error || 'Failed to create folder');
+      }
+    } catch (error) {
+      console.error('Error creating folder:', error);
+      alert(`❌ Erreur lors de la création du dossier: ${error.message}`);
+    }
+  };
 
   if (loading) {
     return (
@@ -42,40 +100,68 @@ export default function Files({ files, loading, userId, onFolderClick, onDownloa
     );
   }
 
+  // 🆕 Get selected file objects (only from displayed files for consistency)
+  const selectedFiles = getSelectedFileObjects(displayedFiles);
+
   return (
-    <div className="border-b border-gray-200">
-      <div className="p-6 space-y-2">
-        {displayedFiles.map(file => (
-          <FileItem
-            key={`${file.provider}-${file.id}`}
-            file={file}
-            userId={userId}
-            onFolderClick={onFolderClick}
-            onDownload={onDownload}
-            downloading={downloading}
-            onFileMoved={onFileMoved}
-            onFileCopied={onFileCopied}
-          />
-        ))}
+    <>
+      <div className="border-b border-gray-200">
+        <div className="p-6 space-y-2">
+          {displayedFiles.map(file => (
+            <FileItem
+              key={`${file.provider}-${file.id}`}
+              file={file}
+              userId={userId}
+              onFolderClick={onFolderClick}
+              onDownload={onDownload}
+              downloading={downloading}
+              onFileMoved={onFileMoved}
+              onFileCopied={onFileCopied}
+            />
+          ))}
+        </div>
+
+        {hasMore && (
+          <div className="flex flex-col items-center py-6 px-6 bg-gray-50">
+            <p className="text-sm text-gray-600 mb-3">
+              Affichage de {displayedFiles.length} sur {files.length} fichiers
+              <span className="text-gray-400 ml-1">
+                ({remainingCount} restant{remainingCount > 1 ? 's' : ''})
+              </span>
+            </p>
+            <button
+              onClick={handleLoadMore}
+              className="flex items-center gap-2 px-6 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors text-gray-700 font-medium shadow-sm"
+            >
+              <ChevronDown className="w-4 h-4" />
+              Charger plus de fichiers
+            </button>
+          </div>
+        )}
       </div>
 
-      {hasMore && (
-        <div className="flex flex-col items-center py-6 px-6 bg-gray-50">
-          <p className="text-sm text-gray-600 mb-3">
-            Affichage de {displayedFiles.length} sur {files.length} fichiers
-            <span className="text-gray-400 ml-1">
-              ({remainingCount} restant{remainingCount > 1 ? 's' : ''})
-            </span>
-          </p>
-          <button
-            onClick={handleLoadMore}
-            className="flex items-center gap-2 px-6 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors text-gray-700 font-medium shadow-sm"
-          >
-            <ChevronDown className="w-4 h-4" />
-            Charger plus de fichiers
-          </button>
-        </div>
-      )}
-    </div>
+      {/* 🆕 Bulk Actions Toolbar - appears when files are selected */}
+      <BulkActionsToolbar 
+        files={displayedFiles} 
+        onCreateFolder={handleOpenModal}
+      />
+
+      {/* 🆕 Create Folder Modal */}
+      <CreateFolderModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        selectedFiles={selectedFiles}
+        onConfirm={handleCreateFolder}
+      />
+    </>
+  );
+};
+
+// 🆕 Main component with SelectionProvider wrapper
+export default function Files(props) {
+  return (
+    <SelectionProvider>
+      <FilesContent {...props} />
+    </SelectionProvider>
   );
 }

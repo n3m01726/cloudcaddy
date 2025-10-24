@@ -484,4 +484,222 @@ router.delete('/:userId/:provider/:fileId', async (req, res) => {
   }
 });
 
+/**
+ * 🆕 POST /files/create-folder
+ * Create a folder and move selected files into it
+ */
+router.post('/create-folder', async (req, res) => {
+  try {
+    const { folderName, provider, fileIds, parentId } = req.body;
+    const userId = req.user?.id || 'default-user'; // Adjust based on your auth
+
+    // Validation
+    if (!folderName || !provider || !fileIds || fileIds.length === 0) {
+      return res.status(400).json({ 
+        error: 'Missing required fields: folderName, provider, fileIds' 
+      });
+    }
+
+    console.log(`📁 Create folder request: "${folderName}" with ${fileIds.length} files`);
+
+    const results = await batchService.createFolderWithFiles(
+      userId,
+      folderName,
+      provider,
+      fileIds,
+      parentId || 'root'
+    );
+
+    res.json({
+      success: true,
+      folder: results.folder,
+      movedFiles: results.movedFiles,
+      errors: results.errors,
+      summary: {
+        total: fileIds.length,
+        successful: results.movedFiles.length,
+        failed: results.errors.length
+      }
+    });
+  } catch (error) {
+    console.error('❌ Create folder error:', error);
+    res.status(500).json({ 
+      error: error.message,
+      success: false 
+    });
+  }
+});
+
+/**
+ * 🆕 POST /files/bulk-copy
+ * Copy multiple files to another provider or folder
+ */
+router.post('/bulk-copy', async (req, res) => {
+  try {
+    const { sourceProvider, destinationProvider, fileIds, destinationFolderId } = req.body;
+    const userId = req.user?.id || 'default-user';
+
+    if (!sourceProvider || !destinationProvider || !fileIds || fileIds.length === 0) {
+      return res.status(400).json({ 
+        error: 'Missing required fields: sourceProvider, destinationProvider, fileIds' 
+      });
+    }
+
+    console.log(`📋 Bulk copy: ${fileIds.length} files from ${sourceProvider} to ${destinationProvider}`);
+
+    const results = await batchService.copyMultipleFiles(
+      userId,
+      sourceProvider,
+      destinationProvider,
+      fileIds,
+      destinationFolderId || 'root'
+    );
+
+    res.json({
+      success: true,
+      copied: results.copied,
+      errors: results.errors,
+      summary: {
+        total: fileIds.length,
+        successful: results.copied.length,
+        failed: results.errors.length
+      }
+    });
+  } catch (error) {
+    console.error('❌ Bulk copy error:', error);
+    res.status(500).json({ 
+      error: error.message,
+      success: false 
+    });
+  }
+});
+
+/**
+ * 🆕 POST /files/bulk-move
+ * Move multiple files to another folder
+ */
+router.post('/bulk-move', async (req, res) => {
+  try {
+    const { provider, fileIds, destinationFolderId } = req.body;
+    const userId = req.user?.id || 'default-user';
+
+    if (!provider || !fileIds || fileIds.length === 0 || !destinationFolderId) {
+      return res.status(400).json({ 
+        error: 'Missing required fields: provider, fileIds, destinationFolderId' 
+      });
+    }
+
+    console.log(`📦 Bulk move: ${fileIds.length} files to folder ${destinationFolderId}`);
+
+    const results = await batchService.moveMultipleFiles(
+      userId,
+      provider,
+      fileIds,
+      destinationFolderId
+    );
+
+    res.json({
+      success: true,
+      moved: results.moved,
+      errors: results.errors,
+      summary: {
+        total: fileIds.length,
+        successful: results.moved.length,
+        failed: results.errors.length
+      }
+    });
+  } catch (error) {
+    console.error('❌ Bulk move error:', error);
+    res.status(500).json({ 
+      error: error.message,
+      success: false 
+    });
+  }
+});
+
+/**
+ * 🆕 POST /files/bulk-delete
+ * Delete multiple files
+ */
+router.post('/bulk-delete', async (req, res) => {
+  try {
+    const { provider, fileIds } = req.body;
+    const userId = req.user?.id || 'default-user';
+
+    if (!provider || !fileIds || fileIds.length === 0) {
+      return res.status(400).json({ 
+        error: 'Missing required fields: provider, fileIds' 
+      });
+    }
+
+    console.log(`🗑️ Bulk delete: ${fileIds.length} files from ${provider}`);
+
+    const results = await batchService.deleteMultipleFiles(
+      userId,
+      provider,
+      fileIds
+    );
+
+    res.json({
+      success: true,
+      deleted: results.deleted,
+      errors: results.errors,
+      summary: {
+        total: fileIds.length,
+        successful: results.deleted.length,
+        failed: results.errors.length
+      }
+    });
+  } catch (error) {
+    console.error('❌ Bulk delete error:', error);
+    res.status(500).json({ 
+      error: error.message,
+      success: false 
+    });
+  }
+});
+
+/**
+ * 🆕 POST /files/bulk-tag
+ * Add tags to multiple files
+ */
+router.post('/bulk-tag', async (req, res) => {
+  try {
+    const { provider, fileIds, tags } = req.body;
+    const userId = req.user?.id || 'default-user';
+
+    if (!provider || !fileIds || fileIds.length === 0 || !tags || tags.length === 0) {
+      return res.status(400).json({ 
+        error: 'Missing required fields: provider, fileIds, tags' 
+      });
+    }
+
+    console.log(`🏷️ Bulk tag: Adding ${tags.length} tags to ${fileIds.length} files`);
+
+    const results = await batchService.addTagsToMultipleFiles(
+      userId,
+      fileIds,
+      tags,
+      provider
+    );
+
+    res.json({
+      success: true,
+      updated: results.updated,
+      errors: results.errors,
+      summary: {
+        total: fileIds.length,
+        successful: results.updated.length,
+        failed: results.errors.length
+      }
+    });
+  } catch (error) {
+    console.error('❌ Bulk tag error:', error);
+    res.status(500).json({ 
+      error: error.message,
+      success: false 
+    });
+  }
+});
+
 module.exports = router;

@@ -1,10 +1,11 @@
 // frontend/src/shared/components/layout/Topbar.jsx
-import { Bell, UserPlus, Settings, Cable, Map, LogOut, LibraryBig, NotebookPen, Calendar1, RefreshCw, Zap, History } from 'lucide-react';
+import { Bell, UserPlus, Settings, Cable, Map, LogOut, LibraryBig, NotebookPen, Calendar1, RefreshCw, Zap, History, Copy } from 'lucide-react';
 import { useUserInfo } from '@/shared/hooks/useUserInfo';
 import { useState, useEffect } from 'react';
 import NotificationDropdown from '@/features/notifications/components/NotificationDropdown';
 import NotificationDrawer from '@/features/notifications/components/NotificationDrawer';
 import { notificationService } from '@/core/services/api';
+import InviteUser from '@/shared/components/InviteUser';
 
 const Topbar = ({ userId }) => {
   const { userInfo, loading } = useUserInfo(userId);
@@ -20,6 +21,41 @@ const Topbar = ({ userId }) => {
   const userEmail = userInfo?.email || '';
   const userPicture = userInfo?.picture || null;
   const userInitial = userName.charAt(0).toUpperCase();
+
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const [inviteUrl, setInviteUrl] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [loadingInvite, setLoadingInvite] = useState(false);
+
+ const handleCreateInvite = async () => {
+    if (inviteUrl) return; // déjà créé
+    setLoadingInvite(true);
+    try {
+      const res = await fetch("/api/invite", { method: "POST" });
+      const data = await res.json();
+      setInviteUrl(data.inviteUrl || "");
+      setCopied(false);
+    } catch (err) {
+      console.error("Erreur création invitation :", err);
+    } finally {
+      setLoadingInvite(false);
+    }
+  };
+
+  const handleCopy = async () => {
+    if (!inviteUrl) return;
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Échec copie :", err);
+    }
+  };
+
+
+
+
 
   // Charger les notifications et le compteur
   useEffect(() => {
@@ -88,7 +124,6 @@ const Topbar = ({ userId }) => {
       console.error('Erreur marquage lecture:', error);
     }
   };
-
   return (
     <>
       <header className="h-16 bg-white/80 backdrop-blur-lg border-b border-gray-200 flex items-center justify-between px-6">
@@ -99,11 +134,10 @@ const Topbar = ({ userId }) => {
 
         {/* Right: Actions */}
         <div className="flex items-center space-x-3">
-          {/* Invite Button */}
-          <button className="px-4 py-2 bg-[#3B82F6] text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition flex items-center space-x-2">
-            <UserPlus className="w-4 h-4" />
-            <span>Invite People</span>
-          </button>
+
+ {/* Invite Button */}
+<InviteUser />
+
 
           {/* All Apps Dropdown */}
           <div className="relative">
@@ -195,13 +229,13 @@ const Topbar = ({ userId }) => {
             ) : (
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="relative focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 rounded-full"
+                className="relative focus:outline-none rounded-full mt-1"
               >
                 {userPicture ? (
                   <img
                     src={userPicture}
                     alt={userName}
-                    className="w-10 h-10 rounded-full object-cover hover:shadow-lg transition"
+                    className="w-12 h-12 rounded-full object-cover"
                     referrerPolicy="no-referrer"
                     crossOrigin="anonymous"
                     onError={(e) => console.log('Erreur chargement avatar', e)}
@@ -305,5 +339,6 @@ const Topbar = ({ userId }) => {
     </>
   );
 };
+
 
 export default Topbar;
