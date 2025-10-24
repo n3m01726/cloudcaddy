@@ -195,13 +195,13 @@ const Topbar = ({ userId }) => {
             ) : (
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="relative focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 rounded-full"
+                className="relative focus:outline-none rounded-full mt-1"
               >
                 {userPicture ? (
                   <img
                     src={userPicture}
                     alt={userName}
-                    className="w-10 h-10 rounded-full object-cover hover:shadow-lg transition"
+                    className="w-12 h-12 rounded-full object-cover"
                     referrerPolicy="no-referrer"
                     crossOrigin="anonymous"
                     onError={(e) => console.log('Erreur chargement avatar', e)}

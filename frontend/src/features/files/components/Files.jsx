@@ -1,4 +1,4 @@
-// frontend/src/features/files/components/Files.jsx (ADAPTED VERSION)
+   // frontend/src/features/files/components/Files.jsx (ADAPTED VERSION)
 import { useState, useMemo } from 'react';
 import FileItem from '@features/files/partials/FileItem';
 import { RefreshCw, File, ChevronDown } from 'lucide-react';
@@ -49,18 +49,37 @@ const FilesContent = ({
 
   // 🆕 Handle create folder confirmation
   const handleCreateFolder = async (data) => {
-    console.log('Creating folder with data:', data);
-    // TODO: API call to create folder and move files
-    // This will be implemented in Phase 2
-    
-    // For now, just log and close
-    alert(`Dossier "${data.folderName}" créé dans ${data.provider === 'google' ? 'Google Drive' : 'Dropbox'} avec ${data.files.length} fichiers!`);
-    
-    // Refresh the file list if you have a refresh function
-    onFileMoved?.();
-    
-    // Clear selection
-    clearSelection();
+    try {
+      console.log('Creating folder with data:', data);
+      
+      const response = await fetch('http://localhost:5000/api/files/create-folder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          folderName: data.folderName,
+          provider: data.provider,
+          fileIds: data.files.map(f => f.id),
+          parentId: 'root' // Or pass current folder ID if you have navigation
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert(`✅ Dossier "${data.folderName}" créé avec succès!\n${result.summary.successful}/${result.summary.total} fichiers déplacés.`);
+        
+        // Refresh the file list
+        onFileMoved?.();
+        
+        // Clear selection
+        clearSelection();
+      } else {
+        throw new Error(result.error || 'Failed to create folder');
+      }
+    } catch (error) {
+      console.error('Error creating folder:', error);
+      alert(`❌ Erreur lors de la création du dossier: ${error.message}`);
+    }
   };
 
   if (loading) {

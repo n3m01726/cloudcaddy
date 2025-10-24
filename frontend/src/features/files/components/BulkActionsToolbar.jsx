@@ -2,24 +2,14 @@
 import { useState } from 'react';
 import { useSelection } from '../context/SelectionContext';
 import { FolderPlus, X, Download, Trash2, Tag, Move } from 'lucide-react';
-// 🔧 FIX: Use named import if Button uses named export, or default import if it uses export default
-// Option 1 (if Button uses 'export default'):
-// import Button from '@/shared/components/Button';
-// Option 2 (if Button uses 'export function Button' or 'export const Button'):
-// import { Button } from '@/shared/components/Button';
-// Option 3 (if you have an index.js with re-exports):
 import { Button } from '@/shared/components';
 
-const BulkActionsToolbar = ({ files, onCreateFolder }) => {
+const BulkActionsToolbar = ({ files, onCreateFolder, onBulkTag, onBulkMove, onBulkDelete, onBulkDownload }) => {
   const { selectedCount, clearSelection, getSelectedFileObjects } = useSelection();
 
   if (selectedCount === 0) return null;
 
   const selectedFiles = getSelectedFileObjects(files);
-
-  const handleCreateFolder = () => {
-    onCreateFolder(selectedFiles);
-  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-2xl border-t border-blue-500 z-50 animate-slide-up">
@@ -44,9 +34,9 @@ const BulkActionsToolbar = ({ files, onCreateFolder }) => {
 
           {/* Right side - Actions */}
           <div className="flex items-center gap-2">
-            {/* Create Folder - Feature principale */}
+            {/* Create Folder */}
             <Button
-              onClick={handleCreateFolder}
+              onClick={() => onCreateFolder(selectedFiles)}
               className="bg-white text-blue-600 hover:bg-blue-50 font-semibold shadow-lg flex items-center gap-2 px-6 py-2.5 rounded-lg transition-all hover:scale-105"
             >
               <FolderPlus size={20} />
@@ -55,6 +45,7 @@ const BulkActionsToolbar = ({ files, onCreateFolder }) => {
 
             {/* Download All */}
             <button
+              onClick={() => onBulkDownload?.(selectedFiles)}
               className="text-white hover:bg-white/10 rounded-lg p-2.5 transition-all"
               title="Télécharger la sélection"
             >
@@ -63,6 +54,7 @@ const BulkActionsToolbar = ({ files, onCreateFolder }) => {
 
             {/* Move/Transfer */}
             <button
+              onClick={() => onBulkMove?.(selectedFiles)}
               className="text-white hover:bg-white/10 rounded-lg p-2.5 transition-all"
               title="Déplacer vers..."
             >
@@ -71,6 +63,7 @@ const BulkActionsToolbar = ({ files, onCreateFolder }) => {
 
             {/* Tag */}
             <button
+              onClick={() => onBulkTag?.(selectedFiles)}
               className="text-white hover:bg-white/10 rounded-lg p-2.5 transition-all"
               title="Ajouter des tags"
             >
@@ -79,6 +72,7 @@ const BulkActionsToolbar = ({ files, onCreateFolder }) => {
 
             {/* Delete */}
             <button
+              onClick={() => onBulkDelete?.(selectedFiles)}
               className="text-red-200 hover:bg-red-500/20 rounded-lg p-2.5 transition-all"
               title="Supprimer la sélection"
             >
