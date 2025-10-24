@@ -4,16 +4,17 @@
 require('module-alias/register');
 require('dotenv').config();
 
-const axios = require('axios')
+const randomBytes = require('crypto');
+const axios = require('axios');
 const express = require('express');
 const cors = require('cors');
 const { checkDatabaseConnection } = require('@config/database.js');
 
 // 🧭 Import des routes
-const authRoutes = require('@modules/auth/routes.js');
-const filesRoutes = require('@modules/files/routes.js');
-const metadataRoutes = require('@modules/metadata/routes.js');
-const notificationRoutes = require('@modules/notifications/routes.js');
+const authRoutes = require('@routes/auth.js');
+const filesRoutes = require('@routes/files.js');
+const metadataRoutes = require('@routes/metadata.js');
+const notificationRoutes = require('@routes/notifications.js');
 
 // ----------------------
 // ⚙️ Initialisation
@@ -68,6 +69,26 @@ app.get('/', (req, res) => {
     },
   });
 });
+
+
+
+app.post("/api/invite", async (req, res) => {
+  const token = randomBytes(16).toString("hex"); // exemple
+  const invite = await db.invites.create({
+    token,
+    createdBy: req.user.id,
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // expire dans 7 jours
+  });
+
+  const inviteUrl = `${process.env.FRONTEND_URL}/invite/${token}`;
+  res.json({ inviteUrl });
+});
+
+
+
+
+
+
 
 // ----------------------
 // ❌ Gestion 404

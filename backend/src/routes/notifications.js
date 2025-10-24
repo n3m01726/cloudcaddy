@@ -1,7 +1,7 @@
 // backend/src/modules/notifications/routes.js
 const express = require('express');
 const router = express.Router();
-const notificationService = require('./NotificationService');
+const notificationService = require('@modules/notifications/NotificationService');
 
 /**
  * GET /notifications/feed/:userId

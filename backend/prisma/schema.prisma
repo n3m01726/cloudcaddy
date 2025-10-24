@@ -1,5 +1,3 @@
-// backend/prisma/schema.prisma
-
 // Schéma de base de données pour le Multi-Cloud Manager
 
 generator client {
@@ -12,25 +10,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model FileMetadata {
-  id          String   @id @default(cuid())
-  userId      String
-  fileId      String
-  cloudType   String   // 'google_drive' ou 'dropbox'
-  
+  id        String @id @default(cuid())
+  userId    String
+  fileId    String
+  cloudType String
+
   // Tags et leurs couleurs
-  tags        String?  // JSON array: ["tag1", "tag2"]
-  tagColors   String?  // ⚠️ AJOUT IMPORTANT - JSON object: {"tag1": "red", "tag2": "blue"}
-  
+  tags      String?
+  tagColors String?
+
   // Métadonnées personnalisées
   customName  String?
-  description String?  
-  starred     Boolean  @default(false)
+  description String?
+  starred     Boolean @default(false)
   color       String?
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Index composé unique pour éviter les doublons
   @@unique([userId, fileId, cloudType], name: "userId_fileId_cloudType")
@@ -46,36 +43,37 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
+
   cloudAccounts CloudAccount[]
   notifications Notification[]
+
+  invitesCreated Invite[]      @relation("UserCreatedInvites") // inverse relation Invite
+  projects       ProjectUser[] // <-- inverse relation ProjectUser
 }
 
 model CloudAccount {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   email        String?
   userId       String
-  provider     String   // 'google_drive' ou 'dropbox'
-  accessToken  String   
-  refreshToken String?  
+  provider     String // 'google_drive' ou 'dropbox'
+  accessToken  String
+  refreshToken String?
   expiresAt    DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   @@unique([userId, provider], name: "userId_provider")
 }
-
-// Ajoute ce modèle à ton schema.prisma existant
 
 model Notification {
   id        String   @id @default(uuid())
   userId    String
-  source    String   // 'app' | 'google' | 'dropbox'
-  type      String   // 'upload', 'share', 'delete', 'connect', etc.
+  source    String // 'app' | 'google' | 'dropbox'
+  type      String // 'upload', 'share', 'delete', 'connect', etc.
   message   String
-  metadata  Json?    // Données additionnelles (fileId, etc.)
+  metadata  Json? // Données additionnelles (fileId, etc.)
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 
@@ -86,5 +84,30 @@ model Notification {
   @@map("notifications")
 }
 
-// N'oublie pas d'ajouter la relation dans le modèle User :
-// 
+model Project {
+  id      String        @id @default(cuid())
+  name    String
+  users   ProjectUser[]
+  invites Invite[]
+}
+
+model ProjectUser {
+  id        String  @id @default(cuid())
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  role      String
+}
+
+model Invite {
+  id          String   @id @default(cuid())
+  token       String   @unique
+  project     Project  @relation(fields: [projectId], references: [id])
+  projectId   String
+  createdBy   User     @relation("UserCreatedInvites", fields: [createdById], references: [id])
+  createdById String
+  expiresAt   DateTime
+  used        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
