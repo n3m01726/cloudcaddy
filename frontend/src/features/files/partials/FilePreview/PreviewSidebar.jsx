@@ -1,6 +1,6 @@
 import { X, HardDrive, Calendar, Tag } from 'lucide-react';
 
-import { formatDate, formatFileSize } from "@features/files/utils/formatters.js";
+import { formatDate, formatFileSize } from "@shared/utils/formatters.js";
 
 /**
 * Sidebar de métadonnées du fichier - RESPONSIVE

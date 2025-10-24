@@ -1,7 +1,7 @@
 // backend/src/modules/notifications/NotificationService.js
 const { PrismaClient } = require('@prisma/client');
-const { google } = require('../../connectors/GoogleDriveProvider');
-const { Dropbox } = require('../../connectors/DropboxProvider');
+const { google } = require('googleapis');
+const { Dropbox } = require('dropbox');
 const prisma = new PrismaClient();
 const ProviderFactory = require('../../connectors/base/ProviderFactory');
 
@@ -79,7 +79,7 @@ class NotificationService {
     
     return notifs.map(n => ({
       id: n.id,
-      source: 'app',
+      source: n.source,  // ← CORRECTION : utiliser n.source au lieu de 'app'
       type: n.type,
       message: n.message,
       timestamp: n.createdAt.toISOString(),
@@ -94,17 +94,26 @@ class NotificationService {
   async _getGoogleNotifications(userId) {
     try {
       const provider = await ProviderFactory.create(userId, 'google_drive');
+      if (!provider || !provider.auth) {
+        return [];
+      }
+      
       const drive = google.drive({ version: 'v3', auth: provider.auth });
       
       // Utilise l'API Activity (si disponible) ou liste des fichiers récemment modifiés
       const response = await drive.files.list({
         pageSize: 10,
         orderBy: 'modifiedTime desc',
-        fields: 'files(id, name, modifiedTime, mimeType, owners)'
+        fields: 'files(id, name, modifiedTime, mimeType, owners)',
+        q: "trashed = false" // Exclure les fichiers dans la corbeille
       });
       
+      if (!response.data.files || response.data.files.length === 0) {
+        return [];
+      }
+      
       return response.data.files.map(file => ({
-        id: `google_${file.id}`,
+        id: `google_${file.id}_${Date.now()}`,
         source: 'google',
         type: 'file_modified',
         message: `📄 "${file.name}" a été modifié`,
@@ -129,6 +138,10 @@ class NotificationService {
   async _getDropboxNotifications(userId) {
     try {
       const provider = await ProviderFactory.create(userId, 'dropbox');
+      if (!provider || !provider.accessToken) {
+        return [];
+      }
+      
       const dbx = new Dropbox({ accessToken: provider.accessToken });
       
       // Liste les fichiers récents (ordre par date modifiée)
@@ -138,12 +151,16 @@ class NotificationService {
         limit: 10
       });
       
+      if (!response.result.entries || response.result.entries.length === 0) {
+        return [];
+      }
+      
       return response.result.entries
         .filter(entry => entry['.tag'] === 'file')
         .sort((a, b) => new Date(b.server_modified) - new Date(a.server_modified))
         .slice(0, 10)
         .map(file => ({
-          id: `dropbox_${file.id}`,
+          id: `dropbox_${file.id}_${Date.now()}`,
           source: 'dropbox',
           type: 'file_modified',
           message: `📁 "${file.name}" a été mis à jour`,

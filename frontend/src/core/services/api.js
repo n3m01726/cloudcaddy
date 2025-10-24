@@ -176,14 +176,15 @@ export const notificationService = {
   /**
    * Crée une notification interne
    */
-  async create(userId, type, message, metadata = {}) {
-    const res = await api.post(`/notifications/create/${userId}`, {
-      type,
-      message,
-      metadata
-    });
-    return res.data;
-  },
+async create(userId, source, type, message, metadata = {}) {
+  const res = await api.post(`/notifications/create/${userId}`, {
+    source,
+    type,
+    message,
+    metadata
+  });
+  return res.data;
+},
 
   /**
    * Marque une notification comme lue

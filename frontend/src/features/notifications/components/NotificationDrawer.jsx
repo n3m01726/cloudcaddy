@@ -1,8 +1,15 @@
 // frontend/src/features/notifications/components/NotificationDrawer.jsx
 import { useState, useEffect } from 'react';
-import { Bell, Check, CheckCheck, RefreshCw, X, Filter } from 'lucide-react';
-import { FaGoogle, FaDropbox } from 'react-icons/fa';
+import { Bell, 
+          Check, 
+          CheckCheck, 
+          RefreshCw, 
+          X, 
+          Filter, 
+} from 'lucide-react';
 import { notificationService } from '@/core/services/api';
+import { formatTimestamp, formatDate, getTypeIcon } from '../utils/notificationUtils.jsx';
+
 
 export default function NotificationDrawer({ userId, isOpen, onClose }) {
   const [notifications, setNotifications] = useState([]);
@@ -37,6 +44,19 @@ export default function NotificationDrawer({ userId, isOpen, onClose }) {
     }
   };
 
+const handleMarkAsUnread = async (notificationId) => {
+  try {
+    await notificationService.markAsUnread(notificationId, userId);
+    setNotifications(prev =>
+      prev.map(n => n.id === notificationId ? { ...n, isRead: false } : n)
+    );
+  } catch (err) {
+    console.error('Erreur marquage non-lu:', err);
+  }
+};
+
+
+
   const handleMarkAsRead = async (notificationId) => {
     try {
       await notificationService.markAsRead(notificationId, userId);
@@ -57,69 +77,22 @@ export default function NotificationDrawer({ userId, isOpen, onClose }) {
     }
   };
 
-  const getSourceIcon = (source) => {
-    switch (source) {
-      case 'google':
-        return <FaGoogle className="w-5 h-5 text-blue-500" />;
-      case 'dropbox':
-        return <FaDropbox className="w-5 h-5 text-blue-600" />;
-      default:
-        return <Bell className="w-5 h-5 text-indigo-600" />;
-    }
+// Badge source
+const getSourceBadge = (source) => {
+  const badges = {
+    google: { label: 'Google Drive', color: 'text-green-700' },
+    dropbox: { label: 'Dropbox', color: 'text-blue-600' },
+    app: { label: 'Application', color: 'text-indigo-700' }
   };
+  const badge = badges[source] || badges.app;
+  return (
+    <span className={`text-xs font-medium ${badge.color}`}>
+      {badge.label}
+    </span>
+  );
+};
 
-  const getSourceBadge = (source) => {
-    const badges = {
-      google: { label: 'Drive', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-      dropbox: { label: 'Dropbox', color: 'bg-blue-50 text-blue-600 border-blue-200' },
-      app: { label: 'App', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' }
-    };
-    const badge = badges[source] || badges.app;
-    
-    return (
-      <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${badge.color}`}>
-        {badge.label}
-      </span>
-    );
-  };
-
-  const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diff = now - date;
-    
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
-    
-    if (minutes < 1) return 'À l\'instant';
-    if (minutes < 60) return `Il y a ${minutes} minute${minutes > 1 ? 's' : ''}`;
-    if (hours < 24) return `Il y a ${hours} heure${hours > 1 ? 's' : ''}`;
-    if (days < 7) return `Il y a ${days} jour${days > 1 ? 's' : ''}`;
-    
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    if (date.toDateString() === today.toDateString()) return "Aujourd'hui";
-    if (date.toDateString() === yesterday.toDateString()) return "Hier";
-    
-    return date.toLocaleDateString('fr-FR', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long'
-    });
-  };
+// Icône type
 
   // Grouper par date
   const groupedNotifications = notifications.reduce((groups, notif) => {
@@ -150,22 +123,16 @@ export default function NotificationDrawer({ userId, isOpen, onClose }) {
         }`}
       >
         {/* Header avec gradient */}
-        <div className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-6 shadow-lg">
+        <div className="text-gray-700 p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                <Bell className="w-5 h-5" />
-              </div>
               <div>
                 <h2 className="text-xl font-bold">Notifications</h2>
-                <p className="text-white/80 text-sm">
-                  {unreadCount > 0 ? `${unreadCount} non lue${unreadCount > 1 ? 's' : ''}` : 'Tout est à jour'}
-                </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center hover:bg-white/20 rounded-lg transition-colors"
+              className="w-8 h-8 flex items-center justify-center hover:text-gray-700 rounded-lg transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -173,17 +140,24 @@ export default function NotificationDrawer({ userId, isOpen, onClose }) {
 
           {/* Filtres dans le header */}
           <div className="flex gap-2">
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="flex-1 px-3 py-2 bg-white/10 backdrop-blur-sm text-white border border-white/20 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-white/30"
-            >
-              <option value="all" className="text-gray-900">Toutes les sources</option>
-              <option value="google" className="text-gray-900">Google Drive</option>
-              <option value="dropbox" className="text-gray-900">Dropbox</option>
-              <option value="app" className="text-gray-900">Application</option>
-            </select>
-            
+            <div className="relative w-full">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                <Filter className="w-4 h-4" />
+              </span>
+
+              {/* Input / Dropdown */}
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="w-full appearance-none rounded-md border border-gray-300 bg-white py-2 pl-10 pr-8 text-sm text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                <option value="all" className="text-gray-900">Toutes les sources</option>
+                <option value="google" className="text-gray-900">Google Drive</option>
+                <option value="dropbox" className="text-gray-900">Dropbox</option>
+                <option value="app" className="text-gray-900">Application</option>
+              </select>
+            </div>
+
+
             <button
               onClick={loadNotifications}
               disabled={loading}
@@ -195,15 +169,21 @@ export default function NotificationDrawer({ userId, isOpen, onClose }) {
           </div>
 
           {/* Toggle non-lues */}
-          <label className="flex items-center gap-2 text-sm mt-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showOnlyUnread}
-              onChange={(e) => setShowOnlyUnread(e.target.checked)}
-              className="rounded border-white/30 bg-white/10 text-white focus:ring-white/30 focus:ring-offset-0"
-            />
-            <span className="text-white/90">Afficher uniquement les non-lues</span>
-          </label>
+{/* Toggle non-lues */}
+<div className="flex items-center justify-between mt-4">
+  <span className="text-sm text-gray/90">Afficher uniquement les non-lues</span>
+  
+  <button
+    onClick={() => setShowOnlyUnread(!showOnlyUnread)}
+    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300
+      ${showOnlyUnread ? 'bg-gray-100' : 'bg-gray-200'}`}
+  >
+    <span
+      className={`inline-block h-4 w-4 transform rounded-full bg-purple-700 transition-transform duration-300
+        ${showOnlyUnread ? 'translate-x-6' : 'translate-x-1'}`}
+    />
+  </button>
+</div>
         </div>
 
         {/* Contenu scrollable */}
@@ -256,16 +236,15 @@ export default function NotificationDrawer({ userId, isOpen, onClose }) {
                             : 'border-gray-200'
                         }`}
                       >
-                        <div className="flex items-start gap-3">
-                          {/* Icône de la source */}
+                        <div className="flex items-center gap-3">
+                          {/* Icône du type */}
                           <div className="flex-shrink-0 mt-1">
-                            {getSourceIcon(notif.source)}
+                            {getTypeIcon(notif.type)}
                           </div>
 
                           {/* Contenu */}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2 mb-1">
-                              {getSourceBadge(notif.source)}
                               <span className="text-xs text-gray-400">
                                 {formatTimestamp(notif.timestamp).replace('Il y a ', '')}
                               </span>
@@ -274,6 +253,7 @@ export default function NotificationDrawer({ userId, isOpen, onClose }) {
                             <p className="text-sm text-gray-900 leading-relaxed break-words">
                               {notif.message}
                             </p>
+                            {getSourceBadge(notif.source)}
                           </div>
 
                           {/* Bouton marquer comme lu */}
@@ -301,7 +281,7 @@ export default function NotificationDrawer({ userId, isOpen, onClose }) {
           <div className="p-4 border-t border-gray-200 bg-white">
             <button
               onClick={handleMarkAllAsRead}
-              className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white rounded-xl font-medium transition-all shadow-sm hover:shadow flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 bg-violet-800 text-white rounded-xl font-medium transition-all shadow-sm hover:shadow flex items-center justify-center gap-2"
             >
               <CheckCheck className="w-5 h-5" />
               Tout marquer comme lu

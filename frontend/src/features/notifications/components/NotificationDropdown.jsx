@@ -1,6 +1,6 @@
 // frontend/src/features/notifications/components/NotificationDropdown.jsx
 import { Bell, ArrowRight } from 'lucide-react';
-import { FaGoogle, FaDropbox } from 'react-icons/fa';
+import { formatTimestamp, getTypeIcon } from '../utils/notificationUtils.jsx';
 
 export default function NotificationDropdown({ 
   notifications, 
@@ -10,34 +10,6 @@ export default function NotificationDropdown({
   onMarkAsRead 
 }) {
   
-  const getSourceIcon = (source) => {
-    switch (source) {
-      case 'google':
-        return <FaGoogle className="w-4 h-4 text-blue-500" />;
-      case 'dropbox':
-        return <FaDropbox className="w-4 h-4 text-blue-600" />;
-      default:
-        return <Bell className="w-4 h-4 text-indigo-600" />;
-    }
-  };
-
-  const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diff = now - date;
-    
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
-    
-    if (minutes < 1) return 'Maintenant';
-    if (minutes < 60) return `${minutes}min`;
-    if (hours < 24) return `${hours}h`;
-    if (days < 7) return `${days}j`;
-    
-    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-  };
-
   const handleOpenDrawer = () => {
     onClose(); // Ferme le dropdown
     // Attend que le dropdown se ferme avant d'ouvrir le drawer
@@ -65,7 +37,6 @@ export default function NotificationDropdown({
         <div className="px-4 py-3 bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-              <Bell className="w-5 h-5 text-indigo-600" />
               Notifications
               {unreadCount > 0 && (
                 <span className="ml-1 px-2 py-0.5 bg-indigo-600 text-white text-xs font-bold rounded-full">
@@ -104,10 +75,10 @@ export default function NotificationDropdown({
                     <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-indigo-600 rounded-full" />
                   )}
 
-                  <div className="flex items-start gap-3 pl-4">
+                  <div className="flex items-center gap-3">
                     {/* Icône */}
-                    <div className="flex-shrink-0 mt-0.5">
-                      {getSourceIcon(notif.source)}
+                    <div className="flex-shrink-0 mt-0.5 mr-1">
+                      {getTypeIcon(notif.type)}
                     </div>
 
                     {/* Contenu */}

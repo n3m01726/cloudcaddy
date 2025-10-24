@@ -7,8 +7,8 @@ const WelcomeBanner = ({ userId, onViewActivity }) => {
 
   return (
     <div className="bg-gradient-to-r from-[#3B82F6] to-blue-600 rounded-xl p-4 text-white">
-    <div class="flex items-center justify-between p-4">
-        <div class="flex items-center space-x-4">
+    <div className="flex items-center justify-between p-4">
+        <div className="flex items-center space-x-4">
           
             <div>
                 <HandMetal className='h-8 w-8'/>
