@@ -66,3 +66,82 @@ body {
     transform: translateY(0);
   }
 }
+
+/* frontend/src/core/index.css - Add these animations */
+
+/* Slide up animation for toolbar */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Fade in animation for modal backdrop */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+/* Scale in animation for modal */
+@keyframes scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
+
+/* Checkbox transition */
+input[type="checkbox"]:checked + div {
+  animation: checkbox-pop 0.2s ease-out;
+}
+
+@keyframes checkbox-pop {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Row selection highlight */
+tr.bg-blue-50 {
+  animation: row-select 0.2s ease-out;
+}
+
+@keyframes row-select {
+  from {
+    background-color: transparent;
+  }
+  to {
+    background-color: rgb(239 246 255);
+  }
+}
