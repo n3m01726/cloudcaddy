@@ -55,7 +55,7 @@ export const filesService = {
     return res.data;
   },
 
-  async searchFiles(userId, query) {
+async searchFiles(userId, query) {
     const res = await api.get(`/files/${userId}/search`, { params: { q: query } });
     return res.data;
   },

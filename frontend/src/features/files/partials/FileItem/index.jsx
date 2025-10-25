@@ -3,7 +3,7 @@ import { useState } from "react";
 import { RefreshCw, Download, MoreVertical, Tag as TagIcon, Check } from "lucide-react";
 import { formatFileSize } from "@shared/utils/formatters";
 import FilePreviewModal from "@features/files/partials/FilePreview";
-import FileActions from "@features/files/components/FileActions";
+import FileActions from "@features/files/components/fileActions";
 import TagManager from "@features/tagManager/components/TagManager";
 import TagBadge from "@features/tagManager/components/TagBadge";
 
