@@ -26,13 +26,6 @@ const mockData = {
   ],
 };
 
-
-
-
-
-
-
-
   const data = storageData || mockData;
   const percentage = (data.totalUsed / data.totalAvailable) * 100;
 
@@ -65,7 +58,7 @@ const mockData = {
             <div key={index}>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-3">
-                  <span>{provider.icon}</span>
+                  
                   <span className="text-sm text-[#666666]">{provider.name}</span>
                 </div>
                 <span className="text-sm font-medium text-[#1A1A1A]">

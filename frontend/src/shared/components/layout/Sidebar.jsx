@@ -9,25 +9,25 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
 
   const navItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-    { id: 'all', icon: Folder, label: 'All Files', path: '/files' },
-    { id: 'photos', icon: Image, label: 'Photos', path: '/photos' },
-    { id: 'shared', icon: Users, label: 'Shared', path: '/shared' },
+    { id: 'all', icon: Folder, label: 'File Explorer', path: '/files' },
+    { id: 'photos', icon: Image, label: 'Photos',  path: '/photos' },
+    { id: 'shared', icon: Users, label: 'Shared',  path: '/shared' },
     { id: 'requests', icon: Inbox, label: 'File Requests', path: '/requests' },
     { id: 'trash', icon: Trash2, label: 'Trash', path: '/trash' },
   ];
 
   const favorites = [
-    { id: 1, name: 'Work Documents', icon: FolderHeart, color: 'text-yellow-400' },
+    { id: 1, name: 'Work Documents', icon: FolderHeart, color: 'text-yellow-400'},
     { id: 2, name: 'Photos 2024', icon: FolderHeart, color: 'text-yellow-400' },
     { id: 3, name: 'Client Projects', icon: FolderHeart, color: 'text-yellow-400' },
   ];
 
   const connectedServices = [
     { id: 'google', name: 'Google Drive', icon: <FaGoogle className="text-[#4285F4]" />, connected: true },
-    { id: 'dropbox', name: 'Dropbox', icon: <FaDropbox className="text-[#0061FF]" />, connected: true },
+    { id: 'dropbox', name: 'Dropbox', icon: <FaDropbox className="text-[#0061FF]" />, connected: false },
   ];
 
-  const storageUsed = 8;
+  const storageUsed = 9.5;
   const storageTotal = 10;
   const storagePercentage = (storageUsed / storageTotal) * 100;
 
@@ -56,7 +56,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
   };
 
   return (
-    <aside className="w-60 bg-white border-r flex flex-col border-b border-t border-gray-200">
+    <aside className="w-60 bg-white border flex h-full flex-col border-b border-t border-gray-200 rounded-lg">
       
       {/* Logo */}
       <div className="h-16 flex items-center px-6 ">
@@ -114,7 +114,7 @@ const Sidebar = ({ currentPath = '/', onNavigate }) => {
                 className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg 
                   text-[#666666] hover:bg-[#F5F5F5] transition"
               >
-                <FolderHeart className={`w-6 h-6 ${fav.color} fill-current`} />
+                <FolderHeart className={`w-6 h-6 ${fav.color}`} />
                 <span className="text-sm">{fav.name}</span>
               </button>
             ))}

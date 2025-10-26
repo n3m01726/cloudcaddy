@@ -9,7 +9,7 @@ import TagBadge from "@features/tagManager/components/TagBadge";
 
 import { useFileMetadata } from "./hooks/useFileMetadata";
 import { useFileActionsMenu } from "./hooks/useFileActionsMenu";
-import { getFileIcon } from "./utils/FileIcons";
+import { getFileIcon } from "@shared/utils/FileIcons";
 import { useSelection } from "@features/files/context/SelectionContext"; // 🆕 NEW
 
 export default function FileItem({

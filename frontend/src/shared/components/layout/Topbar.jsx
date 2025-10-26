@@ -2,6 +2,7 @@
 import { Bell, UserPlus, Settings, Cable, Map, LogOut, LibraryBig, NotebookPen, Calendar1, RefreshCw, Zap, History, Copy } from 'lucide-react';
 import { useUserInfo } from '@/shared/hooks/useUserInfo';
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import NotificationDropdown from '@/features/notifications/components/NotificationDropdown';
 import NotificationDrawer from '@/features/notifications/components/NotificationDrawer';
 import { notificationService } from '@/core/services/api';
@@ -9,6 +10,7 @@ import InviteUser from '@/shared/components/InviteUser';
 
 const Topbar = ({ userId }) => {
   const { userInfo, loading } = useUserInfo(userId);
+  const location = useLocation();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showAppsMenu, setShowAppsMenu] = useState(false);
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
@@ -27,8 +29,36 @@ const Topbar = ({ userId }) => {
   const [copied, setCopied] = useState(false);
   const [loadingInvite, setLoadingInvite] = useState(false);
 
- const handleCreateInvite = async () => {
-    if (inviteUrl) return; // déjà créé
+  // Fonction pour déterminer le titre en fonction du chemin
+  const getPageTitle = () => {
+    const path = location.pathname;
+
+    if (path === '/' || path === '/dashboard') {
+      return 'Dashboard';
+    } else if (path.startsWith('/files') || path.startsWith('/explorer')) {
+      return 'Explorer';
+    } else if (path.startsWith('/connections')) {
+      return 'Cloud Connections';
+    } else if (path.startsWith('/settings')) {
+      return 'Settings';
+    } else if (path.startsWith('/roadmap')) {
+      return 'Roadmap';
+    } else if (path.startsWith('/notifications')) {
+      return 'Notifications';
+    } else if (path.startsWith('/photos')) {
+      return 'Photos Gallery';
+    } else if (path.startsWith('/shared')) {
+      return 'Shared Files';
+    } else if (path.startsWith('/requests')) {
+      return 'File Requests';
+    } else if (path.startsWith('/trash')) {
+      return 'Tempo Trash';
+    }
+    return 'Dashboard';
+  };
+
+  const handleCreateInvite = async () => {
+    if (inviteUrl) return;
     setLoadingInvite(true);
     try {
       const res = await fetch("/api/invite", { method: "POST" });
@@ -53,22 +83,18 @@ const Topbar = ({ userId }) => {
     }
   };
 
-
-
-
-
   // Charger les notifications et le compteur
   useEffect(() => {
     if (userId) {
       loadNotifications();
       loadUnreadCount();
-      
+
       // Actualiser toutes les 30 secondes
       const interval = setInterval(() => {
         loadNotifications();
         loadUnreadCount();
       }, 30000);
-      
+
       return () => clearInterval(interval);
     }
   }, [userId]);
@@ -105,8 +131,7 @@ const Topbar = ({ userId }) => {
   };
 
   const handleOpenDrawer = () => {
-    setShowNotificationDropdown(false); // Ferme le dropdown
-    // Petit délai pour laisser le dropdown se fermer d'abord
+    setShowNotificationDropdown(false);
     setTimeout(() => {
       setShowNotificationDrawer(true);
       loadNotifications();
@@ -124,20 +149,22 @@ const Topbar = ({ userId }) => {
       console.error('Erreur marquage lecture:', error);
     }
   };
+
   return (
     <>
       <header className="h-16 bg-white/80 backdrop-blur-lg border-b border-gray-200 flex items-center justify-between px-6">
-        {/* Left: Title */}
+        {/* Left: Dynamic Title */}
         <div>
-          <h1 className="text-xl font-semibold text-[#1A1A1A]">Dashboard</h1>
+          <h1 className="text-xl font-semibold text-[#1A1A1A]">
+            {getPageTitle()}
+          </h1>
         </div>
 
         {/* Right: Actions */}
         <div className="flex items-center space-x-3">
 
- {/* Invite Button */}
-<InviteUser />
-
+          {/* Invite Button */}
+          <InviteUser />
 
           {/* All Apps Dropdown */}
           <div className="relative">
@@ -160,35 +187,35 @@ const Topbar = ({ userId }) => {
                   <div className="grid grid-cols-2 gap-3">
                     <button className="flex flex-col items-center p-3 rounded-lg hover:bg-[#F5F5F5] transition">
                       <span className="w-15 h-15 rounded-lg bg-yellow-100 flex items-center justify-center mb-2">
-                        <NotebookPen className='w-10 h-10 text-yellow-600'/>
+                        <NotebookPen className='w-10 h-10 text-yellow-600' />
                       </span>
                       <span className="text-xs text-[#333333] text-center">Notes</span>
                     </button>
 
                     <button className="flex flex-col items-center p-3 rounded-lg hover:bg-[#F5F5F5] transition">
                       <span className="w-15 h-15 rounded-lg bg-blue-100 flex items-center justify-center mb-2">
-                        <Calendar1 className='w-10 h-10 text-blue-600'/>
+                        <Calendar1 className='w-10 h-10 text-blue-600' />
                       </span>
                       <span className="text-xs text-[#333333] text-center">Calendrier</span>
                     </button>
 
                     <button className="flex flex-col items-center p-3 rounded-lg hover:bg-[#F5F5F5] transition">
                       <span className="w-15 h-15 rounded-lg bg-purple-100 flex items-center justify-center mb-2">
-                        <RefreshCw className='w-10 h-10 text-purple-600'/>
+                        <RefreshCw className='w-10 h-10 text-purple-600' />
                       </span>
                       <span className="text-xs text-[#333333] text-center">Convertisseur</span>
                     </button>
 
                     <button className="flex flex-col items-center p-3 rounded-lg hover:bg-[#F5F5F5] transition">
                       <span className="w-15 h-15 rounded-lg bg-green-100 flex items-center justify-center mb-2">
-                        <Zap className='w-10 h-10 text-green-600'/>
+                        <Zap className='w-10 h-10 text-green-600' />
                       </span>
                       <span className="text-xs text-[#333333] text-center">Automations</span>
                     </button>
 
                     <button className="flex flex-col items-center p-3 rounded-lg hover:bg-[#F5F5F5] transition col-span-2">
                       <span className="w-15 h-15 rounded-lg bg-red-100 flex items-center justify-center mb-2">
-                        <History className='w-10 h-10 text-red-600'/>
+                        <History className='w-10 h-10 text-red-600' />
                       </span>
                       <span className="text-xs text-[#333333] text-center">Historique / Versions</span>
                     </button>
@@ -331,14 +358,13 @@ const Topbar = ({ userId }) => {
       </header>
 
       {/* Drawer (vue complète) */}
-      <NotificationDrawer 
-        userId={userId} 
-        isOpen={showNotificationDrawer} 
-        onClose={() => setShowNotificationDrawer(false)} 
+      <NotificationDrawer
+        userId={userId}
+        isOpen={showNotificationDrawer}
+        onClose={() => setShowNotificationDrawer(false)}
       />
     </>
   );
 };
-
 
 export default Topbar;
