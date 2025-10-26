@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Folder, ChevronRight, Search, X, Check } from 'lucide-react';
+import { Folder, ChevronRight, Search, X, Check, Home } from 'lucide-react';
 import { filesService } from '../../../core/services/api';
 
 export default function FolderSelector({ 
@@ -143,8 +143,62 @@ export default function FolderSelector({
           </div>
         )}
 
-        {/* Folders list */}
-        <div className="flex-1 overflow-y-auto p-4">
+{/* Folders list */}
+<div className="flex-1 overflow-y-auto p-4">
+  
+  {/* Bouton Mon Drive (Root) */}
+  <div className="mb-4">
+    <button
+      onClick={() => {
+        onSelect({ 
+          id: 'root', 
+          name: 'Mon Drive',
+          isRoot: true 
+        });
+      }}
+      className={`w-full flex items-center gap-3 p-3 rounded-lg border-2 transition-colors ${
+        selectedFolder?.id === 'root'
+          ? 'border-blue-500 bg-blue-50'
+          : 'border-gray-200 bg-white hover:bg-gray-50'
+      }`}
+    >
+      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+        selectedFolder?.id === 'root'
+          ? 'bg-blue-100'
+          : 'bg-gray-100'
+      }`}>
+        <Home className={`w-5 h-5 ${
+          selectedFolder?.id === 'root'
+            ? 'text-blue-600'
+            : 'text-gray-600'
+        }`} />
+      </div>
+      <div className="flex-1 text-left">
+        <div className={`font-semibold ${
+          selectedFolder?.id === 'root'
+            ? 'text-blue-900'
+            : 'text-gray-900'
+        }`}>
+          📁 Mon Drive
+        </div>
+        <div className={`text-xs ${
+          selectedFolder?.id === 'root'
+            ? 'text-blue-600'
+            : 'text-gray-500'
+        }`}>
+          Dossier racine
+        </div>
+      </div>
+      {selectedFolder?.id === 'root' && (
+        <Check className="w-5 h-5 text-blue-600" />
+      )}
+    </button>
+  </div>
+
+  {/* Divider */}
+  {folders.length > 0 && (
+    <div className="mb-4 border-t border-gray-200"></div>
+  )}
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>

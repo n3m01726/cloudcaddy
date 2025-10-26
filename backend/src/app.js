@@ -70,8 +70,6 @@ app.get('/', (req, res) => {
   });
 });
 
-
-
 app.post("/api/invite", async (req, res) => {
   const token = randomBytes(16).toString("hex"); // exemple
   const invite = await db.invites.create({
@@ -83,12 +81,6 @@ app.post("/api/invite", async (req, res) => {
   const inviteUrl = `${process.env.FRONTEND_URL}/invite/${token}`;
   res.json({ inviteUrl });
 });
-
-
-
-
-
-
 
 // ----------------------
 // ❌ Gestion 404

@@ -52,7 +52,7 @@ const RecentFiles = ({ files = [], onViewAll }) => {
         <h3 className="text-lg font-semibold text-[#1A1A1A]">Recent Files</h3>
         <button
           onClick={onViewAll}
-          className="text-sm text-[#3B82F6] hover:underline"
+          className="text-sm underline underline-offset-4 text-blue-500 hover:text-blue-600"
         >
           View All
         </button>
@@ -85,9 +85,6 @@ const RecentFiles = ({ files = [], onViewAll }) => {
               <div className="flex items-center space-x-4 flex-shrink-0">
                 <span className="text-xs text-[#999999]">
                   {formatFileSize(file.size)}
-                </span>
-                <span className="text-lg">
-                  {getProviderIcon(file.provider)}
                 </span>
                 <button className="text-[#999999] hover:text-[#1A1A1A]">
                   <MoreHorizontal className="w-4 h-4" />

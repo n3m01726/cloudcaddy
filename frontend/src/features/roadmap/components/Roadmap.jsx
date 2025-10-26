@@ -1,4 +1,4 @@
-import React from "react";
+import React, { version } from "react";
 import roadmapData from "../data/roadmap.json"; // ajuste le chemin selon ton projet
 
 const statusColors = {
@@ -13,9 +13,6 @@ export default function Roadmap() {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <header className="mb-10 border-b border-gray-200 pb-4">
-      </header>
-
       {/* Timeline */}
       <div className="relative z-[1]">
         {/* Vertical line */}
@@ -62,9 +59,16 @@ export default function Roadmap() {
                 </ul>
               </div>
             </div>
+
           ))}
+          
         </div>
+
       </div>
+        <footer className="mt-10 text-sm text-center">
+          <div className="text-gray-600">v{roadmapData.version} {roadmapData.status}</div>
+          <div className="text-gray-400">Last Update : {roadmapData.lastUpdate}</div>
+        </footer>
     </div>
   );
 }

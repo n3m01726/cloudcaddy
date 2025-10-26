@@ -1,6 +1,10 @@
 // Page des paramètres utilisateur
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Cloud, ArrowLeft, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
+import { authService } from '@core/services/api';
+import ConnectServices from '@features/auth/components/ConnectServices';
+
 import { useUserInfo } from '@shared/hooks/useUserInfo';
 import { 
   Settings as SettingsIcon, 
@@ -232,16 +236,17 @@ function Settings ({ userId, onLogout, user }) {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-blue-800 text-sm">
                     Gérez vos connexions aux services cloud, ajoutez ou supprimez des services.
-                    <button
+                    <span
                       onClick={() => navigate('/connections')}
                       className="text-indigo-600 ml-1 underline underline-offset-2 hover:text-indigo-800 underline underline-offset-4 cursor-pointer"
                     > 
                     Cliquez ici pour gérer vos services cloud
-                    </button>.
+                    </span>.
                 </p>
               </div>
 
             </div>
+            
           )}
 
 

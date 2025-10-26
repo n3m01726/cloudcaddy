@@ -117,15 +117,15 @@ function App() {
       {/* Routes protégées avec MainLayout */}
       {isAuthenticated ? (
         <>
-          <Route path="/" element={<MainLayout userId={userId}><DashboardHome userId={userId} /></MainLayout>} />
-          <Route path="/files" element={<MainLayout userId={userId}><FileExplorer userId={userId} /></MainLayout>} />
-          <Route path="/photos" element={<MainLayout userId={userId}><div className="p-6">Photos Files - Coming Soon</div></MainLayout>} />
-          <Route path="/shared" element={<MainLayout userId={userId}><div className="p-6">Shared Files - Coming Soon</div></MainLayout>} />
-          <Route path="/requests" element={<MainLayout userId={userId}><div className="p-6">File Requests - Coming Soon</div></MainLayout>} />
-          <Route path="/trash" element={<MainLayout userId={userId}><div className="p-6">Trash - Coming Soon</div></MainLayout>} />
-          <Route path="/settings" element={<MainLayout userId={userId}><Settings userId={userId} onLogout={handleLogout} /></MainLayout>} />
-          <Route path="/roadmap" element={<MainLayout userId={userId}><Roadmap /></MainLayout>} />
-          <Route path="/activity" element={<MainLayout userId={userId}><div className="p-6">Activity Feed - Coming Soon</div></MainLayout>} />
+          <Route path="/" title="Dashboard" element={<MainLayout userId={userId}><DashboardHome userId={userId} /></MainLayout>} />
+          <Route path="/files"  title="Explorer" element={<MainLayout userId={userId}><FileExplorer userId={userId} /></MainLayout>} />
+          <Route path="/photos"  title="Photos Gallery" element={<MainLayout userId={userId}><div className="p-6">Photos Files - Coming Soon</div></MainLayout>} />
+          <Route path="/shared"  title="File Shared" element={<MainLayout userId={userId}><div className="p-6">Shared Files - Coming Soon</div></MainLayout>} />
+          <Route path="/requests"  title="File Requests" element={<MainLayout userId={userId}><div className="p-6">File Requests - Coming Soon</div></MainLayout>} />
+          <Route path="/trash"  title="Tempo Trash" element={<MainLayout userId={userId}><div className="p-6">Trash - Coming Soon</div></MainLayout>} />
+          <Route path="/settings"  title="Settings" element={<MainLayout userId={userId}><Settings userId={userId} onLogout={handleLogout} /></MainLayout>} />
+          <Route path="/roadmap"  title="Roadmap" element={<MainLayout userId={userId}><Roadmap /></MainLayout>} />
+          <Route path="/activity"  title="Activity Feed" element={<MainLayout userId={userId}><div className="p-6">Activity Feed - Coming Soon</div></MainLayout>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </>
       ) : (

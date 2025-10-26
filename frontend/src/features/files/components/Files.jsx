@@ -1,7 +1,7 @@
    // frontend/src/features/files/components/Files.jsx (ADAPTED VERSION)
 import { useState, useMemo } from 'react';
-import FileItem from '@features/files/partials/FileItem';
 import { RefreshCw, File, ChevronDown } from 'lucide-react';
+import FileItem from '@features/files/partials/FileItem';
 import { SelectionProvider, useSelection } from '@features/files/context/SelectionContext'; // 🆕 NEW
 import BulkActionsToolbar from './BulkActionsToolbar'; // 🆕 NEW
 import CreateFolderModal from './CreateFolderModal'; // 🆕 NEW

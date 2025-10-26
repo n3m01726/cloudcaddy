@@ -1,17 +1,34 @@
 {
-  "version": "0.8.0",
-  "lastUpdate": "2025-10-18",
+  "version": "0.9.0",
+  "status": "ALPHA",
+  "lastUpdate": "2025-10-25",
   "sections": [
+  {
+    "phase": "UI & Experience",
+    "status": "in-progress",
+    "description": "Refining the interface for usability and consistency.",
+    "tasks": [
+      "Responsive design pass with Tailwind",
+      "[DONE] Change the tile when move to a different section",
+      "Hide the non-connected green icon in the connected service section in the Side menu",
+      "Link the Favorites link system to the explorer section (to the good folder)",
+      "Quick search feature"
+    ]
+  },
 
-    {
-      "phase": "UI & Experience",
-      "status": "in-progress",
-      "description": "Refining the interface for usability and consistency.",
-      "tasks": [
-        "Responsive design pass with Tailwind"
+  {
+    "phase": "App Sections",
+    "status": "planned",
+    "description": "Establishing clear, separated routes for main sections.",
+    "tasks": [
+      "Activity Feed - Last things that happen on the platform",
+      "Photos Files - Masonry (Pinterest-like) photos gallery filter from Google and Dropbox",
+      "Shared Files - Shared Link for each files/folders",
+      "File Requests - Ask for a file with a `@username`",
+      "Trash - Temporary trash before sending to the Drives Trash"
 
-      ]
-    },
+    ]
+  },
 
     {
       "phase": "Enhancements",
