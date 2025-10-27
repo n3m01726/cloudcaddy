@@ -1,4 +1,4 @@
-// frontend/src/features/files/components/FileExplorer.jsx
+// frontend/src/features/files/components/FileExplorer.jsx (FIXED)
 import { useState, useEffect, useCallback } from 'react';
 import Tabs from './Tabs';
 import Navigation from './Navigation';
@@ -17,7 +17,6 @@ export default function FileExplorer({ userId, filter }) {
   const [isSearching, setIsSearching] = useState(false);
   const [downloading, setDownloading] = useState(null);
   
-  // Gérer le filtre depuis les props (pour /photos, /shared, etc.)
   const [activeTab, setActiveTab] = useState(filter || 'all');
   const [searchBarVisible, setSearchBarVisible] = useState(false);
 
@@ -45,14 +44,12 @@ export default function FileExplorer({ userId, filter }) {
     handleLoadFiles();
   }, [userId, activeTab, handleLoadFiles]);
 
-  // Mettre à jour activeTab si le filtre change
   useEffect(() => {
     if (filter && filter !== activeTab) {
       setActiveTab(filter);
     }
   }, [filter, activeTab]);
 
-  // Navigation dans les dossiers
   const handleFolderClick = folder => {
     const provider = folder.provider;
     setProviderStates(prev => ({
@@ -103,7 +100,6 @@ export default function FileExplorer({ userId, filter }) {
     }
   };
 
-  // Recherche
   const handleSearch = async e => {
     e?.preventDefault();
     if (!searchQuery.trim()) {
@@ -127,7 +123,6 @@ export default function FileExplorer({ userId, filter }) {
     }
   };
 
-  // Téléchargement
   const handleDownload = async file => {
     setDownloading(file.id);
     try {
@@ -140,7 +135,6 @@ export default function FileExplorer({ userId, filter }) {
     }
   };
 
-  // Rafraîchir les fichiers
   const handleRefresh = () => {
     if (activeTab === 'favorites') return;
     const currentProvider = activeTab === 'all' ? 'google_drive' : activeTab;
@@ -148,7 +142,6 @@ export default function FileExplorer({ userId, filter }) {
     handleLoadFiles(currentState?.currentFolder || null, currentState?.currentFolderName || '', currentProvider);
   };
 
-  // Gestion des onglets
   const handleTabChange = newTab => {
     setActiveTab(newTab);
     if (newTab === 'favorites') return;
@@ -156,7 +149,6 @@ export default function FileExplorer({ userId, filter }) {
     handleLoadFiles(providerState.currentFolder, providerState.currentFolderName, newTab);
   };
 
-  // Breadcrumb pour navigation
   const handleBreadcrumbClick = index => {
     if (activeTab === 'allDrives') return;
     const currentProvider = activeTab === 'allDrives' ? 'google_drive' : activeTab;
@@ -178,7 +170,13 @@ export default function FileExplorer({ userId, filter }) {
       ? files 
       : files.filter(f => f.provider === activeTab);
 
-  // Rendu SANS les wrappers max-w et padding (MainLayout s'en occupe)
+  console.log('📊 FileExplorer Debug:', { 
+    filesCount: files.length, 
+    metadataCount: metadata.length,
+    filteredFilesCount: filteredFiles.length,
+    sampleMetadata: metadata.slice(0, 2)
+  });
+
   return (
     <div className="w-full">
       <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
@@ -221,7 +219,6 @@ export default function FileExplorer({ userId, filter }) {
           </div>
         )}
 
-        {/* Onglet Favoris */}
         {activeTab === 'favorites' ? (
           <div className="p-6">
             <p className="text-center text-gray-500">Favoris - À venir</p>

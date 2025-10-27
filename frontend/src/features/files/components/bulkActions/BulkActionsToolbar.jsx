@@ -1,8 +1,9 @@
 // frontend/src/features/files/components/BulkActionsToolbar.jsx
 import { useState } from 'react';
-import { useSelection } from '../context/SelectionContext';
 import { FolderPlus, X, Download, Trash2, Tag, Move } from 'lucide-react';
 import { Button } from '@/shared/components';
+import { useSelection } from "@/features/files/context/SelectionContext"; // 🆕 NEW
+
 
 const BulkActionsToolbar = ({ files, onCreateFolder, onBulkTag, onBulkMove, onBulkDelete, onBulkDownload }) => {
   const { selectedCount, clearSelection, getSelectedFileObjects } = useSelection();

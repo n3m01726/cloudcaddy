@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Folder, ChevronRight, Search, X, Check, Home } from 'lucide-react';
-import { filesService } from '../../../core/services/api';
+import { filesService } from '@/core/services/api';
 
 export default function FolderSelector({ 
   isOpen, 

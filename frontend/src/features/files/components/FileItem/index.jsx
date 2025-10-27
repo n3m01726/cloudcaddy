@@ -1,8 +1,8 @@
 // frontend/src/features/files/components/FileItem/index.jsx (ADAPTED VERSION)
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RefreshCw, Download, MoreVertical, Tag as TagIcon, Check } from "lucide-react";
 import { formatFileSize } from "@shared/utils/formatters";
-import FilePreviewModal from "@features/files/partials/FilePreview";
+import FilePreviewModal from "@features/files/components/FilePreview";
 import FileActions from "@features/files/components/fileActions";
 import TagManager from "@features/tagManager/components/TagManager";
 import TagBadge from "@features/tagManager/components/TagBadge";
@@ -29,6 +29,18 @@ export default function FileItem({
   const isSelected = isFileSelected(file.id);
 
   const { metadata, setMetadata, loading, loadMetadata } = useFileMetadata(file, userId);
+  // Ajoutez ce useEffect pour debug :
+useEffect(() => {
+  console.log(`🔍 FileItem [${file.name}] metadata:`, {
+    hasMetadata: !!metadata,
+    starred: metadata?.starred,
+    tags: metadata?.tags,
+    customName: metadata?.customName,
+    fromProps: file.metadata,
+    fullMetadata: metadata
+  });
+}, [metadata, file.name, file.metadata]);
+
   const { position, visible, setVisible, openAtCursor, openAtButton } = useFileActionsMenu();
 
   const Icon = getFileIcon(file);

@@ -1,10 +1,10 @@
    // frontend/src/features/files/components/Files.jsx (ADAPTED VERSION)
 import { useState, useMemo } from 'react';
 import { RefreshCw, File, ChevronDown } from 'lucide-react';
-import FileItem from '@features/files/partials/FileItem';
+import FileItem from '@features/files/components/FileItem';
 import { SelectionProvider, useSelection } from '@features/files/context/SelectionContext'; // 🆕 NEW
-import BulkActionsToolbar from './BulkActionsToolbar'; // 🆕 NEW
-import CreateFolderModal from './CreateFolderModal'; // 🆕 NEW
+import BulkActionsToolbar from '@features/files/components/bulkActions/BulkActionsToolbar'; // 🆕 NEW
+import CreateFolderModal from '@features/files/components/bulkActions/CreateFolderModal'; // 🆕 NEW
 
 const FILES_PER_PAGE = 10;
 

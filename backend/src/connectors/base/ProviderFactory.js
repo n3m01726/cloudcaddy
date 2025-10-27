@@ -1,5 +1,8 @@
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
 const GoogleDriveProvider = require('../GoogleDriveProvider');
-// const DropboxProvider = require('../providers/DropboxProvider');
+const DropboxProvider = require('../DropboxProvider');
 // const OneDriveProvider = require('../providers/OneDriveProvider');
 
 /**

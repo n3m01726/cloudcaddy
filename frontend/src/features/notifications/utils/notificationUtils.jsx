@@ -13,6 +13,26 @@ import {
   Upload
 } from 'lucide-react';
 
+export const getTypeIcon = (type) => {
+  const icons = {
+    file_shared: { Icon: Share2, color: 'text-blue-500' },
+    file_uploaded: { Icon: CloudUpload, color: 'text-emerald-500' },
+    file_deleted: { Icon: Trash, color: 'text-red-500' },
+    file_modified: { Icon: FilePen, color: 'text-amber-500' },
+    file_created: { Icon: FilePlus, color: 'text-teal-500' },
+    all_synced: { Icon: RefreshCw, color: 'text-indigo-500' },
+    service_connected: { Icon: Workflow, color: 'text-violet-500' },
+    success: { Icon: CircleCheckBig, color: 'text-lime-500' },
+    error: { Icon: ShieldAlert, color: 'text-rose-500' },
+    upload: { Icon: Upload, color: 'text-cyan-500' }, // si tu utilises 'upload' comme type
+    default: { Icon: Bell, color: 'text-gray-400' }
+  };
+
+  const { Icon, color } = icons[type] || icons.default;
+  // Rendre via une variable commençant par majuscule
+  return <Icon className={`w-7 h-7 ${color}`} />;
+};
+
 // Format relatif
 export const formatTimestamp = (timestamp) => {
   if (!timestamp) return '';
@@ -43,22 +63,3 @@ export const formatDate = (timestamp) => {
   return date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
 };
 
-export const getTypeIcon = (type) => {
-  const icons = {
-    file_shared: { Icon: Share2, color: 'text-blue-500' },
-    file_uploaded: { Icon: CloudUpload, color: 'text-emerald-500' },
-    file_deleted: { Icon: Trash, color: 'text-red-500' },
-    file_modified: { Icon: FilePen, color: 'text-amber-500' },
-    file_created: { Icon: FilePlus, color: 'text-teal-500' },
-    all_synced: { Icon: RefreshCw, color: 'text-indigo-500' },
-    service_connected: { Icon: Workflow, color: 'text-violet-500' },
-    success: { Icon: CircleCheckBig, color: 'text-lime-500' },
-    error: { Icon: ShieldAlert, color: 'text-rose-500' },
-    upload: { Icon: Upload, color: 'text-cyan-500' }, // si tu utilises 'upload' comme type
-    default: { Icon: Bell, color: 'text-gray-400' }
-  };
-
-  const { Icon, color } = icons[type] || icons.default;
-  // Rendre via une variable commençant par majuscule
-  return <Icon className={`w-7 h-7 ${color}`} />;
-};
