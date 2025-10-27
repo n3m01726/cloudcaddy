@@ -265,4 +265,30 @@ router.delete('/disconnect/:userId/:provider', async (req, res) => {
   }
 });
 
+router.get('/status/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Récupérer les tokens de l'utilisateur
+    const tokens = await prisma.token.findMany({
+      where: { userId: parseInt(userId) },
+      select: { provider: true }
+    });
+
+    // Formatter la réponse
+    const connections = {
+      google_drive: tokens.some(t => t.provider === 'google_drive'),
+      dropbox: tokens.some(t => t.provider === 'dropbox')
+    };
+
+    res.json({ connections });
+  } catch (error) {
+    console.error('Error fetching auth status:', error);
+    res.status(500).json({ error: 'Failed to fetch auth status' });
+  }
+});
+
+
+
+
 module.exports = router;

@@ -15,6 +15,7 @@ const MainLayout = ({ children, userId }) => {
       <Sidebar 
         currentPath={location.pathname}
         onNavigate={handleNavigate}
+        userId={userId}  // 👈 AJOUTE CETTE PROP
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">

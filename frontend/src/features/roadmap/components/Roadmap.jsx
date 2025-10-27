@@ -1,15 +1,28 @@
-import React, { version } from "react";
+import { React, useState,  version } from "react";
 import roadmapData from "../data/roadmap.json"; // ajuste le chemin selon ton projet
 
 const statusColors = {
-  done: "bg-green-500 border-green-500",
-  "in-progress": "bg-blue-500 border-blue-500",
-  planned: "bg-yellow-400 border-yellow-400",
-  idea: "bg-gray-400 border-gray-400",
+  done: "bg-green-500 border-green-500 text-green-100",
+  "in-progress": "bg-blue-500 border-blue-500 text-blue-100",
+  planned: "bg-yellow-400 border-yellow-400 text-yellow-100",
+  bug:"bg-red-400 border-red-400 text-red-100",
+  idea: "bg-gray-400 border-gray-400 text-gray-100",
 };
 
 export default function Roadmap() {
   const { sections } = roadmapData;
+
+function toggleTaskStatus(sectionIndex, taskIndex) {
+  const task = roadmapData.sections[sectionIndex].tasks[taskIndex];
+  task.status = task.status === "done" ? "todo" : "done";
+
+  // envoyer la mise à jour au serveur
+  fetch("/update-task", {
+    method: "POST",
+    body: JSON.stringify({ sectionIndex, taskIndex, status: task.status }),
+    headers: { "Content-Type": "application/json" }
+  });
+}
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
@@ -41,6 +54,10 @@ export default function Roadmap() {
                         ? "bg-blue-500"
                         : section.status === "planned"
                         ? "bg-yellow-500"
+                        : section.status === "todo"
+                        ? "bg-yellow-300"
+                        : section.status === "bug"
+                        ? "bg-red-500"                        
                         : "bg-gray-400"
                     }`}
                   >
@@ -52,11 +69,35 @@ export default function Roadmap() {
                   {section.description}
                 </p>
 
-                <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-                  {section.tasks.map((task, i) => (
-                    <li key={i}>{task}</li>
-                  ))}
-                </ul>
+   <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
+  {section.tasks.map((task, i) => (
+    <li key={i} className="flex items-center gap-2 cursor-pointer" 
+        onClick={() => toggleTaskStatus(index, i)}>
+      <span
+        className={`inline-flex items-center rounded-md 
+         px-2 py-1 
+        text-xs font-medium inset-ring inset-ring-gray-400/20 
+        ${
+          task.status === "done"
+            ? "bg-green-500 text-green-100"
+            : task.status === "in-progress"
+            ? "bg-blue-500 text-blue-100"
+            : task.status === "planned"
+            ? "bg-yellow-500 text-yellow-100"
+            : task.status === "todo"
+            ? "bg-yellow-300  text-yellow-900"
+            : task.status === "bug"
+            ? "bg-red-500  text-red-100"                        
+            : "bg-gray-400  text-gray-100"
+        }`}
+      >
+        {task.status}
+      </span>
+      <span>{task.title}</span>
+    </li>
+  ))}
+</ul>
+
               </div>
             </div>
 

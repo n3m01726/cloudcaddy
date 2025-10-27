@@ -3,58 +3,64 @@
   "status": "ALPHA",
   "lastUpdate": "2025-10-25",
   "sections": [
-  {
-    "phase": "UI & Experience",
-    "status": "in-progress",
-    "description": "Refining the interface for usability and consistency.",
-    "tasks": [
-      "Responsive design pass with Tailwind",
-      "[DONE] Change the tile when move to a different section",
-      "Hide the non-connected green icon in the connected service section in the Side menu",
-      "Link the Favorites link system to the explorer section (to the good folder)",
-      "Quick search feature"
-    ]
-  },
+    {
+      "phase": "Bugs",
+      "status": "in-progress",
+      "description": "",
+      "tasks": [
+        { "title": "Erreur Google notifications: Cannot read properties of undefined (reading 'findFirst')", "status": "done" },
+        { "title": "Erreur Dropbox notifications: Cannot read properties of undefined (reading 'findFirst')", "status": "done" },
+        { "title": "Error 500 when moving or copying a file", "status": "done" }
+      ]
+    },
+    {
+      "phase": "UI & Experience",
+      "status": "in-progress",
+      "description": "Refining the interface for usability and consistency.",
+      "tasks": [
 
-  {
-    "phase": "App Sections",
-    "status": "planned",
-    "description": "Establishing clear, separated routes for main sections.",
-    "tasks": [
-      "Activity Feed - Last things that happen on the platform",
-      "Photos Files - Masonry (Pinterest-like) photos gallery filter from Google and Dropbox",
-      "Shared Files - Shared Link for each files/folders",
-      "File Requests - Ask for a file with a `@username`",
-      "Trash - Temporary trash before sending to the Drives Trash"
-
-    ]
-  },
-
+        { "title": "Change the tile when move to a different section", "status": "done" },
+        { "title": "Hide the non-connected green icon in the connected service section in the Side menu", "status": "todo" },
+        { "title": "Link the Favorites link system to the explorer section (to the good folder)", "status": "todo" },
+        { "title": "Quick search feature", "status": "todo" }
+      ]
+    },
+    {
+      "phase": "App Sections",
+      "status": "planned",
+      "description": "Establishing clear, separated routes for main sections.",
+      "tasks": [
+        { "title": "Activity Feed - Last things that happen on the platform", "status": "" },
+        { "title": "Photos Files - Masonry (Pinterest-like) photos gallery filter from Google and Dropbox", "status": "" },
+        { "title": "Shared Files - Shared Link for each files/folders", "status": "" },
+        { "title": "File Requests - Ask for a file with a `@username`", "status": "" },
+        { "title": "Trash - Temporary trash before sending to the Drives Trash", "status": "" }
+      ]
+    },
     {
       "phase": "Enhancements",
       "status": "planned",
       "description": "User quality-of-life and deeper cloud features.",
       "tasks": [
-        "Implement cloud API connectors (OneDrive)",
-        "Unified dashboard with cloud summaries",
-        "Activity history (uploads, syncs, deletions)",
-        "User preferences (theme, view mode)",
-        "Keyboard shortcuts and quick actions",
-        "[BUG] Error 500 when moving or copying a file"
+        { "title": "Add the ability to login via your professional like mail@yourdomain.com", "status": "" },
+        { "title": "Implement cloud API connectors (OneDrive)", "status": "" },
+        { "title": "Unified dashboard with cloud summaries", "status": "" },
+        { "title": "Activity history (uploads, syncs, deletions)", "status": "" },
+        { "title": "User preferences (theme, view mode)", "status": "" },
+        { "title": "Keyboard shortcuts and quick actions", "status": "" }
       ]
     },
-
     {
       "phase": "Future Vision",
       "status": "idea",
       "description": "Long-term additions to expand beyond MVP.",
       "tasks": [
-        "Team and shared spaces",
-        "Cloud sync monitoring with alerts",
-        "Public sharing links",
-        "AI-assisted search and file tagging"
+        { "title": "Responsive design pass with Tailwind", "status": "" },
+        { "title": "Team and shared spaces", "status": "" },
+        { "title": "Cloud sync monitoring with alerts", "status": "" },
+        { "title": "Public sharing links", "status": "" },
+        { "title": "AI-assisted search and file tagging", "status": "" }
       ]
     }
-
   ]
 }

@@ -1,5 +1,6 @@
-// frontend/src/features/files/components/FileExplorer.jsx (FIXED)
+// frontend/src/features/files/components/FileExplorer.jsx (UPDATED)
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Tabs from './Tabs';
 import Navigation from './Navigation';
 import SearchBar from './SearchBar';
@@ -9,6 +10,8 @@ import { loadFiles } from '../utils/loadFiles';
 import { filesService } from '@core/services/api';
 
 export default function FileExplorer({ userId, filter }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  
   const [files, setFiles] = useState([]);
   const [metadata, setMetadata] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,15 +43,62 @@ export default function FileExplorer({ userId, filter }) {
     );
   }, [userId]);
 
+  // 🆕 Gérer les paramètres URL au montage (favoris + quick search)
   useEffect(() => {
+    const queryFromUrl = searchParams.get('q');
+    const providerFromUrl = searchParams.get('provider');
+    const folderIdFromUrl = searchParams.get('folderId');
+    const folderNameFromUrl = searchParams.get('folderName');
+
+    // Quick Search depuis Sidebar
+    if (queryFromUrl) {
+      console.log('🔍 Quick search from Sidebar:', queryFromUrl);
+      setSearchQuery(queryFromUrl);
+      setSearchBarVisible(true);
+      handleSearchFromUrl(queryFromUrl);
+      // Clear les params après traitement
+      setSearchParams({});
+      return;
+    }
+
+    // Navigation depuis Favorites
+    if (providerFromUrl && folderIdFromUrl) {
+      console.log('⭐ Favorite navigation:', { providerFromUrl, folderIdFromUrl, folderNameFromUrl });
+      setActiveTab(providerFromUrl);
+      handleLoadFiles(folderIdFromUrl, folderNameFromUrl || '', providerFromUrl);
+      // Clear les params après traitement
+      setSearchParams({});
+      return;
+    }
+
+    // Chargement normal
     handleLoadFiles();
-  }, [userId, activeTab, handleLoadFiles]);
+  }, [userId, searchParams, handleLoadFiles, setSearchParams]);
 
   useEffect(() => {
     if (filter && filter !== activeTab) {
       setActiveTab(filter);
     }
   }, [filter, activeTab]);
+
+  // 🆕 Handler pour Quick Search depuis URL
+  const handleSearchFromUrl = async (query) => {
+    if (!query.trim()) return;
+    
+    setIsSearching(true);
+    setError(null);
+    try {
+      const response = await filesService.searchFiles(userId, query);
+      const filesList = response.files || [];
+      setFiles(filesList);
+      console.log('✅ Quick search results:', filesList.length, 'files');
+    } catch (err) {
+      setError('Erreur lors de la recherche');
+      console.error(err);
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   const handleFolderClick = folder => {
     const provider = folder.provider;
