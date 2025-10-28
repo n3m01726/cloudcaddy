@@ -1,7 +1,3 @@
-
-// ============================================
-// ImagePreview.jsx - RESPONSIVE
-// ============================================
 import { useState } from 'react';
 import { AlertCircle, ExternalLink } from 'lucide-react';
 

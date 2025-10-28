@@ -1,6 +1,3 @@
-// ============================================
-// utils/fileTypeDetector.js
-// ============================================
 /**
  * Détecte le type de fichier pour choisir le bon viewer
  * @param {Object} file - Objet fichier

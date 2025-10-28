@@ -1,5 +1,4 @@
-// frontend/src/features/files/components/FileActions.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import FileActionsMenu from './FileActionsMenu';
 import DeleteConfirmModal from './DeleteConfirmModal';
 import FolderActionModal from './FolderActionModal';

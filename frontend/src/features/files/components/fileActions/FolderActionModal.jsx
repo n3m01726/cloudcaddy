@@ -1,4 +1,3 @@
-import React from 'react';
 import FolderSelector from '../bulkActions/FolderSelector';
 
 export default function FolderActionModal({ isOpen, action, file, userId, onClose, onSelect }) {

@@ -1,6 +1,3 @@
-// ============================================
-// FallbackPreview.jsx - RESPONSIVE
-// ============================================
 import { AlertCircle, ExternalLink, Download } from 'lucide-react';
 
 export default function FallbackPreview({ file, previewData, onDownload }) {

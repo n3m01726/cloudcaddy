@@ -1,6 +1,3 @@
-// ============================================
-// viewers/index.js (Barrel export)
-// ============================================
 export { default as ImagePreview } from './ImagePreview';
 export { default as GoogleAppsPreview } from './GoogleAppsPreview';
 export { default as VideoPreview } from './VideoPreview';

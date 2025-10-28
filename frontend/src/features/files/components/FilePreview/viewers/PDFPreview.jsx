@@ -1,6 +1,3 @@
-// ============================================
-// PDFPreview.jsx - RESPONSIVE
-// ============================================
 export default function PDFPreview({ file, previewData }) {
   const pdfUrl = previewData.previewUrl || 
                  previewData.url ||

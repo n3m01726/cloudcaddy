@@ -1,6 +1,6 @@
-// ----------------------
+
 // 📦 Configuration de la base de données avec Prisma (CommonJS)
-// ----------------------
+
 
 const { PrismaClient } = require('@prisma/client');
 

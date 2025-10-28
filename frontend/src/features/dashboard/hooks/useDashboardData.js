@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { filesService, metadataService, authService } from '@/core/services/api';
+import { authService, filesService } from '@core/services';
+
 
 /**
  * Hook pour gérer toutes les données du dashboard

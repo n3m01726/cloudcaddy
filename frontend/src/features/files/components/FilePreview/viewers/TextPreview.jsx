@@ -1,6 +1,3 @@
-// ============================================
-// TextPreview.jsx - RESPONSIVE
-// ============================================
 export default function TextPreview({ previewData }) {
   const content = previewData.content || 'Contenu texte non disponible';
 

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { metadataService } from "@core/services/api";
+import { metadataService } from '@core/services';
 
 export function useFileMetadata(file, userId) {
   const [metadata, setMetadata] = useState(null);

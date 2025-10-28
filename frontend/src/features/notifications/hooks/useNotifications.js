@@ -1,6 +1,6 @@
 // frontend/src/features/notifications/hooks/useNotifications.js
 import { useState, useEffect, useCallback } from 'react';
-import { notificationService } from '@/core/services/api';
+import { notificationService } from '@core/services';
 
 /**
  * Hook pour gérer les notifications

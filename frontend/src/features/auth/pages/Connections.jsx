@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Cloud, ArrowLeft, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
-import { authService } from '@core/services/api';
+import { authService } from '@core/services';
 import ConnectServices from '@features/auth/components/ConnectServices';
 
 function Connections({ userId, connectedServices: initialServices, onServicesUpdate }) {

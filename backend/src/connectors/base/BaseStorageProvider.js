@@ -196,6 +196,7 @@ class ProviderError extends Error {
   }
 }
 
+
 module.exports = {
   BaseStorageProvider,
   ProviderError

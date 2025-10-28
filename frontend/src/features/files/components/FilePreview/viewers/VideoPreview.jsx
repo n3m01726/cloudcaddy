@@ -1,6 +1,3 @@
-// ============================================
-// VideoPreview.jsx - RESPONSIVE
-// ============================================
 export default function VideoPreview({ file, previewData }) {
   const videoUrl = previewData.previewUrl || 
                    previewData.url || 

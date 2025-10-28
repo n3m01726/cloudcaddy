@@ -1,4 +1,4 @@
-import { filesService } from '@core/services/api';
+import { filesService } from '@core/services';
 
 export async function handleMove(userId, file, folder, onSuccess, onError) {
   try {

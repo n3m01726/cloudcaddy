@@ -7,7 +7,7 @@ import { Bell,
           X, 
           Filter, 
 } from 'lucide-react';
-import { notificationService } from '@/core/services/api';
+import { notificationService } from '@core/services';
 import { formatTimestamp, formatDate, getTypeIcon } from '../utils/notificationUtils.jsx';
 
 

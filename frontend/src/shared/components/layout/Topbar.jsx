@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import NotificationDropdown from '@/features/notifications/components/NotificationDropdown';
 import NotificationDrawer from '@/features/notifications/components/NotificationDrawer';
-import { notificationService } from '@/core/services/api';
+import { notificationService } from '@/core/services';
 import InviteUser from '@/shared/components/InviteUser';
 
 const Topbar = ({ userId }) => {

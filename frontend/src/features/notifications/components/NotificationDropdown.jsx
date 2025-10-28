@@ -75,7 +75,7 @@ export default function NotificationDropdown({
                     <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-indigo-600 rounded-full" />
                   )}
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 ml-4">
                     {/* Icône */}
                     <div className="flex-shrink-0 mt-0.5 mr-1">
                       {getTypeIcon(notif.type)}

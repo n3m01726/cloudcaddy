@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { notificationService } from '@/core/services/api';
+import { notificationService } from '@core/services';
 
 export const useNotifications = (userId) => {
   const [notifications, setNotifications] = useState([]);

@@ -1,6 +1,3 @@
-// ============================================
-// GoogleAppsPreview.jsx - RESPONSIVE
-// ============================================
 export default function GoogleAppsPreview({ file, previewData }) {
   const embedUrl = previewData.embedLink || `${previewData.webViewLink}?embedded=true`;
 

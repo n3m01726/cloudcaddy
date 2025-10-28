@@ -6,7 +6,6 @@ import FilePreviewModal from "@features/files/components/FilePreview";
 import FileActions from "@features/files/components/fileActions";
 import TagManager from "@features/tagManager/components/TagManager";
 import TagBadge from "@features/tagManager/components/TagBadge";
-
 import { useFileMetadata } from "./hooks/useFileMetadata";
 import { useFileActionsMenu } from "./hooks/useFileActionsMenu";
 import { getFileIcon } from "@shared/utils/FileIcons";

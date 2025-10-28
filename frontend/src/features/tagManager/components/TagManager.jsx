@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { X, Tag as TagIcon, Palette, FolderPlus, Star } from 'lucide-react';
 import TagBadge from './TagBadge';
 import TagInput from './TagInput';
-import { metadataService } from '@core/services/api';
+import { metadataService } from '@core/services';
 
 const PREDEFINED_TAGS = [
   'Important',

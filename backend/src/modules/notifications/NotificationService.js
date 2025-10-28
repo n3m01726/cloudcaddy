@@ -115,7 +115,7 @@ class NotificationService {
         id: `google_${file.id}_${Date.now()}`,
         source: 'google',
         type: 'file_modified',
-        message: `📄 "${file.name}" a été modifié`,
+        message: `${file.name} a été modifié`,
         timestamp: file.modifiedTime,
         isRead: false,
         metadata: {
@@ -171,7 +171,7 @@ class NotificationService {
           id: `dropbox_${file.id}_${Date.now()}`,
           source: 'dropbox',
           type: 'file_modified',
-          message: `📁 "${file.name}" a été mis à jour`,
+          message: `${file.name} a été mis à jour`,
           timestamp: file.server_modified,
           isRead: false,
           metadata: {

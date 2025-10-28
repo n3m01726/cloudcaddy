@@ -1,7 +1,6 @@
 // backend/src/modules/files/BatchService.js
 const { PrismaClient } = require('@prisma/client');
-const ProviderFactory = require('@/connectors/base/ProviderFactory');
-
+const ProviderFactory = require('@connectors/base/ProviderFactory');
 
 class BatchService {
   constructor() {

@@ -1,7 +1,8 @@
 // frontend/src/features/auth/components/ConnectServices.jsx
 import { useState } from 'react';
 import { Check, AlertCircle, Loader2, CheckCircle, XCircle } from 'lucide-react';
-import { authService } from '@core/services/api';
+import { authService } from '@core/services';
+
 import NotificationHelpers from '@/features/notifications/utils/notificationHelpers';
 
 export default function ConnectServices({ userId, connectedServices, onUpdate }) {

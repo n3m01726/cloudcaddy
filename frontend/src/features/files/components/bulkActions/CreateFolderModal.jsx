@@ -1,8 +1,6 @@
 // frontend/src/features/files/components/CreateFolderModal.jsx
 import { useState } from 'react';
 import { X, FolderPlus, Loader2 } from 'lucide-react';
-// 🔧 FIX: Adjust imports based on your export style
-// Check your shared/components/index.js or individual files
 import { Button } from '@/shared/components';
 import { Input } from '@/shared/components';
 

@@ -1,6 +1,6 @@
 import { Bell, LibraryBig } from 'lucide-react';
-import { useUserInfo } from '@/shared/hooks/useUserInfo';
 import { useState } from 'react';
+import { useUserInfo } from '@/shared/hooks/useUserInfo';
 import { usePageTitle } from '@/components/layout/topBar/hooks/usePageTitle';
 import { useNotifications } from '@/components/layout/topBar/hooks/useNotifications';
 import NotificationDropdown from '@/features/notifications/components/NotificationDropdown';

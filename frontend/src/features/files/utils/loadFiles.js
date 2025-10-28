@@ -1,4 +1,5 @@
-import { filesService } from '@core/services/api';
+import { filesService } from '@core/services';
+
 
 export const loadFiles = async (
   folderId,

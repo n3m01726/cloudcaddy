@@ -1,14 +1,11 @@
-// ----------------------
-// 🌍 Point d'entrée du serveur Express (CommonJS)
-// ----------------------
+// Point d'entrée du serveur Express (CommonJS)
 require('module-alias/register');
 require('dotenv').config();
 
-const randomBytes = require('crypto');
-const axios = require('axios');
+const crypto = require('crypto');
 const express = require('express');
 const cors = require('cors');
-const { checkDatabaseConnection } = require('@config/database.js');
+const { checkDatabaseConnection, prisma } = require('@config/database.js');
 
 // 🧭 Import des routes
 const authRoutes = require('@routes/auth.js');
@@ -16,15 +13,11 @@ const filesRoutes = require('@routes/files.js');
 const metadataRoutes = require('@routes/metadata.js');
 const notificationRoutes = require('@routes/notifications.js');
 
-// ----------------------
-// ⚙️ Initialisation
-// ----------------------
+// Initialisation
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ----------------------
-// 🧱 Middlewares
-// ----------------------
+// Middlewares
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true,
@@ -32,18 +25,17 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Logging des requêtes (utile en dev)
+// Logging simple (utile en dev)
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
 
-// ----------------------
-// 🚏 Routes principales
-// ----------------------
+// Routes principales
 app.use('/auth', authRoutes);
 app.use('/files', filesRoutes);
 app.use('/metadata', metadataRoutes);
+app.use('/notifications', notificationRoutes);
 
 // Route de santé
 app.get('/health', (req, res) => {
@@ -54,37 +46,27 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Création d'invitation (exemple)
+app.post('/api/invite', async (req, res, next) => {
+  try {
+    // TODO: Ajouter une vérification d'authentification ici (req.user.id)
+    const token = crypto.randomBytes(16).toString('hex');
+    const invite = await prisma.invite.create({
+      data: {
+        token,
+        createdBy: req.user?.id || null,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 jours
+      },
+    });
 
-app.use('/notifications', notificationRoutes);
-
-// Route racine
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Bienvenue sur cloudCaddy API',
-    version: '1.0.0',
-    endpoints: {
-      health: '/health',
-      auth: '/auth',
-      files: '/files',
-    },
-  });
+    const inviteUrl = `${process.env.FRONTEND_URL}/invite/${token}`;
+    res.json({ inviteUrl });
+  } catch (err) {
+    next(err);
+  }
 });
 
-app.post("/api/invite", async (req, res) => {
-  const token = randomBytes(16).toString("hex"); // exemple
-  const invite = await db.invites.create({
-    token,
-    createdBy: req.user.id,
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // expire dans 7 jours
-  });
-
-  const inviteUrl = `${process.env.FRONTEND_URL}/invite/${token}`;
-  res.json({ inviteUrl });
-});
-
-// ----------------------
-// ❌ Gestion 404
-// ----------------------
+// Gestion 404
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -92,9 +74,7 @@ app.use((req, res) => {
   });
 });
 
-// ----------------------
-// 🧩 Gestion d'erreurs globales
-// ----------------------
+// Gestion globale des erreurs
 app.use((err, req, res, next) => {
   console.error('Erreur serveur:', err);
   res.status(500).json({
@@ -104,25 +84,23 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ----------------------
-// 🚀 Démarrage du serveur
-// ----------------------
+// Démarrage du serveur
 async function startServer() {
   try {
     const dbConnected = await checkDatabaseConnection();
 
     if (!dbConnected) {
-      console.error('❌ Impossible de démarrer le serveur sans connexion à la base de données');
+      console.error('❌ Impossible de démarrer le serveur sans base de données');
       process.exit(1);
     }
 
     app.listen(PORT, () => {
       console.log(`
-╔════════════════════════════════════════════╗
-║   Multi-Cloud Manager API                  ║
-║   Serveur démarré sur le port ${PORT}        ║
-║   URL: http://localhost:${PORT}              ║
-╚════════════════════════════════════════════╝
+
+   Multi-Cloud Manager API
+   Serveur démarré sur le port ${PORT}
+   URL: http://localhost:${PORT}
+
       `);
     });
   } catch (error) {
@@ -131,9 +109,7 @@ async function startServer() {
   }
 }
 
-// ----------------------
-// 🧹 Arrêt propre du serveur
-// ----------------------
+// Arrêt propre du serveur
 process.on('SIGTERM', () => {
   console.log('SIGTERM reçu, arrêt du serveur...');
   process.exit(0);
@@ -146,6 +122,5 @@ process.on('SIGINT', () => {
 
 startServer();
 
-// ----------------------
-// 📤 Export pour tests (optionnel)
+// 📤 Export pour tests
 module.exports = app;

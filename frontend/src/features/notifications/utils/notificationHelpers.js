@@ -1,5 +1,6 @@
 // frontend/src/features/notifications/utils/notificationHelpers.js
-import { notificationService } from '@/core/services/api';
+import { notificationService } from '@core/services';
+
 
 /**
  * Helper pour créer des notifications depuis n'importe où dans l'app
@@ -14,7 +15,7 @@ export const NotificationHelpers = {
       await notificationService.create(
         userId,
         'service_connected',
-        `🔗 ${serviceName} connecté avec succès`,
+        `${serviceName} connecté avec succès`,
         { service: serviceName }
       );
     } catch (error) {
@@ -30,7 +31,7 @@ export const NotificationHelpers = {
       await notificationService.create(
         userId,
         'service_disconnected',
-        `🔌 ${serviceName} déconnecté`,
+        `${serviceName} déconnecté`,
         { service: serviceName }
       );
     } catch (error) {
@@ -46,7 +47,7 @@ export const NotificationHelpers = {
       await notificationService.create(
         userId,
         'file_uploaded',
-        `📤 "${fileName}" uploadé sur ${provider}`,
+        ` ${fileName} uploadé sur ${provider}`,
         { fileName, provider }
       );
     } catch (error) {
@@ -62,7 +63,7 @@ export const NotificationHelpers = {
       await notificationService.create(
         userId,
         'file_deleted',
-        `🗑️ "${fileName}" supprimé`,
+        `${fileName} supprimé`,
         { fileName }
       );
     } catch (error) {
@@ -94,7 +95,7 @@ export const NotificationHelpers = {
       await notificationService.create(
         userId,
         'file_shared',
-        `🔗 "${fileName}" partagé avec ${recipient}`,
+        `${fileName} partagé avec ${recipient}`,
         { fileName, recipient }
       );
     } catch (error) {
@@ -110,7 +111,7 @@ export const NotificationHelpers = {
       await notificationService.create(
         userId,
         'file_copied',
-        `📋 "${fileName}" copié vers ${destination}`,
+        `${fileName} copié vers ${destination}`,
         { fileName, destination }
       );
     } catch (error) {
@@ -126,7 +127,7 @@ export const NotificationHelpers = {
       await notificationService.create(
         userId,
         'error',
-        `⚠️ ${errorMessage}`,
+        `${errorMessage}`,
         { type: 'error' }
       );
     } catch (error) {
@@ -142,7 +143,7 @@ export const NotificationHelpers = {
       await notificationService.create(
         userId,
         'success',
-        `✅ ${successMessage}`,
+        `${successMessage}`,
         { type: 'success' }
       );
     } catch (error) {

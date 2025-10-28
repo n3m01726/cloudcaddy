@@ -7,7 +7,7 @@ import SearchBar from './SearchBar';
 import Files from './Files';
 import Footer from './Footer';
 import { loadFiles } from '../utils/loadFiles';
-import { filesService } from '@core/services/api';
+import { filesService } from '@core/services';
 
 export default function FileExplorer({ userId, filter }) {
   const [searchParams, setSearchParams] = useSearchParams();

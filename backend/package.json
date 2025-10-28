@@ -14,7 +14,10 @@
     "@config": "src/config",
     "@connectors": "src/connectors",
     "@modules": "src/modules",
-    "@routes":"src/routes"
+    "@routes":"src/routes",
+    "@controllers":"src/controllers",
+    "@utils":"src/utils",
+    "@services":"src/services"
   },
   "keywords": [
     "cloud",

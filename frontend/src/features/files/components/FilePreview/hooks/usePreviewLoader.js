@@ -1,6 +1,3 @@
-// ============================================
-// hooks/usePreviewLoader.js
-// ============================================
 import { useState, useEffect } from 'react';
 
 /**

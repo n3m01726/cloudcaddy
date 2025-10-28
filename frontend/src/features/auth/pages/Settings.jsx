@@ -1,10 +1,6 @@
 // Page des paramètres utilisateur
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Cloud, ArrowLeft, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
-import { authService } from '@core/services/api';
-import ConnectServices from '@features/auth/components/ConnectServices';
-
 import { useUserInfo } from '@shared/hooks/useUserInfo';
 import { 
   Settings as SettingsIcon, 

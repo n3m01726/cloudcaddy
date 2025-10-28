@@ -1,5 +1,3 @@
-// frontend/src/features/files/components/FileActionsMenu.jsx
-import React from 'react';
 import { Move, Copy, Trash2, X, Info, FolderPlus, FolderUp, FileUp } from 'lucide-react';
 
 export default function FileActionsMenu({ file, position = { top: 200, left: 200 }, onClose, onActionClick }) {

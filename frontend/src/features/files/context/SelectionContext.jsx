@@ -1,4 +1,3 @@
-// frontend/src/features/files/context/SelectionContext.jsx
 import { createContext, useContext, useState, useCallback } from 'react';
 
 const SelectionContext = createContext(null);

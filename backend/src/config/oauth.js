@@ -1,6 +1,6 @@
-// ----------------------
+
 // 🔐 Configuration OAuth (Google Drive + Dropbox) - CommonJS
-// ----------------------
+
 
 const { google } = require('googleapis');
 const axios = require('axios');
